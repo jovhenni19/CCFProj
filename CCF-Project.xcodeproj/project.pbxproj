@@ -689,7 +689,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = YSNGH6HTET;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -699,8 +699,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ph.bilinear.ccf;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "b41f1826-0562-424a-ad2d-438273bca8a6";
-				PROVISIONING_PROFILE_SPECIFIER = "CCF AppStore";
+				PROVISIONING_PROFILE = "445d2b71-5534-48a1-a1dd-f615998ddee9";
+				PROVISIONING_PROFILE_SPECIFIER = "Josh-Dev2";
 			};
 			name = Debug;
 		};
