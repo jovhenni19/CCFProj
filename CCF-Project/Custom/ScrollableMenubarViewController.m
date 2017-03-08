@@ -45,10 +45,10 @@
 //            NSLog(@"  %@", name);
 //        }
 //    }
-    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:CGRectMake(self.menuBarView.bounds.origin.x, self.menuBarView.bounds.origin.y, self.menuBarView.bounds.size.width + 10.0f, 35.0f)];
+    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:CGRectMake(self.menuBarView.bounds.origin.x, self.menuBarView.bounds.origin.y, self.menuBarView.bounds.size.width + 10.0f, 30.0f)];
     self.menuBarView.layer.masksToBounds = NO;
     self.menuBarView.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.menuBarView.layer.shadowOffset = CGSizeMake(0.0f, 5.0f);
+    self.menuBarView.layer.shadowOffset = CGSizeMake(0.0f, 3.0f);
     self.menuBarView.layer.shadowOpacity = 0.35f;
     self.menuBarView.layer.shadowPath = shadowPath.CGPath;
     

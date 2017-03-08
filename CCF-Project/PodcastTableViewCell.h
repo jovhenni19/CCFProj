@@ -14,5 +14,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *podcastDescription;
 @property (weak, nonatomic) IBOutlet UIButton *podcastSpeaker;
 @property (weak, nonatomic) IBOutlet UIButton *podcastDate;
+@property (weak, nonatomic) IBOutlet UIButton *podcastLocation;
 
 @end

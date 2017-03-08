@@ -23,11 +23,9 @@
     
     // Create a GMSCameraPosition that tells the map to display the
     // coordinate -33.86,151.20 at zoom level 6.
-    
-    NSLog(@"######### map[%f,%f]: %@ - %@",self.latitude, self.longitude, self.titleName, self.snippet);
-    
-    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:24.478502
-                                                            longitude:54.363266
+        
+    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:14.566184
+                                                            longitude:121.029731
                                                                  zoom:17];
     self.mapView = [GMSMapView mapWithFrame:CGRectZero camera:camera];
     self.mapView.myLocationEnabled = YES;
@@ -45,9 +43,9 @@
     [self.backButton setFrame:CGRectMake(10.0f, 10.0f, self.backButton.frame.size.width, self.backButton.frame.size.height)];
     // Creates a marker in the center of the map.
     GMSMarker *marker = [[GMSMarker alloc] init];
-    marker.position = CLLocationCoordinate2DMake(24.478502, 54.363266);
-    marker.title = self.titleName;
-    marker.snippet = self.snippet;
+    marker.position = CLLocationCoordinate2DMake(14.566184, 121.029731);
+    marker.title = @"HELLO";//self.titleName;
+    marker.snippet = @"WORLD";//self.snippet;
     marker.map = self.mapView;
     
     UILayoutGuide *marginLayout = self.view.layoutMarginsGuide;

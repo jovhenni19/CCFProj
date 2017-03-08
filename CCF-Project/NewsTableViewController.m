@@ -9,15 +9,12 @@
 #import "NewsTableViewController.h"
 #import "MapViewController.h"
 #import "NewsCollapsedTableViewCell.h"
-#import <EventKit/EventKit.h>
 #import "EventsDetailViewController.h"
 
 @interface NewsTableViewController () <NewsCellDelegate>
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 //@property (strong, nonatomic) NSIndexPath *indexPath_expanded;
-@property (strong, nonatomic) EKEventStore *eventStore;
-@property (nonatomic) BOOL isAccessToEventStoreGranted;
-@property (strong, nonatomic) EKCalendar *calendar;
 
 @end
 
@@ -77,8 +74,9 @@
     [cell.textNewsDetails scrollsToTop];
     
     [cell.buttonGroupName setTitle:@"  YOUTH GROUP" forState:UIControlStateNormal];
-    [cell.buttonLocation setTitle:@"  CCF CHURCH" forState:UIControlStateNormal];
-    [cell.buttonDate setTitle:@"  NOVEMBER 5" forState:UIControlStateNormal];
+    [cell.buttonLocation setTitle:@"  CCF CENTER" forState:UIControlStateNormal];
+    [cell.buttonDate setTitle:@"  NOVEMBER 5\n10:15pm" forState:UIControlStateNormal];
+    [cell.buttonSpeaker setTitle:@"  Speaker Name here" forState:UIControlStateNormal];
     
     cell.delegate = self;
     cell.indexPath = indexPath;
@@ -165,43 +163,6 @@
 
 - (void)buttonDatePressed:(NSIndexPath *)indexPath {
     
-    EKEvent *event = [EKEvent eventWithEventStore:self.eventStore];
-    event.title = [NSString stringWithFormat:@"%@",@"YOUTH GATHERING"];
-    
-    NSDateFormatter *dateFormmatter = [[NSDateFormatter alloc] init];
-    [dateFormmatter setDateFormat:@"MM/dd/yyyy"];
-    
-    event.startDate = [dateFormmatter dateFromString:@"11/05/2017"];
-    event.endDate = [event.startDate dateByAddingTimeInterval:60*60];  //set 1 hour meeting
-    event.calendar = [self.eventStore defaultCalendarForNewEvents];
-    event.notes = [NSString stringWithFormat:@"Event Details:\nAddress:%@\n",@"CCF CHURCH"];
-    NSTimeInterval aInterval = -1 * 60 * 60;
-    EKAlarm *alaram = [EKAlarm alarmWithRelativeOffset:aInterval];
-    [event addAlarm:alaram];
-    
-    NSError *err = nil;
-    BOOL success = [self.eventStore saveEvent:event span:EKSpanThisEvent commit:YES error:&err];
-    
-    if (success) {
-        UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Success" message:@"YOUTH GATHERING saved in calendar" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *close = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-            
-        }];
-        [ac addAction:close];
-        [self presentViewController:ac animated:YES completion:^{
-            
-        }];
-    }
-    else {
-        UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Error" message:@"YOUTH GATHERING failed to saved in calendar.\nPlease allow the app to save in calendar." preferredStyle:UIAlertControllerStyleActionSheet];
-        UIAlertAction *close = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-            
-        }];
-        [ac addAction:close];
-        [self presentViewController:ac animated:YES completion:^{
-            
-        }];
-    }
 }
 
 - (void)buttonLocationPressed:(NSIndexPath *)indexPath {

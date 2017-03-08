@@ -203,6 +203,9 @@
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (self.isAllLocationSelected) {
@@ -383,12 +386,14 @@
 }
 
 - (IBAction) emailButton:(UIButton*)sender {
-    NSString *urlString = sender.titleLabel.text;
-    [self openURL:[NSString stringWithFormat:@"mailto://%@",urlString]];
+    [self mailAddress:sender];
+//    NSString *urlString = sender.titleLabel.text;
+//    [self openURL:[NSString stringWithFormat:@"mailto://%@",urlString]];
 }
 
 - (IBAction) contactButton:(UIButton*)sender {
-    NSString *urlString = sender.titleLabel.text;
-    [self openURL:[NSString stringWithFormat:@"tel://%@",urlString]];
+    [self callNumber:sender];
+//    NSString *urlString = sender.titleLabel.text;
+//    [self openURL:[NSString stringWithFormat:@"tel://%@",urlString]];
 }
 @end

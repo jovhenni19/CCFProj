@@ -17,9 +17,20 @@
     _buttonDate.titleLabel.adjustsFontSizeToFitWidth = YES;
     _buttonLocation.titleLabel.adjustsFontSizeToFitWidth = YES;
     _buttonGroupName.titleLabel.adjustsFontSizeToFitWidth = YES;
+    _buttonSpeaker.titleLabel.adjustsFontSizeToFitWidth = YES;
     _buttonDate.titleLabel.minimumScaleFactor = -5.0f;
     _buttonLocation.titleLabel.minimumScaleFactor = -5.0f;
     _buttonGroupName.titleLabel.minimumScaleFactor = -5.0f;
+    _buttonSpeaker.titleLabel.minimumScaleFactor = -5.0f;
+    
+    _buttonDate.titleLabel.numberOfLines = 0;
+    _buttonLocation.titleLabel.numberOfLines = 0;
+    _buttonGroupName.titleLabel.numberOfLines = 0;
+    _buttonSpeaker.titleLabel.numberOfLines = 0;
+    _buttonDate.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    _buttonLocation.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    _buttonGroupName.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    _buttonSpeaker.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
 }
 

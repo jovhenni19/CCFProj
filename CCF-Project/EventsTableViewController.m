@@ -11,6 +11,7 @@
 #import "EventsDetailViewController.h"
 
 @interface EventsTableViewController ()
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @end
 

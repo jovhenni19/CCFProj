@@ -39,9 +39,9 @@
     
     NSString *title = @"Podcast Title";
     NSString *description = @"Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
-    NSString *category = @"fridays";
+    NSString *category = @"all-access";
     
-    UIImage *image = [UIImage imageNamed:@"fridays"];
+    UIImage *image = [UIImage imageNamed:@"all-access"];
     NSDictionary *catDict = [NSDictionary dictionaryWithObjectsAndKeys:category,@"kTitle",image,@"kImage", nil];
     
     NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:title,@"kTitle",description,@"kDescription",category,@"kCategory", nil];
@@ -57,7 +57,7 @@
     description = @"Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
     category = @"life";
     
-    image = [UIImage imageNamed:@"life"];
+    image = [UIImage imageNamed:@"life-unboxed"];
     catDict = [NSDictionary dictionaryWithObjectsAndKeys:category,@"kTitle",image,@"kImage", nil];
     
     dictionary = [NSDictionary dictionaryWithObjectsAndKeys:title,@"kTitle",description,@"kDescription",category,@"kCategory", nil];
@@ -78,9 +78,9 @@
     
     title = @"Podcast Title";
     description = @"Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
-    category = @"everyday conversation";
+    category = @"everyday-conversation";
     
-    image = [UIImage imageNamed:@"everydays"];
+    image = [UIImage imageNamed:@"everyday-conversation"];
     catDict = [NSDictionary dictionaryWithObjectsAndKeys:category,@"kTitle",image,@"kImage", nil];
     
     dictionary = [NSDictionary dictionaryWithObjectsAndKeys:title,@"kTitle",description,@"kDescription",category,@"kCategory", nil];
@@ -130,14 +130,14 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (self.isCategoriesShown) {
-        if (section != self.sectionExpanded) {
-            return 0;
-        }
-        else {
-            
+//        if (section != self.sectionExpanded) {
+//            return 0;
+//        }
+//        else {
+        
             NSString *key = [self.categories[section] objectForKey:@"kTitle"];
             return [[self.categorizedPodcast objectForKey:key] count];
-        }
+//        }
     }
     return self.podcastList.count;
 }
@@ -159,12 +159,12 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (self.isCategoriesShown) {
-        NSString *title = [self.categories[section] objectForKey:@"kTitle"];
+//        NSString *title = [self.categories[section] objectForKey:@"kTitle"];
         UIImage *image = [self.categories[section] objectForKey:@"kImage"];
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         [button setFrame:CGRectMake(0.0f, 0.0f, self.view.bounds.size.width, 160.0f)];
         [button setBackgroundImage:image forState:UIControlStateNormal];
-        [button setTitle:title forState:UIControlStateNormal];
+//        [button setTitle:title forState:UIControlStateNormal];
         button.titleLabel.font = [UIFont fontWithName:@"OpenSans" size:14.0f];
         button.tag = section;
         [button addTarget:self action:@selector(setSectionExpandedWithButton:) forControlEvents:UIControlEventTouchUpInside];
@@ -189,10 +189,12 @@
         dictionary = [self.podcastList objectAtIndex:[indexPath row]];
     }
     
-    cell.podcastTitle = [dictionary objectForKey:@"kTitle"];
-    cell.podcastDescription = [dictionary objectForKey:@"kDescription"];
+    cell.podcastTitle.text = [NSString stringWithFormat:@"%@ %li",[dictionary objectForKey:@"kTitle"],(long)[indexPath row]];
+    cell.podcastDescription.text = [dictionary objectForKey:@"kDescription"];
     [cell.podcastSpeaker setTitle:@"Speaker 1" forState:UIControlStateNormal];
     [cell.podcastDate setTitle:@"03/04/2017" forState:UIControlStateNormal];
+    [cell.podcastLocation setTitle:@"CCF CENTER" forState:UIControlStateNormal];
+    [cell.podcastImage setImage:[UIImage imageNamed:[dictionary objectForKey:@"kCategory"]]];
     
     return cell;
 }
@@ -212,8 +214,11 @@
     
     PodcastDetailsTableViewController *details = [self.storyboard instantiateViewControllerWithIdentifier:@"podcastDetailsView"];
     
-    details.podcastTitle = [dictionary objectForKey:@"kTitle"];
+    details.podcastTitle = [NSString stringWithFormat:@"%@ %li",[dictionary objectForKey:@"kTitle"],(long)[indexPath row]];
     details.podcastDescription = [dictionary objectForKey:@"kDescription"];
+    NSMutableString *category = [[dictionary objectForKey:@"kCategory"] mutableCopy];
+    [category replaceOccurrencesOfString:@"-" withString:@" " options:NSLiteralSearch range:NSMakeRange(0, category.length)];
+    details.otherText = [category capitalizedString];
     details.podcastSpeaker = @"Speaker 1";
     details.image = [[self.categories objectAtIndex:[indexPath section]] objectForKey:@"kImage"];
     details.youtubeID = @"Xd_6MSWz2J4";
@@ -239,12 +244,17 @@
 - (void) setSectionExpandedWithButton:(UIButton*)sender {
     if (sender.tag == self.sectionExpanded) {
         self.sectionExpanded = -1;
+        NSRange range = NSMakeRange(0, 1);
+        NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+        [self.mainTableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
     }
     else {
         self.sectionExpanded = sender.tag;
+        NSRange range = NSMakeRange(self.sectionExpanded, 1);
+        NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+        [self.mainTableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
     }
     
-    [self.mainTableView reloadData];
     
     [self.mainTableView layoutIfNeeded];
     if (self.sectionExpanded > -1) {

@@ -59,6 +59,138 @@
     [mapVC didMoveToParentViewController:self];
 }
 
+- (IBAction)saveDateCalendar:(id)sender {
+    
+    [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+        // handle access here
+        //            [self updateAuthorizationStatusToAccessEventStore];
+        
+        if(!granted) {
+            self.isAccessToEventStoreGranted = NO;
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Access Denied"
+                                                                message:@"This app doesn't have access to your Calendar." delegate:nil
+                                                      cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
+            [alertView show];
+        }
+        else {
+            self.isAccessToEventStoreGranted = YES;
+            EKEvent *event = [EKEvent eventWithEventStore:self.eventStore];
+            event.title = [NSString stringWithFormat:@"%@",@"YOUTH GATHERING"];
+            
+            NSDateFormatter *dateFormmatter = [[NSDateFormatter alloc] init];
+            [dateFormmatter setDateFormat:@"MM/dd/yyyy"];
+            
+            event.startDate = [dateFormmatter dateFromString:@"11/05/2017"];
+            event.endDate = [event.startDate dateByAddingTimeInterval:60*60];  //set 1 hour meeting
+            event.calendar = [self.eventStore defaultCalendarForNewEvents];
+            event.notes = [NSString stringWithFormat:@"Event Details:\nAddress:%@\n",@"CCF CENTER"];
+            NSTimeInterval aInterval = -1 * 60 * 60;
+            EKAlarm *alaram = [EKAlarm alarmWithRelativeOffset:aInterval];
+            [event addAlarm:alaram];
+            
+            NSError *err = nil;
+            BOOL success = [self.eventStore saveEvent:event span:EKSpanThisEvent commit:YES error:&err];
+            
+            if (success) {
+                UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Success" message:@"YOUTH GATHERING saved in calendar" preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *close = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                    
+                }];
+                [ac addAction:close];
+                [self presentViewController:ac animated:YES completion:^{
+                    
+                }];
+            }
+            else {
+                UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Error" message:@"YOUTH GATHERING failed to saved in calendar.\nPlease allow the app to save in calendar." preferredStyle:UIAlertControllerStyleActionSheet];
+                UIAlertAction *close = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                    
+                }];
+                [ac addAction:close];
+                [self presentViewController:ac animated:YES completion:^{
+                    
+                }];
+            }
+        }
+        
+    }];
+    
+    
+}
+
+- (EKEventStore *)eventStore {
+    if (!_eventStore) {
+        _eventStore = [[EKEventStore alloc] init];
+    }
+    return _eventStore;
+}
+
+- (EKCalendar *)calendar {
+    if (!_calendar) {
+        NSArray *calendars = [self.eventStore calendarsForEntityType:EKEntityTypeEvent];
+        
+        NSString *calendarTitle = @"YOUTH GATHERING";
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"title matches %@", calendarTitle];
+        NSArray *filtered = [calendars filteredArrayUsingPredicate:predicate];
+        
+        if ([filtered count]) {
+            _calendar = [filtered firstObject];
+        } else {
+            
+            // 3
+            _calendar = [EKCalendar calendarForEntityType:EKEntityTypeEvent eventStore:self.eventStore];
+            _calendar.title = @"YOUTH GATHERING";
+            _calendar.source = self.eventStore.defaultCalendarForNewEvents.source;
+            
+            // 4
+            NSError *calendarErr = nil;
+            BOOL calendarSuccess = [self.eventStore saveCalendar:_calendar commit:YES error:&calendarErr];
+            if (!calendarSuccess) {
+                // Handle error
+            }
+        }
+    }
+    return _calendar;
+}
+
+- (void)updateAuthorizationStatusToAccessEventStore {
+    EKAuthorizationStatus authorizationStatus = [EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent];
+    
+    switch (authorizationStatus) {
+        case EKAuthorizationStatusDenied:
+        case EKAuthorizationStatusRestricted: {
+            self.isAccessToEventStoreGranted = NO;
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Access Denied"
+                                                                message:@"This app doesn't have access to your Calendar." delegate:nil
+                                                      cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
+            [alertView show];
+            
+            
+            break;
+        }
+            
+            // 4
+        case EKAuthorizationStatusAuthorized:
+            self.isAccessToEventStoreGranted = YES;
+            
+            break;
+            
+            // 5
+        case EKAuthorizationStatusNotDetermined: {
+            __weak BaseViewController *weakSelf = self;
+            [self.eventStore requestAccessToEntityType:EKEntityTypeEvent
+                                            completion:^(BOOL granted, NSError *error) {
+                                                dispatch_async(dispatch_get_main_queue(), ^{
+                                                    weakSelf.isAccessToEventStoreGranted = granted;
+                                                    
+                                                });
+                                            }];
+            break;
+        }
+    }
+}
+
+
 - (IBAction)backButton:(id)sender {
     
     UIView *viewShown = [[[(self.parentViewController.view) viewWithTag:1990] subviews] lastObject];
@@ -209,6 +341,16 @@
         [self.backgroundView removeFromSuperview];
     }];
     
+}
+
+- (IBAction)callNumber:(id)sender {
+    NSString *urlString = ((UIButton*)sender).titleLabel.text;
+    [self openURL:[NSString stringWithFormat:@"tel://%@",urlString]];
+}
+
+- (IBAction)mailAddress:(id)sender {
+    NSString *urlString = ((UIButton*)sender).titleLabel.text;
+    [self openURL:[NSString stringWithFormat:@"mailto://%@",urlString]];
 }
 
 - (void) openURL:(NSString*)urlstring {

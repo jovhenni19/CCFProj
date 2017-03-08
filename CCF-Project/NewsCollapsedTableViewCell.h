@@ -24,6 +24,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonGroupName;
 @property (weak, nonatomic) IBOutlet UIButton *buttonLocation;
 @property (weak, nonatomic) IBOutlet UIButton *buttonDate;
+@property (weak, nonatomic) IBOutlet UIButton *buttonSpeaker;
 
 @property (strong, nonatomic) id<NewsCellDelegate> delegate;
 @property (strong, nonatomic) NSIndexPath *indexPath;

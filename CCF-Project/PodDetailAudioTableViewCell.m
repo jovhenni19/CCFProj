@@ -11,9 +11,11 @@
 
 @interface PodDetailAudioTableViewCell()
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
+@property (weak, nonatomic) IBOutlet UIButton *replayButton;
 @property (weak, nonatomic) IBOutlet UILabel *duration;
 @property (weak, nonatomic) IBOutlet UISlider *currentTimeSlider;
 @property (strong, nonatomic) YMCAudioPlayer *audioPlayer;
+@property (assign, nonatomic) BOOL isRepeatEnabled;
 
 @property BOOL isPaused;
 @property BOOL scrubbing;
@@ -27,6 +29,7 @@
     [super awakeFromNib];
     // Initialization code
     
+    self.isRepeatEnabled = NO;
     self.audioPlayer = [[YMCAudioPlayer alloc] init];
     [self setupAudioPlayer:self.urlForAudio];
 }
@@ -50,7 +53,7 @@
     [self.timer invalidate];
     //play audio for the first time or if pause was pressed
     if (!self.isPaused) {
-        [self.playButton setImage:[UIImage imageNamed:@"pause.png"]
+        [self.playButton setImage:[UIImage imageNamed:@"pause"]
                                    forState:UIControlStateNormal];
         
         //start a timer to update the time label display
@@ -61,16 +64,22 @@
                                                      repeats:YES];
         
         [self.audioPlayer playAudio];
-        self.isPaused = TRUE;
+        self.isPaused = YES;
         
     } else {
         //player is paused and Button is pressed again
-        [self.playButton setImage:[UIImage imageNamed:@"play.png"]
+        [self.playButton setImage:[UIImage imageNamed:@"play"]
                                    forState:UIControlStateNormal];
         
         [self.audioPlayer pauseAudio];
-        self.isPaused = FALSE;
+        self.isPaused = NO;
     }
+}
+- (IBAction)replayAudioPressed:(id)sender {
+    self.isRepeatEnabled = !self.isRepeatEnabled;
+    
+    [self.replayButton setImage:[UIImage imageNamed:(self.isRepeatEnabled)?@"replay-selected":@"replay"]
+                       forState:UIControlStateNormal];
 }
 
 - (void)updateTime:(NSTimer *)timer {
@@ -87,11 +96,24 @@
         [self.playButton setImage:[UIImage imageNamed:@"play.png"]
                                    forState:UIControlStateNormal];
         [self.audioPlayer pauseAudio];
-        self.isPaused = FALSE;
+        self.isPaused = NO;
+        
+        if (self.isRepeatEnabled) {
+            [self playAudioPressed:self.playButton];
+        }
     }
 }
 
 - (IBAction)setCurrentTime:(id)scrubber {
+    self.scrubbing = NO;
+}
+
+/*
+ * Sets if the user is scrubbing right now
+ * to avoid slider update while dragging the slider
+ */
+- (IBAction)userIsScrubbing:(id)sender {
+    self.scrubbing = YES;
     //if scrubbing update the timestate, call updateTime faster not to wait a second and dont repeat it
     [NSTimer scheduledTimerWithTimeInterval:0.01
                                      target:self
@@ -100,15 +122,6 @@
                                     repeats:NO];
     
     [self.audioPlayer setCurrentAudioTime:self.currentTimeSlider.value];
-    self.scrubbing = FALSE;
-}
-
-/*
- * Sets if the user is scrubbing right now
- * to avoid slider update while dragging the slider
- */
-- (IBAction)userIsScrubbing:(id)sender {
-    self.scrubbing = TRUE;
 }
 
 

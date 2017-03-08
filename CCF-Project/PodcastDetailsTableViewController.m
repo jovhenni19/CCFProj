@@ -15,6 +15,8 @@
 #define isNil(x) (x==nil)?@"":x
 
 @interface PodcastDetailsTableViewController ()
+@property (weak, nonatomic) IBOutlet UILabel *labelPodcastTitle;
+@property (weak, nonatomic) IBOutlet UIButton *buttonSpeaker;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) NSArray *arrayContents;
 @end
@@ -30,6 +32,8 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
+    [self.buttonSpeaker setTitle:self.podcastSpeaker forState:UIControlStateNormal];
+    self.labelPodcastTitle.text = self.podcastTitle;
     
     self.arrayContents = @[isNil(self.image),isNil(self.podcastDescription),isNil(self.urlForAudio),isNil(self.youtubeID)];
     [self.tableView reloadData];
@@ -79,7 +83,7 @@
             height = (self.urlForAudio && [indexPath section]==2)?80.0f:240.0f;
             break;
         case 3:
-            height = 240.0f;
+            height = 300.0f;
             break;
             
         default:
@@ -94,6 +98,13 @@
         return 0.0f;
     }
     return 35.0f;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    if (section == [self numberOfSectionsInTableView:tableView] ) {
+        return 45.0f;
+    }
+    return 0.0f;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -153,14 +164,23 @@
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.bounds.size.width, [self tableView:self.tableView heightForHeaderInSection:section])];
     
     if (section == 2 || section == 3) {
-        view.backgroundColor = [UIColor colorWithRed:36.0f/255.0f green:179.0f/255.0f blue:196/255.0f alpha:1.0f];
+        view.backgroundColor = [UIColor colorWithRed:17.0f/255.0f green:179.0f/255.0f blue:196/255.0f alpha:1.0f];
+
+//        UIImage *image = [UIImage imageNamed:(self.urlForAudio && section==2)?@"listenbar":@"watchbar"];
+//        
+//        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+//        imageView.frame = CGRectMake(0.0f, 0.0f, view.bounds.size.width, view.bounds.size.height);
+//        imageView.contentMode = UIViewContentModeScaleAspectFit;
+//        
+//        [view addSubview:imageView];
         
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 24.0f, 24.0f)];
-        imageView.image = [UIImage imageNamed:(self.urlForAudio && section==2)?@"listen":@"youtube"];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 56.0f, 24.0f)];
+        imageView.image = [UIImage imageNamed:(self.urlForAudio && section==2)?@"listen":@"watch"];
         
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 150.0f, 24.0f)];
         label.text = (self.urlForAudio && section==2)?@"LISTEN":@"WATCH";
-        label.font = [UIFont fontWithName:@"OpenSans" size:14.0f];
+        label.font = [UIFont fontWithName:@"OpenSans" size:13.0f];
+        label.textColor = [UIColor whiteColor];
         
         [view addSubview:imageView];
         [view addSubview:label];
@@ -177,7 +197,7 @@
         
         [imageView addConstraint:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:0.0f constant:24.0f]];
         
-        [imageView addConstraint:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:imageView attribute:NSLayoutAttributeWidth multiplier:1.0f constant:0.0f]];
+        [imageView addConstraint:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:imageView attribute:NSLayoutAttributeWidth multiplier:0.8f constant:0.0f]];
         
         [view addConstraint:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:imageView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:15.0f]];
         
