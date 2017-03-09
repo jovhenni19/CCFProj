@@ -11,6 +11,7 @@
 #import "PodDetailImageTableViewCell.h"
 #import "PodDetailDescriptionTableViewCell.h"
 #import "PodDetailVideoTableViewCell.h"
+#import "YMCAudioPlayer.h"
 
 #define isNil(x) (x==nil)?@"":x
 
@@ -19,6 +20,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonSpeaker;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) NSArray *arrayContents;
+
+@property (strong, nonatomic) YMCAudioPlayer *audioPlayer;
 @end
 
 @implementation PodcastDetailsTableViewController
@@ -39,10 +42,23 @@
     [self.tableView reloadData];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [self.audioPlayer pauseAudio];
+    [self.audioPlayer stopAudio];
+    self.audioPlayer = nil;
+    
+}
+
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
 
 #pragma mark - Table view data source
 
@@ -133,6 +149,7 @@
             if (self.urlForAudio) {
                 PodDetailAudioTableViewCell *custom = (PodDetailAudioTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"audioCell" forIndexPath:indexPath];
                 custom.urlForAudio = self.urlForAudio;
+                self.audioPlayer = custom.audioPlayer;
                 cell = custom;
             }
             else {
@@ -236,7 +253,7 @@
         [buttonRead setFrame:CGRectMake(0.0f, 0.0f, 50.0f, 24.0f)];
         
         [view addSubview:buttonDownload];
-        [view addSubview:buttonRead];
+//        [view addSubview:buttonRead];
         
         //layout
         
@@ -246,11 +263,11 @@
         
         [view addConstraint:[imageView.centerYAnchor constraintEqualToAnchor:marginLayout.centerYAnchor]];
         
-        [view addConstraint:[label.centerYAnchor constraintEqualToAnchor:imageView.centerYAnchor]];
+        [view addConstraint:[label.centerYAnchor constraintEqualToAnchor:marginLayout.centerYAnchor]];
         
-        [view addConstraint:[buttonDownload.centerYAnchor constraintEqualToAnchor:imageView.centerYAnchor]];
+        [view addConstraint:[buttonDownload.centerYAnchor constraintEqualToAnchor:marginLayout.centerYAnchor]];
         
-        [view addConstraint:[buttonRead.centerYAnchor constraintEqualToAnchor:imageView.centerYAnchor]];
+//        [view addConstraint:[buttonRead.centerYAnchor constraintEqualToAnchor:imageView.centerYAnchor]];
         
         [imageView addConstraint:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:0.0f constant:24.0f]];
         
@@ -260,27 +277,29 @@
         
         [view addConstraint:[NSLayoutConstraint constraintWithItem:buttonDownload attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:label attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:10.0f]];
         
-        [view addConstraint:[NSLayoutConstraint constraintWithItem:buttonRead attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:buttonDownload attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:10.0f]];
+//        [view addConstraint:[NSLayoutConstraint constraintWithItem:buttonRead attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:buttonDownload attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:10.0f]];
         
         [label addConstraint:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:0.0f constant:24.0f]];
         
         
         [buttonDownload addConstraint:[NSLayoutConstraint constraintWithItem:buttonDownload attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:0.0f constant:24.0f]];
         
-        [buttonRead addConstraint:[NSLayoutConstraint constraintWithItem:buttonRead attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:0.0f constant:24.0f]];
+//        [buttonRead addConstraint:[NSLayoutConstraint constraintWithItem:buttonRead attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:0.0f constant:24.0f]];
         
         
         [buttonDownload addConstraint:[NSLayoutConstraint constraintWithItem:buttonDownload attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeWidth multiplier:0.0f constant:120.0f]];
         
         
-        [buttonRead addConstraint:[NSLayoutConstraint constraintWithItem:buttonRead attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeWidth multiplier:0.0f constant:50.0f]];
+//        [buttonRead addConstraint:[NSLayoutConstraint constraintWithItem:buttonRead attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeWidth multiplier:0.0f constant:50.0f]];
         
         
-        [view addConstraint:[buttonRead.trailingAnchor constraintEqualToAnchor:marginLayout.trailingAnchor constant:-12.0f]];
+        [view addConstraint:[buttonDownload.trailingAnchor constraintEqualToAnchor:marginLayout.trailingAnchor constant:-12.0f]];
+        
+//        [view addConstraint:[buttonRead.trailingAnchor constraintEqualToAnchor:marginLayout.trailingAnchor constant:-12.0f]];
         
         imageView.translatesAutoresizingMaskIntoConstraints = NO;
         label.translatesAutoresizingMaskIntoConstraints = NO;
-        buttonRead.translatesAutoresizingMaskIntoConstraints = NO;
+//        buttonRead.translatesAutoresizingMaskIntoConstraints = NO;
         buttonDownload.translatesAutoresizingMaskIntoConstraints = NO;
     }
     else {

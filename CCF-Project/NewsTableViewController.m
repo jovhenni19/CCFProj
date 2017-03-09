@@ -77,16 +77,18 @@
     [cell.buttonLocation setTitle:@"  CCF CENTER" forState:UIControlStateNormal];
     [cell.buttonDate setTitle:@"  NOVEMBER 5\n10:15pm" forState:UIControlStateNormal];
     [cell.buttonSpeaker setTitle:@"  Speaker Name here" forState:UIControlStateNormal];
+    [cell.buttonSpeaker setHidden:YES];
     
     cell.delegate = self;
     cell.indexPath = indexPath;
     
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
     
     
     EventsDetailViewController *detailsVC = [self.storyboard instantiateViewControllerWithIdentifier:@"eventsDetail"];
@@ -167,21 +169,21 @@
 
 - (void)buttonLocationPressed:(NSIndexPath *)indexPath {
     
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    MapViewController *mapVC = [self.storyboard instantiateViewControllerWithIdentifier:@"mapsVC"];
-    
-    CATransition *transition = [CATransition animation];
-    transition.duration = 0.3;
-    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    transition.type = kCATransitionPush;
-    transition.subtype = kCATransitionFromRight;
-    [mapVC.view.layer addAnimation:transition forKey:nil];
-    
-    
-    mapVC.view.frame = self.view.bounds;
-    [self.view addSubview:mapVC.view];
-    [self addChildViewController:mapVC];
-    [mapVC didMoveToParentViewController:self];
+//    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+//    MapViewController *mapVC = [self.storyboard instantiateViewControllerWithIdentifier:@"mapsVC"];
+//    
+//    CATransition *transition = [CATransition animation];
+//    transition.duration = 0.3;
+//    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+//    transition.type = kCATransitionPush;
+//    transition.subtype = kCATransitionFromRight;
+//    [mapVC.view.layer addAnimation:transition forKey:nil];
+//    
+//    
+//    mapVC.view.frame = self.view.bounds;
+//    [self.view addSubview:mapVC.view];
+//    [self addChildViewController:mapVC];
+//    [mapVC didMoveToParentViewController:self];
 }
 
 @end

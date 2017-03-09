@@ -7,14 +7,12 @@
 //
 
 #import "PodDetailAudioTableViewCell.h"
-#import "YMCAudioPlayer.h"
 
 @interface PodDetailAudioTableViewCell()
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
 @property (weak, nonatomic) IBOutlet UIButton *replayButton;
 @property (weak, nonatomic) IBOutlet UILabel *duration;
 @property (weak, nonatomic) IBOutlet UISlider *currentTimeSlider;
-@property (strong, nonatomic) YMCAudioPlayer *audioPlayer;
 @property (assign, nonatomic) BOOL isRepeatEnabled;
 
 @property BOOL isPaused;

@@ -34,6 +34,11 @@
     [self.audioPlayer pause];
 }
 
+
+- (void)stopAudio {
+    [self.audioPlayer stop];
+}
+
 /*
  * get playingState
  */

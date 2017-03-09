@@ -9,6 +9,7 @@
 #import "PodcastViewController.h"
 #import "PodcastTableViewCell.h"
 #import "PodcastDetailsTableViewController.h"
+#import "PodcastListViewController.h"
 
 @interface PodcastViewController ()
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
@@ -191,10 +192,12 @@
     
     cell.podcastTitle.text = [NSString stringWithFormat:@"%@ %li",[dictionary objectForKey:@"kTitle"],(long)[indexPath row]];
     cell.podcastDescription.text = [dictionary objectForKey:@"kDescription"];
-    [cell.podcastSpeaker setTitle:@"Speaker 1" forState:UIControlStateNormal];
-    [cell.podcastDate setTitle:@"03/04/2017" forState:UIControlStateNormal];
-    [cell.podcastLocation setTitle:@"CCF CENTER" forState:UIControlStateNormal];
+    [cell.podcastSpeaker setTitle:@"  Speaker 1" forState:UIControlStateNormal];
+    [cell.podcastDate setTitle:@"  03/04/2017" forState:UIControlStateNormal];
+    [cell.podcastLocation setTitle:@"  CCF CENTER" forState:UIControlStateNormal];
     [cell.podcastImage setImage:[UIImage imageNamed:[dictionary objectForKey:@"kCategory"]]];
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
 }
@@ -242,29 +245,57 @@
 }
 
 - (void) setSectionExpandedWithButton:(UIButton*)sender {
-    if (sender.tag == self.sectionExpanded) {
-        self.sectionExpanded = -1;
-        NSRange range = NSMakeRange(0, 1);
-        NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-        [self.mainTableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
-    }
-    else {
-        self.sectionExpanded = sender.tag;
-        NSRange range = NSMakeRange(self.sectionExpanded, 1);
-        NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-        [self.mainTableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
-    }
+//    if (sender.tag == self.sectionExpanded) {
+//        self.sectionExpanded = -1;
+//        NSRange range = NSMakeRange(0, 1);
+//        NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+//        [self.mainTableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
+//    }
+//    else {
+//        self.sectionExpanded = sender.tag;
+//        NSRange range = NSMakeRange(self.sectionExpanded, 1);
+//        NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+//        [self.mainTableView reloadSections:section withRowAnimation:UITableViewRowAnimationFade];
+//    }
+//    
+//    
+//    [self.mainTableView layoutIfNeeded];
+//    if (self.sectionExpanded > -1) {
+//        
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            NSIndexPath* indexPath = [NSIndexPath indexPathForRow:0 inSection:self.sectionExpanded];
+//            
+//            [self.mainTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+//        });}
+//    }
+
+    
+    PodcastListViewController *podcastListVC = [self.storyboard instantiateViewControllerWithIdentifier:@"podcastList"];
+    
+    NSString *key = [self.categories[sender.tag] objectForKey:@"kTitle"];
+    podcastListVC.categoryImage = [self.categories[sender.tag] objectForKey:@"kImage"];
+    podcastListVC.podcastList = [self.categorizedPodcast objectForKey:key];
+    
+    NSMutableString *category = [[self.categories[sender.tag] objectForKey:@"kTitle"] mutableCopy];
+    [category replaceOccurrencesOfString:@"-" withString:@" " options:NSLiteralSearch range:NSMakeRange(0, category.length)];
+    podcastListVC.podcastCategoryTitle = [category capitalizedString];
     
     
-    [self.mainTableView layoutIfNeeded];
-    if (self.sectionExpanded > -1) {
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSIndexPath* indexPath = [NSIndexPath indexPathForRow:0 inSection:self.sectionExpanded];
-            
-            [self.mainTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
-        });}
-    }
+    CATransition *transition = [CATransition animation];
+    transition.duration = 0.3;
+    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    transition.type = kCATransitionPush;
+    transition.subtype = kCATransitionFromRight;
+    [podcastListVC.view.layer addAnimation:transition forKey:nil];
+    
+    
+    podcastListVC.view.frame = self.view.bounds;
+    [[self.view superview] addSubview:podcastListVC.view];
+    [[self parentViewController] addChildViewController:podcastListVC];
+    [podcastListVC didMoveToParentViewController:[self parentViewController]];
+    
+    
+}
 
 
 @end

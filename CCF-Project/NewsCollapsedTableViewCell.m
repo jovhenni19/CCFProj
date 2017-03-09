@@ -32,6 +32,7 @@
     _buttonGroupName.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _buttonSpeaker.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
+    
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

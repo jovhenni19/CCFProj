@@ -199,6 +199,7 @@
     [cell.labelWebsite setTitle:[location objectForKey:@"kWebsite"] forState:UIControlStateNormal];
     [cell.labelWebsite addTarget:self action:@selector(webURLButton:) forControlEvents:UIControlEventTouchUpInside];
     
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
 }

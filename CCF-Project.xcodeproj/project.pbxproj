@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3306F1C11E6453050020D2C1 /* NewsCollapsedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3306F1C01E6453050020D2C1 /* NewsCollapsedTableViewCell.m */; };
 		332746AC1E322BCA003A0A20 /* ScrollableMenubarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 332746AB1E322BCA003A0A20 /* ScrollableMenubarViewController.m */; };
+		332C08641E718A41000175DF /* PodcastListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 332C08631E718A41000175DF /* PodcastListViewController.m */; };
 		333724A91E3608A5001DBE50 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 333724A81E3608A5001DBE50 /* MapViewController.m */; };
 		333724BA1E360D22001DBE50 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 333724B71E360D22001DBE50 /* GoogleMaps.framework */; };
 		333724BB1E360D22001DBE50 /* GoogleMapsBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 333724B81E360D22001DBE50 /* GoogleMapsBase.framework */; };
@@ -82,6 +83,8 @@
 		3306F1C01E6453050020D2C1 /* NewsCollapsedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsCollapsedTableViewCell.m; sourceTree = "<group>"; };
 		332746AA1E322BCA003A0A20 /* ScrollableMenubarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScrollableMenubarViewController.h; path = Custom/ScrollableMenubarViewController.h; sourceTree = "<group>"; };
 		332746AB1E322BCA003A0A20 /* ScrollableMenubarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScrollableMenubarViewController.m; path = Custom/ScrollableMenubarViewController.m; sourceTree = "<group>"; };
+		332C08621E718A41000175DF /* PodcastListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PodcastListViewController.h; sourceTree = "<group>"; };
+		332C08631E718A41000175DF /* PodcastListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PodcastListViewController.m; sourceTree = "<group>"; };
 		333724A71E3608A5001DBE50 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
 		333724A81E3608A5001DBE50 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
 		333724B71E360D22001DBE50 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
@@ -284,6 +287,8 @@
 				3306F1C01E6453050020D2C1 /* NewsCollapsedTableViewCell.m */,
 				33A5CD931E41EF7400B6D9EC /* PodcastViewController.h */,
 				33A5CD941E41EF7400B6D9EC /* PodcastViewController.m */,
+				332C08621E718A41000175DF /* PodcastListViewController.h */,
+				332C08631E718A41000175DF /* PodcastListViewController.m */,
 				33A5CD961E41F57700B6D9EC /* PodcastTableViewCell.h */,
 				33A5CD971E41F57700B6D9EC /* PodcastTableViewCell.m */,
 				33C260191E456FD000C251C0 /* PodcastDetailsTableViewController.h */,
@@ -533,6 +538,7 @@
 				333724A91E3608A5001DBE50 /* MapViewController.m in Sources */,
 				332746AC1E322BCA003A0A20 /* ScrollableMenubarViewController.m in Sources */,
 				33D721701E3F4AA40071FC2D /* LiveStreamingViewController.m in Sources */,
+				332C08641E718A41000175DF /* PodcastListViewController.m in Sources */,
 				33CD19FE1E6BEF660019C279 /* UIButton+LocationValues.m in Sources */,
 				33C2601E1E457C5100C251C0 /* PodDetailImageTableViewCell.m in Sources */,
 				33F500771E38BC7500A16D32 /* EventsDetailViewController.m in Sources */,

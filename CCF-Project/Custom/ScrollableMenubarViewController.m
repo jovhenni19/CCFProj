@@ -144,6 +144,11 @@
         self.indicatorView.frame = CGRectMake(sender.frame.origin.x + 10.0f, 32.0f, sender.frame.size.width - 20.0f, 2.0f);
     } completion:^(BOOL finished) {
         
+        while ([[self.containerView subviews] count] > 0) {
+            [[[self.containerView subviews] lastObject] removeFromSuperview];
+        }
+        
+        
         self.selectedViewController.view.frame = self.containerView.bounds;
         [self.containerView addSubview:self.selectedViewController.view];
         [self addChildViewController:self.selectedViewController];
