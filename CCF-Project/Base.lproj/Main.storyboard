@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="UH8-Y4-feM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="UH8-Y4-feM">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -71,9 +71,27 @@
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eew-Sh-vJH">
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" alpha="0.59999999999999998" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="scroller-arrow-left" translatesAutoresizingMaskIntoConstraints="NO" id="zZT-ws-MTk">
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="12" id="PSs-dQ-Hc5"/>
+                                        </constraints>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" alpha="0.60000002384185791" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="scroller-arrow-right" translatesAutoresizingMaskIntoConstraints="NO" id="Ncc-jC-LEL">
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="12" id="Rgs-6L-9DH"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
                                 <color key="backgroundColor" red="0.0" green="0.54117647058823526" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="Ncc-jC-LEL" secondAttribute="bottom" id="HXP-dW-I9e"/>
+                                    <constraint firstItem="zZT-ws-MTk" firstAttribute="leading" secondItem="eew-Sh-vJH" secondAttribute="leading" id="J6a-6K-nSd"/>
                                     <constraint firstAttribute="height" constant="34" id="VU9-BH-gNy"/>
+                                    <constraint firstAttribute="trailing" secondItem="Ncc-jC-LEL" secondAttribute="trailing" id="VV2-fj-jgD"/>
+                                    <constraint firstItem="zZT-ws-MTk" firstAttribute="top" secondItem="eew-Sh-vJH" secondAttribute="top" id="aJZ-ws-M1C"/>
+                                    <constraint firstItem="Ncc-jC-LEL" firstAttribute="top" secondItem="eew-Sh-vJH" secondAttribute="top" id="o17-v1-Snk"/>
+                                    <constraint firstAttribute="bottom" secondItem="zZT-ws-MTk" secondAttribute="bottom" id="oVF-1t-ARi"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -95,7 +113,9 @@
                     <connections>
                         <outlet property="containerView" destination="9no-4D-x50" id="eS7-fU-kdH"/>
                         <outlet property="labelNotificationBadge" destination="tmK-6R-Kux" id="4Xx-33-zbi"/>
+                        <outlet property="leftarrow" destination="zZT-ws-MTk" id="QOs-Qu-Q7b"/>
                         <outlet property="menuBarView" destination="eew-Sh-vJH" id="NYH-DV-FXX"/>
+                        <outlet property="rightarrow" destination="Ncc-jC-LEL" id="uuV-SO-hoJ"/>
                         <outlet property="view" destination="9sg-qI-Cp5" id="cGg-88-QtW"/>
                     </connections>
                 </viewController>
@@ -498,7 +518,73 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Tc8-1S-2aq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="964" y="-290"/>
+            <point key="canvasLocation" x="705" y="-274"/>
+        </scene>
+        <!--Map View Controller-->
+        <scene sceneID="9Ty-kJ-uTy">
+            <objects>
+                <viewController storyboardIdentifier="amapsVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Ie8-RE-i5j" customClass="AMapViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="D9A-br-z4K"/>
+                        <viewControllerLayoutGuide type="bottom" id="1Ma-wZ-pXA"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="mBe-df-thb">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" showsScale="YES" showsTraffic="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pSP-tB-GlL">
+                                <connections>
+                                    <outlet property="delegate" destination="Ie8-RE-i5j" id="gPx-Bg-3Z7"/>
+                                </connections>
+                            </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5SX-ff-X58">
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="nTS-nd-xP3"/>
+                                    <constraint firstAttribute="width" constant="40" id="ouG-sf-vxE"/>
+                                </constraints>
+                                <state key="normal" image="back-button">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="backButton:" destination="FJP-Z6-MfA" eventType="touchUpInside" id="OWi-CW-IOi"/>
+                                    <action selector="backButton:" destination="Ie8-RE-i5j" eventType="touchUpInside" id="YKB-BZ-l3N"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AIv-IY-DWn">
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="69" id="cXJ-qy-P1M"/>
+                                    <constraint firstAttribute="height" constant="69" id="ua9-gI-wzv"/>
+                                </constraints>
+                                <state key="normal" image="direction-button">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="backButton:" destination="FJP-Z6-MfA" eventType="touchUpInside" id="jwk-47-aao"/>
+                                    <action selector="getDirectionsButton:" destination="Ie8-RE-i5j" eventType="touchUpInside" id="wdr-pa-97f"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="1Ma-wZ-pXA" firstAttribute="top" secondItem="AIv-IY-DWn" secondAttribute="bottom" constant="44" id="10v-Zz-gsL"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="AIv-IY-DWn" secondAttribute="trailing" constant="31" id="4bo-Wh-FEg"/>
+                            <constraint firstItem="1Ma-wZ-pXA" firstAttribute="top" secondItem="pSP-tB-GlL" secondAttribute="bottom" id="5m9-5J-4Jb"/>
+                            <constraint firstItem="pSP-tB-GlL" firstAttribute="top" secondItem="mBe-df-thb" secondAttribute="top" id="6KN-Qb-6rG"/>
+                            <constraint firstItem="5SX-ff-X58" firstAttribute="top" secondItem="D9A-br-z4K" secondAttribute="bottom" constant="48" id="6iM-89-vbR"/>
+                            <constraint firstAttribute="trailing" secondItem="pSP-tB-GlL" secondAttribute="trailing" id="Lpo-AW-0bj"/>
+                            <constraint firstItem="pSP-tB-GlL" firstAttribute="leading" secondItem="mBe-df-thb" secondAttribute="leading" id="RfD-1w-pWL"/>
+                            <constraint firstItem="5SX-ff-X58" firstAttribute="leading" secondItem="mBe-df-thb" secondAttribute="leadingMargin" id="k4F-da-uce"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="mapView" destination="pSP-tB-GlL" id="R4j-RJ-bOC"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Meu-Sf-gDU" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1351.2" y="-274.81259370314842"/>
         </scene>
         <!--EVENTS-->
         <scene sceneID="Vb9-Jv-ufr">
@@ -1867,6 +1953,7 @@
         <image name="calendar-icon-small" width="16" height="17"/>
         <image name="ccf-maui-logo" width="1503" height="1483"/>
         <image name="ccf-white" width="286" height="124"/>
+        <image name="direction-button" width="230" height="231"/>
         <image name="facebook" width="174" height="174"/>
         <image name="googleplus" width="174" height="174"/>
         <image name="group-icon-small" width="23" height="19"/>
@@ -1881,6 +1968,8 @@
         <image name="play" width="30" height="30"/>
         <image name="replay" width="30" height="30"/>
         <image name="replay-selected" width="30" height="30"/>
+        <image name="scroller-arrow-left" width="1600" height="1600"/>
+        <image name="scroller-arrow-right" width="1600" height="1600"/>
         <image name="search-icon" width="38" height="38"/>
         <image name="speaker-icon-small" width="22" height="30"/>
         <image name="time-icon-small" width="24" height="24"/>

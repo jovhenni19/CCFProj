@@ -20,6 +20,8 @@
 @property (strong, nonatomic) UIScrollView *scrollView;
 @property (strong, nonatomic) UIView *indicatorView;
 @property (weak, nonatomic) IBOutlet UILabel *labelNotificationBadge;
+@property (weak, nonatomic) IBOutlet UIImageView *leftarrow;
+@property (weak, nonatomic) IBOutlet UIImageView *rightarrow;
 
 @end
 
@@ -71,6 +73,7 @@
     [self.scrollView setZoomScale:0.0f];
     [self.scrollView setScrollEnabled:YES];
     [self.scrollView setBounces:NO];
+    [self.scrollView setDelegate:self];
     [self.scrollView setContentSize:self.view.bounds.size];
 //    [self.scrollView setPagingEnabled:YES];
     self.scrollView.backgroundColor = [UIColor clearColor];
@@ -83,6 +86,8 @@
     self.indicatorView.hidden = NO;
     [self.scrollView addSubview:self.indicatorView];
     
+    self.leftarrow.hidden = YES;
+    self.rightarrow.hidden = YES;
     // CREATE THE MENU BAR ITEMS
     NSMutableArray *menuBarTitles = [NSMutableArray arrayWithCapacity:self.viewControllers.count];
     for (UIViewController *vc in self.viewControllers) {
@@ -119,6 +124,8 @@
         
         if (x + computedWidth > self.scrollView.contentSize.width) {
             [self.scrollView setContentSize:CGSizeMake(self.scrollView.contentSize.width + computedWidth, 0.0f)];
+            
+            self.rightarrow.hidden = NO;
         }
         
         x += computedWidth;
@@ -129,6 +136,8 @@
     
     
 }
+
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -161,6 +170,18 @@
 }
 - (IBAction)showNotifications:(id)sender {
 }
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    self.leftarrow.hidden = NO;
+    self.rightarrow.hidden = NO;
+    if (scrollView.contentOffset.x <= 0) {
+        self.leftarrow.hidden = YES;
+    }
+    else if(scrollView.contentOffset.x + scrollView.bounds.size.width >= scrollView.contentSize.width) {
+        self.rightarrow.hidden = YES;
+    }
+}
+
 /*
 #pragma mark - Navigation
 

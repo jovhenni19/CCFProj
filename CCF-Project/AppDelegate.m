@@ -7,6 +7,14 @@
 //
 
 #import "AppDelegate.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+#import <TwitterKit/TwitterKit.h>
+
+
 @import GoogleMaps;
 
 @interface AppDelegate ()
@@ -18,7 +26,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    [Fabric with:@[[Crashlytics class], [Twitter class]]];
     
+    [GIDSignIn sharedInstance].clientID = @"633281841918-t7924fgt1qth8rvcfg9pb4i0ccci5ake.apps.googleusercontent.com";
+
+    [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
     [GMSServices provideAPIKey:@"AIzaSyBjpDT8YgLXGHppqo0gviH9LmvNIQvUR5E"];
         
     return YES;
@@ -44,6 +56,8 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    [FBSDKAppEvents activateApp];
 }
 
 
@@ -53,6 +67,46 @@
     [self saveContext];
 }
 
+- (BOOL)application:(UIApplication *)app
+            openURL:(NSURL *)url
+            options:(NSDictionary *)options {
+    BOOL handled = NO;
+    
+    if ([[url absoluteString] rangeOfString:@"facebook"].location != NSNotFound) {
+        handled = [[FBSDKApplicationDelegate sharedInstance] application:[UIApplication sharedApplication]
+                                                                 openURL:url
+                                                       sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
+                                                              annotation:options[UIApplicationOpenURLOptionsAnnotationKey]];
+        
+    }
+    else {
+        handled = [[GIDSignIn sharedInstance] handleURL:url
+                                      sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
+                                             annotation:options[UIApplicationOpenURLOptionsAnnotationKey]];
+        
+    }
+    
+    return handled;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    BOOL handled = NO;
+    if ([[url absoluteString] rangeOfString:@"facebook"].location != NSNotFound) {
+        handled = [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                                 openURL:url
+                                                       sourceApplication:sourceApplication
+                                                              annotation:annotation];
+        
+    }
+    else {
+        handled = [[GIDSignIn sharedInstance] handleURL:url
+                                      sourceApplication:sourceApplication
+                                             annotation:annotation];
+        
+    }
+    
+    return handled;
+}
 
 #pragma mark - Core Data stack
 
@@ -85,6 +139,31 @@
     
     return _persistentContainer;
 }
+
+
+#pragma mark GoogleSignIn Delegate
+- (void)signIn:(GIDSignIn *)signIn
+didSignInForUser:(GIDGoogleUser *)user
+     withError:(NSError *)error {
+    // Perform any operations on signed in user here.
+    //    NSString *userId = user.userID;                  // For client-side use only!
+    //    NSString *idToken = user.authentication.idToken; // Safe to send to the server
+    //    NSString *fullName = user.profile.name;
+    //    NSString *givenName = user.profile.givenName;
+    //    NSString *familyName = user.profile.familyName;
+    //    NSString *email = user.profile.email;
+    // ...
+}
+
+- (void)signIn:(GIDSignIn *)signIn
+didDisconnectWithUser:(GIDGoogleUser *)user
+     withError:(NSError *)error {
+    // Perform any operations when the user disconnects from app here.
+    // ...
+}
+
+
+
 
 #pragma mark - Core Data Saving support
 

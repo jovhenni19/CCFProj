@@ -37,9 +37,23 @@
 		335EA7191E31D5E800416E67 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 335EA7171E31D5E800416E67 /* LaunchScreen.storyboard */; };
 		335EA7241E31D5E800416E67 /* CCF_ProjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 335EA7231E31D5E800416E67 /* CCF_ProjectTests.m */; };
 		335EA72F1E31D5E800416E67 /* CCF_ProjectUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 335EA72E1E31D5E800416E67 /* CCF_ProjectUITests.m */; };
+		3391BE171E726CCE005BC164 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3391BE151E726CCD005BC164 /* Crashlytics.framework */; };
+		3391BE181E726CCE005BC164 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3391BE161E726CCE005BC164 /* Fabric.framework */; };
+		3391BE1D1E727734005BC164 /* TwitterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3391BE1A1E727734005BC164 /* TwitterKit.framework */; };
+		3391BE1E1E727734005BC164 /* TwitterKitResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3391BE1B1E727734005BC164 /* TwitterKitResources.bundle */; };
+		3391BE1F1E727734005BC164 /* TwitterCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3391BE1C1E727734005BC164 /* TwitterCore.framework */; };
+		3391BE211E728CD4005BC164 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3391BE201E728CD4005BC164 /* SafariServices.framework */; };
+		3391BE271E728F84005BC164 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3391BE241E728F84005BC164 /* GoogleService-Info.plist */; };
+		3391BE281E728F84005BC164 /* GoogleSignIn.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3391BE251E728F84005BC164 /* GoogleSignIn.bundle */; };
+		3391BE291E728F84005BC164 /* GoogleSignIn.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3391BE261E728F84005BC164 /* GoogleSignIn.framework */; };
 		33A5CD951E41EF7400B6D9EC /* PodcastViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33A5CD941E41EF7400B6D9EC /* PodcastViewController.m */; };
 		33A5CD981E41F57700B6D9EC /* PodcastTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 33A5CD971E41F57700B6D9EC /* PodcastTableViewCell.m */; };
+		33A76CD61E76C45300A6757F /* AMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33A76CD51E76C45300A6757F /* AMapViewController.m */; };
+		33A76CD81E76C70200A6757F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33A76CD71E76C70200A6757F /* MapKit.framework */; };
 		33A8DF751E3C0C9C003EB844 /* SattelitesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33A8DF741E3C0C9C003EB844 /* SattelitesTableViewController.m */; };
+		33A9DB831E7249F300C8D4A4 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33A9DB811E7249F300C8D4A4 /* FBSDKCoreKit.framework */; };
+		33A9DB841E7249F300C8D4A4 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33A9DB821E7249F300C8D4A4 /* FBSDKShareKit.framework */; };
+		33A9DB861E72591E00C8D4A4 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33A9DB851E72591E00C8D4A4 /* FBSDKLoginKit.framework */; };
 		33AC57341E38AA5800F71699 /* EventsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33AC57331E38AA5800F71699 /* EventsTableViewController.m */; };
 		33C2601B1E456FD000C251C0 /* PodcastDetailsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C2601A1E456FD000C251C0 /* PodcastDetailsTableViewController.m */; };
 		33C2601E1E457C5100C251C0 /* PodDetailImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C2601D1E457C5100C251C0 /* PodDetailImageTableViewCell.m */; };
@@ -121,12 +135,28 @@
 		335EA72A1E31D5E800416E67 /* CCF-ProjectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CCF-ProjectUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		335EA72E1E31D5E800416E67 /* CCF_ProjectUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCF_ProjectUITests.m; sourceTree = "<group>"; };
 		335EA7301E31D5E800416E67 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3391BE151E726CCD005BC164 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		3391BE161E726CCE005BC164 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
+		3391BE1A1E727734005BC164 /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterKit.framework; sourceTree = "<group>"; };
+		3391BE1B1E727734005BC164 /* TwitterKitResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TwitterKitResources.bundle; sourceTree = "<group>"; };
+		3391BE1C1E727734005BC164 /* TwitterCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterCore.framework; sourceTree = "<group>"; };
+		3391BE201E728CD4005BC164 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
+		3391BE221E728CDB005BC164 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		3391BE241E728F84005BC164 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		3391BE251E728F84005BC164 /* GoogleSignIn.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = GoogleSignIn.bundle; sourceTree = "<group>"; };
+		3391BE261E728F84005BC164 /* GoogleSignIn.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleSignIn.framework; sourceTree = "<group>"; };
 		33A5CD931E41EF7400B6D9EC /* PodcastViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PodcastViewController.h; sourceTree = "<group>"; };
 		33A5CD941E41EF7400B6D9EC /* PodcastViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PodcastViewController.m; sourceTree = "<group>"; };
 		33A5CD961E41F57700B6D9EC /* PodcastTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PodcastTableViewCell.h; sourceTree = "<group>"; };
 		33A5CD971E41F57700B6D9EC /* PodcastTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PodcastTableViewCell.m; sourceTree = "<group>"; };
+		33A76CD41E76C45300A6757F /* AMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMapViewController.h; sourceTree = "<group>"; };
+		33A76CD51E76C45300A6757F /* AMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMapViewController.m; sourceTree = "<group>"; };
+		33A76CD71E76C70200A6757F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		33A8DF731E3C0C9C003EB844 /* SattelitesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SattelitesTableViewController.h; sourceTree = "<group>"; };
 		33A8DF741E3C0C9C003EB844 /* SattelitesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SattelitesTableViewController.m; sourceTree = "<group>"; };
+		33A9DB811E7249F300C8D4A4 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		33A9DB821E7249F300C8D4A4 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
+		33A9DB851E72591E00C8D4A4 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		33AC57321E38AA5800F71699 /* EventsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsTableViewController.h; sourceTree = "<group>"; };
 		33AC57331E38AA5800F71699 /* EventsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsTableViewController.m; sourceTree = "<group>"; };
 		33C260191E456FD000C251C0 /* PodcastDetailsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PodcastDetailsTableViewController.h; sourceTree = "<group>"; };
@@ -168,19 +198,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33A76CD81E76C70200A6757F /* MapKit.framework in Frameworks */,
+				3391BE211E728CD4005BC164 /* SafariServices.framework in Frameworks */,
 				333724DE1E360E98001DBE50 /* UIKit.framework in Frameworks */,
 				333724DC1E360E8D001DBE50 /* SystemConfiguration.framework in Frameworks */,
+				33A9DB831E7249F300C8D4A4 /* FBSDKCoreKit.framework in Frameworks */,
 				333724DA1E360E81001DBE50 /* QuartzCore.framework in Frameworks */,
 				333724D81E360E7B001DBE50 /* OpenGLES.framework in Frameworks */,
+				3391BE1D1E727734005BC164 /* TwitterKit.framework in Frameworks */,
 				333724D61E360E6A001DBE50 /* libz.tbd in Frameworks */,
+				3391BE171E726CCE005BC164 /* Crashlytics.framework in Frameworks */,
 				333724D41E360E62001DBE50 /* libc++.tbd in Frameworks */,
 				333724D21E360E4C001DBE50 /* ImageIO.framework in Frameworks */,
+				3391BE1F1E727734005BC164 /* TwitterCore.framework in Frameworks */,
 				333724D01E360E45001DBE50 /* GLKit.framework in Frameworks */,
 				333724CA1E360E35001DBE50 /* Accelerate.framework in Frameworks */,
 				333724CB1E360E35001DBE50 /* CoreData.framework in Frameworks */,
 				333724CC1E360E35001DBE50 /* CoreGraphics.framework in Frameworks */,
 				333724CD1E360E35001DBE50 /* CoreLocation.framework in Frameworks */,
+				3391BE181E726CCE005BC164 /* Fabric.framework in Frameworks */,
+				33A9DB861E72591E00C8D4A4 /* FBSDKLoginKit.framework in Frameworks */,
+				3391BE291E728F84005BC164 /* GoogleSignIn.framework in Frameworks */,
 				333724CE1E360E35001DBE50 /* CoreText.framework in Frameworks */,
+				33A9DB841E7249F300C8D4A4 /* FBSDKShareKit.framework in Frameworks */,
 				333724BA1E360D22001DBE50 /* GoogleMaps.framework in Frameworks */,
 				333724BC1E360D22001DBE50 /* GoogleMapsCore.framework in Frameworks */,
 				333724BB1E360D22001DBE50 /* GoogleMapsBase.framework in Frameworks */,
@@ -217,8 +257,17 @@
 		333724BE1E360D6D001DBE50 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				3391BE1A1E727734005BC164 /* TwitterKit.framework */,
+				3391BE1B1E727734005BC164 /* TwitterKitResources.bundle */,
+				3391BE1C1E727734005BC164 /* TwitterCore.framework */,
+				3391BE151E726CCD005BC164 /* Crashlytics.framework */,
+				3391BE161E726CCE005BC164 /* Fabric.framework */,
+				33A9DB801E7249F300C8D4A4 /* FacebookSDK */,
 				33C260281E45B7C100C251C0 /* AudioPlayer */,
 				33D721711E3F5FC30071FC2D /* Youtube */,
+				3391BE241E728F84005BC164 /* GoogleService-Info.plist */,
+				3391BE251E728F84005BC164 /* GoogleSignIn.bundle */,
+				3391BE261E728F84005BC164 /* GoogleSignIn.framework */,
 				333724BF1E360DAD001DBE50 /* GoogleMaps.bundle */,
 				335EA70F1E31D5E800416E67 /* Main.storyboard */,
 				335EA7151E31D5E800416E67 /* Assets.xcassets */,
@@ -233,6 +282,9 @@
 		333724C41E360E34001DBE50 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				33A76CD71E76C70200A6757F /* MapKit.framework */,
+				3391BE221E728CDB005BC164 /* WebKit.framework */,
+				3391BE201E728CD4005BC164 /* SafariServices.framework */,
 				333724DD1E360E98001DBE50 /* UIKit.framework */,
 				333724DB1E360E8D001DBE50 /* SystemConfiguration.framework */,
 				333724D91E360E81001DBE50 /* QuartzCore.framework */,
@@ -313,6 +365,8 @@
 				33D7216F1E3F4AA40071FC2D /* LiveStreamingViewController.m */,
 				333724A71E3608A5001DBE50 /* MapViewController.h */,
 				333724A81E3608A5001DBE50 /* MapViewController.m */,
+				33A76CD41E76C45300A6757F /* AMapViewController.h */,
+				33A76CD51E76C45300A6757F /* AMapViewController.m */,
 				33C2602E1E45D0BA00C251C0 /* SettingsTableViewController.h */,
 				33C2602F1E45D0BA00C251C0 /* SettingsTableViewController.m */,
 				335EA71A1E31D5E800416E67 /* Info.plist */,
@@ -360,6 +414,16 @@
 			name = Customs;
 			sourceTree = "<group>";
 		};
+		33A9DB801E7249F300C8D4A4 /* FacebookSDK */ = {
+			isa = PBXGroup;
+			children = (
+				33A9DB811E7249F300C8D4A4 /* FBSDKCoreKit.framework */,
+				33A9DB851E72591E00C8D4A4 /* FBSDKLoginKit.framework */,
+				33A9DB821E7249F300C8D4A4 /* FBSDKShareKit.framework */,
+			);
+			path = FacebookSDK;
+			sourceTree = "<group>";
+		};
 		33C260281E45B7C100C251C0 /* AudioPlayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -390,6 +454,7 @@
 				335EA6FF1E31D5E800416E67 /* Sources */,
 				335EA7001E31D5E800416E67 /* Frameworks */,
 				335EA7011E31D5E800416E67 /* Resources */,
+				3391BE191E726D09005BC164 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -491,9 +556,12 @@
 				33CD19F51E6B981F0019C279 /* OpenSans-Bold.ttf in Resources */,
 				33CD19F61E6B981F0019C279 /* OpenSans-Light.ttf in Resources */,
 				335EA7191E31D5E800416E67 /* LaunchScreen.storyboard in Resources */,
+				3391BE281E728F84005BC164 /* GoogleSignIn.bundle in Resources */,
+				3391BE1E1E727734005BC164 /* TwitterKitResources.bundle in Resources */,
 				335EA7161E31D5E800416E67 /* Assets.xcassets in Resources */,
 				33C2602D1E45BA6B00C251C0 /* audiofile.mp3 in Resources */,
 				335EA7111E31D5E800416E67 /* Main.storyboard in Resources */,
+				3391BE271E728F84005BC164 /* GoogleService-Info.plist in Resources */,
 				33CD19F71E6B981F0019C279 /* OpenSans-Regular.ttf in Resources */,
 				333724C01E360DAD001DBE50 /* GoogleMaps.bundle in Resources */,
 			);
@@ -515,6 +583,22 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		3391BE191E726D09005BC164 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Fabric.framework/run 557d18c9674f8d3ef2ff56ffa38e06ed5639ee1e bb9f7dcc81166afb560b79e0d9502870f78557446814c0747559aaf4a816df1b";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		335EA6FF1E31D5E800416E67 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -529,6 +613,7 @@
 				33A8DF751E3C0C9C003EB844 /* SattelitesTableViewController.m in Sources */,
 				333724E11E361229001DBE50 /* NewsTableViewController.m in Sources */,
 				33A5CD981E41F57700B6D9EC /* PodcastTableViewCell.m in Sources */,
+				33A76CD61E76C45300A6757F /* AMapViewController.m in Sources */,
 				33D721771E3F5FC30071FC2D /* YTPlayerView.m in Sources */,
 				33EFBC4E1E3CBC9B00A72040 /* SattelitesTableViewCell.m in Sources */,
 				33C260211E457C9800C251C0 /* PodDetailDescriptionTableViewCell.m in Sources */,
@@ -700,6 +785,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/CCF-Project/Frameworks",
+					"$(PROJECT_DIR)/CCF-Project/Resources/FacebookSDK",
+					"$(PROJECT_DIR)/CCF-Project/Resources",
 				);
 				INFOPLIST_FILE = "CCF-Project/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -708,6 +795,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "445d2b71-5534-48a1-a1dd-f615998ddee9";
 				PROVISIONING_PROFILE_SPECIFIER = "Josh-Dev2";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -720,6 +808,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/CCF-Project/Frameworks",
+					"$(PROJECT_DIR)/CCF-Project/Resources/FacebookSDK",
+					"$(PROJECT_DIR)/CCF-Project/Resources",
 				);
 				INFOPLIST_FILE = "CCF-Project/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -728,6 +818,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "b41f1826-0562-424a-ad2d-438273bca8a6";
 				PROVISIONING_PROFILE_SPECIFIER = "CCF AppStore";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

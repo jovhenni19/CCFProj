@@ -11,6 +11,7 @@
 @interface BaseViewController ()
 @property (strong, nonatomic) UIView *backgroundView;
 @property (strong, nonatomic) UIWebView *webview;
+@property (strong, nonatomic) TWTRLogInButton *twitterLoginButton;
 @end
 
 @implementation BaseViewController
@@ -39,9 +40,16 @@
     
     UIButton *button = (UIButton*)sender;
     
-    MapViewController *mapVC = [self.storyboard instantiateViewControllerWithIdentifier:@"mapsVC"];
+//    MapViewController *mapVC = [self.storyboard instantiateViewControllerWithIdentifier:@"mapsVC"];
+//    mapVC.titleName = button.locationName;
+//    mapVC.snippet = button.locationSnippet;
+//    mapVC.longitude = [button.longitude floatValue];
+//    mapVC.latitude = [button.latitude floatValue];
+    
+    AMapViewController *mapVC = [self.storyboard instantiateViewControllerWithIdentifier:@"amapsVC"];
     mapVC.titleName = button.locationName;
     mapVC.snippet = button.locationSnippet;
+
     mapVC.longitude = [button.longitude floatValue];
     mapVC.latitude = [button.latitude floatValue];
     
@@ -216,49 +224,179 @@
 }
 
 - (IBAction)facebookButton:(id)sender {
-    UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Follow Facebook?" message:@"Would you like to follow our Facebook Page?" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }];
-    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self showWebViewWithURL:@"https://www.facebook.com/TheCCFCenter"];
-    }];
+//    UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Follow Facebook?" message:@"Would you like to follow our Facebook Page?" preferredStyle:UIAlertControllerStyleAlert];
+//    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//        [self dismissViewControllerAnimated:YES completion:nil];
+//    }];
+//    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//        [self showWebViewWithURL:@"https://www.facebook.com/TheCCFCenter"];
+//    }];
+//    
+//    [ac addAction:cancel];
+//    [ac addAction:ok];
+//    
+//    [self presentViewController:ac animated:YES completion:nil];
     
-    [ac addAction:cancel];
-    [ac addAction:ok];
     
-    [self presentViewController:ac animated:YES completion:nil];
+    if ([[FBSDKAccessToken currentAccessToken] hasGranted:@"publish_actions"]) {
+        // TODO: publish content.
+        
+        FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+        content.contentDescription = [NSString stringWithFormat:@"Join us!"];
+        content.contentTitle = @"CCF Share!";
+//        content.contentURL = [NSURL URLWithString:_restaurantURL];
+//        content.imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BASE_URL,_imageLogoURL]];
+        
+        FBSDKShareDialog *dialog = [[FBSDKShareDialog alloc] init];
+        dialog.fromViewController = self;
+        dialog.shareContent = content;
+        dialog.delegate = self;
+        dialog.mode = FBSDKShareDialogModeFeedWeb;
+        [dialog show];
+        
+        
+        //        FBSDKShareAPI *share = [FBSDKShareAPI shareWithContent:content delegate:self];
+        //        [share share];
+    } else {
+        FBSDKLoginManager *loginManager = [[FBSDKLoginManager alloc] init];
+        loginManager.loginBehavior = FBSDKLoginBehaviorWeb;
+        [loginManager logInWithPublishPermissions:@[@"publish_actions"]
+                               fromViewController:self
+                                          handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+                                              //TODO: process error or result.
+                                              NSLog(@"RESULT FACEBOOK:%@",result);
+                                          }];
+    }
+
 }
 
+
+- (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
+    [self.navigationController popViewControllerAnimated:YES];
+    
+}
+
+- (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults:(NSDictionary *)results {
+    
+//    AlertView *alert = [[AlertView alloc] initAlertWithMessage:@"Successfully shared restaurant on Facebook." delegate:self buttons:nil];
+    //    [alert showAlertView];
+}
+
+- (void)sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error {
+    
+//    AlertView *alert = [[AlertView alloc] initAlertWithMessage:@"Failed to shared restaurant on Facebook." delegate:self buttons:nil];
+    //    [alert showAlertView];
+}
+
+
+
 - (IBAction)twitterButton:(id)sender {
-    UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Follow Twitter?" message:@"Would you like to follow our Twitter?" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }];
-    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self showWebViewWithURL:@"https://twitter.com/CCFmain"];
-    }];
+//    UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Follow Twitter?" message:@"Would you like to follow our Twitter?" preferredStyle:UIAlertControllerStyleAlert];
+//    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//        [self dismissViewControllerAnimated:YES completion:nil];
+//    }];
+//    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//        [self showWebViewWithURL:@"https://twitter.com/CCFmain"];
+//    }];
+//    
+//    [ac addAction:cancel];
+//    [ac addAction:ok];
+//    
+//    [self presentViewController:ac animated:YES completion:nil];
     
-    [ac addAction:cancel];
-    [ac addAction:ok];
     
-    [self presentViewController:ac animated:YES completion:nil];
+    // Users must be logged-in to compose Tweets
+    TWTRSession *session = [Twitter sharedInstance].sessionStore.session;
+    
+    if (session) {
+        
+        TWTRComposer *composer = [[TWTRComposer alloc] init];
+        
+        [composer setText:@"just setting up my Fabric"];
+        [composer setImage:[UIImage imageNamed:@"fabric"]];
+        
+        // Called from a UIViewController
+        [composer showFromViewController:self completion:^(TWTRComposerResult result) {
+            if (result == TWTRComposerResultCancelled) {
+                NSLog(@"Tweet composition cancelled");
+            }
+            else {
+                NSLog(@"Sending Tweet!");
+            }
+        }];
+    }
+    else {
+        
+        UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Share with Twitter" message:@"Would you like to tweet this?" preferredStyle:UIAlertControllerStyleActionSheet];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"NO" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }];
+        UIAlertAction *ok = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [[Twitter sharedInstance] logInWithCompletion:^(TWTRSession *session, NSError *error) {
+                if (session) {
+                    NSLog(@"signed in as %@", [session userName]);
+                    
+                    [self twitterButton:sender];
+                } else {
+                    NSLog(@"error: %@", [error localizedDescription]);
+                }
+            }];
+            
+        }];
+        
+        [ac addAction:cancel];
+        [ac addAction:ok];
+        
+        [self presentViewController:ac animated:YES completion:nil];
+        
+        
+    }
+    
+}
+
+- (void)closeTwitterLogin {
+    
+    [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
+        self.twitterLoginButton.transform = CGAffineTransformMakeScale(0.1f, 0.1f);
+    } completion:^(BOOL finished) {
+        [self.backgroundView removeFromSuperview];
+    }];
 }
 
 
 - (IBAction)googleplusButton:(id)sender {
-    UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Follow Google+?" message:@"Would you like to follow our Google+?" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }];
-    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self showWebViewWithURL:@"https://plus.google.com/110122766101184546528"];
-    }];
+//    UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Follow Google+?" message:@"Would you like to follow our Google+?" preferredStyle:UIAlertControllerStyleAlert];
+//    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//        [self dismissViewControllerAnimated:YES completion:nil];
+//    }];
+//    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//        [self showWebViewWithURL:@"https://plus.google.com/110122766101184546528"];
+//    }];
+//    
+//    [ac addAction:cancel];
+//    [ac addAction:ok];
+//    
+//    [self presentViewController:ac animated:YES completion:nil];
     
-    [ac addAction:cancel];
-    [ac addAction:ok];
+    // Construct the Google+ share URL
+    NSURLComponents* urlComponents = [[NSURLComponents alloc]
+                                      initWithString:@"https://plus.google.com/share"];
+    urlComponents.queryItems = @[[[NSURLQueryItem alloc]
+                                  initWithName:@"url"
+                                  value:@"https://plus.google.com/110122766101184546528"]];
+    NSURL* url = [urlComponents URL];
     
-    [self presentViewController:ac animated:YES completion:nil];
+    if ([SFSafariViewController class]) {
+        // Open the URL in SFSafariViewController (iOS 9+)
+        SFSafariViewController* controller = [[SFSafariViewController alloc]
+                                              initWithURL:url];
+        controller.delegate = self;
+        [self presentViewController:controller animated:YES completion:nil];
+    } else {
+        // Open the URL in the device's browser
+        [[UIApplication sharedApplication] openURL:url];
+    }
+    
 }
 
 - (IBAction)youtubeButton:(id)sender {
@@ -370,6 +508,10 @@
     [ac addAction:cancel];
     
     [self presentViewController:ac animated:YES completion:nil];
+}
+
+- (void)safariViewController:(SFSafariViewController *)controller didCompleteInitialLoad:(BOOL)didLoadSuccessfully {
+    
 }
 
 @end

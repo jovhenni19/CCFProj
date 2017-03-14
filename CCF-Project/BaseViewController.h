@@ -8,10 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import <EventKit/EventKit.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
+#import <SafariServices/SafariServices.h>
+#import <TwitterKit/TwitterKit.h>
 #import "MapViewController.h"
+#import "AMapViewController.h"
 #import "UIButton+LocationValues.h"
 
-@interface BaseViewController : UIViewController <UIWebViewDelegate>
+
+@interface BaseViewController : UIViewController <UIWebViewDelegate, FBSDKSharingDelegate, SFSafariViewControllerDelegate>
 @property (strong, nonatomic) IBOutlet UIButton *mapButton;
 @property (strong, nonatomic) EKEventStore *eventStore;
 @property (nonatomic) BOOL isAccessToEventStoreGranted;
