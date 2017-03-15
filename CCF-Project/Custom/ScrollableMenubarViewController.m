@@ -23,6 +23,9 @@
 @property (weak, nonatomic) IBOutlet UIImageView *leftarrow;
 @property (weak, nonatomic) IBOutlet UIImageView *rightarrow;
 
+@property (assign, nonatomic) BOOL fromViewLoad;
+@property (assign, nonatomic) BOOL settingView;
+
 @end
 
 @implementation ScrollableMenubarViewController
@@ -98,6 +101,8 @@
         [menuBarTitles addObject:title];
     }
     
+    self.menuButtonList = [NSMutableArray arrayWithCapacity:self.viewControllers.count];
+    
     CGFloat x = 0.0f;
     CGFloat defaultWidth = 100.0f;
     for (NSInteger index = 0; index < menuBarTitles.count; index++) {
@@ -122,6 +127,8 @@
         [button addTarget:self action:@selector(changeSelectedViewController:) forControlEvents:UIControlEventTouchUpInside];
         [self.scrollView addSubview:button];
         
+        [self.menuButtonList addObject:button];
+        
         if (x + computedWidth > self.scrollView.contentSize.width) {
             [self.scrollView setContentSize:CGSizeMake(self.scrollView.contentSize.width + computedWidth, 0.0f)];
             
@@ -129,13 +136,26 @@
         }
         
         x += computedWidth;
-        if (index == 0) {
-            [self changeSelectedViewController:button];
-        }
+//        if (index == 0) {
+//            [self changeSelectedViewController:button];
+//        }
     }
     
+    self.fromViewLoad = YES;
+    self.settingView = NO;
     
 }
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    if (self.fromViewLoad) {
+        self.fromViewLoad = NO;
+        [self setCurrentViewController:0];
+        
+    }
+}
+
 
 
 
@@ -145,13 +165,22 @@
 }
 
 - (void) changeSelectedViewController:(UIButton*)sender {
-    self.selectedIndex = sender.tag;
+    [self setCurrentViewController:sender.tag];
+}
+
+- (void) setCurrentViewController:(NSInteger)index {
+    self.settingView = YES;
+    self.selectedIndex = index;
     self.selectedViewController = [self.viewControllers objectAtIndex:self.selectedIndex];
     
+    UIButton *button = [self.menuButtonList objectAtIndex:self.selectedIndex];
     
     [UIView animateWithDuration:0.5f animations:^{
-        self.indicatorView.frame = CGRectMake(sender.frame.origin.x + 10.0f, 32.0f, sender.frame.size.width - 20.0f, 2.0f);
+        self.indicatorView.frame = CGRectMake(button.frame.origin.x + 10.0f, 32.0f, button.frame.size.width - 20.0f, 2.0f);
+        
     } completion:^(BOOL finished) {
+        
+        [self.scrollView scrollRectToVisible:button.bounds animated:YES];
         
         while ([[self.containerView subviews] count] > 0) {
             [[[self.containerView subviews] lastObject] removeFromSuperview];
@@ -162,7 +191,47 @@
         [self.containerView addSubview:self.selectedViewController.view];
         [self addChildViewController:self.selectedViewController];
         [self.selectedViewController didMoveToParentViewController:self];
+        
+        [self.pagingScrollview addSubview:self.containerView];
+        
+        CGSize viewSize = self.containerView.bounds.size;
+        
+        UIView *prevView = nil;
+        
+        UIView *nextView = nil;
+        
+        [self.pagingScrollview setContentSize:viewSize];
+        
+        if (self.selectedIndex > 0) {
+            prevView = [[UIView alloc] initWithFrame:CGRectMake(viewSize.width*-1, 0.0f, viewSize.width, viewSize.height)];
+            prevView.backgroundColor = [UIColor greenColor];
+            
+            [self.pagingScrollview addSubview:prevView];
+            
+            
+            UIViewController *prevVC = [self.viewControllers objectAtIndex:self.selectedIndex-1];
+            prevVC.view.frame = prevView.bounds;
+            [prevView addSubview:prevVC.view];
+            
+            
+        }
+        
+        
+        if (self.selectedIndex < self.viewControllers.count-1) {
+            nextView = [[UIView alloc] initWithFrame:CGRectMake(viewSize.width, 0.0f, viewSize.width, viewSize.height)];
+            nextView.backgroundColor = [UIColor yellowColor];
+            
+            [self.pagingScrollview addSubview:nextView];
+            
+            UIViewController *nextVC = [self.viewControllers objectAtIndex:self.selectedIndex+1];
+            nextVC.view.frame = nextView.bounds;
+            [nextView addSubview:nextVC.view];
+        }
+        
+        self.settingView = NO;
     }];
+    
+    
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -172,13 +241,29 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    self.leftarrow.hidden = NO;
-    self.rightarrow.hidden = NO;
-    if (scrollView.contentOffset.x <= 0) {
-        self.leftarrow.hidden = YES;
+    if ([scrollView isEqual:self.scrollView]) {
+        self.leftarrow.hidden = NO;
+        self.rightarrow.hidden = NO;
+        if (scrollView.contentOffset.x <= 0) {
+            self.leftarrow.hidden = YES;
+        }
+        else if(scrollView.contentOffset.x + scrollView.bounds.size.width >= scrollView.contentSize.width - 20.0f) {
+            self.rightarrow.hidden = YES;
+        }
     }
-    else if(scrollView.contentOffset.x + scrollView.bounds.size.width >= scrollView.contentSize.width) {
-        self.rightarrow.hidden = YES;
+    else if ([scrollView isEqual:self.pagingScrollview] && !self.settingView) {
+        
+        if (scrollView.contentOffset.x < ((scrollView.frame.size.width/3)-10)*-1) {
+            if (self.selectedIndex > 0) {
+                [self setCurrentViewController:self.selectedIndex-1];
+            }
+        }
+        else if (scrollView.contentOffset.x > ((scrollView.frame.size.width/3)-10)) {
+            if (self.selectedIndex < self.viewControllers.count-1) {
+                [self setCurrentViewController:self.selectedIndex+1];
+            }
+        }
+        
     }
 }
 

@@ -8,6 +8,17 @@
 
 #import "BaseViewController.h"
 
+NSString * const kAPI_LINK = @"http://ccf.bilinear.ph";
+NSString * const kNEWS_LINK = @"/api/news/";
+NSString * const kOBS_NEWS_NOTIFICATION = @"kOBS_NEWS_NOTIFICATION";
+NSString * const kPODCAST_LINK = @"/api/podcasts/";
+NSString * const kOBS_PODCAST_NOTIFICATION = @"kOBS_PODCAST_NOTIFICATION";
+NSString * const kEVENTS_LINK = @"/api/events/";
+NSString * const kOBS_EVENTS_NOTIFICATION = @"kOBS_EVENTS_NOTIFICATION";
+NSString * const kSATTELITES_LINK = @"/api/satellites/";
+NSString * const kOBS_SATTELITES_NOTIFICATION = @"kOBS_SATTELITES_NOTIFICATION";
+NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NOTIFICATION";
+
 @interface BaseViewController ()
 @property (strong, nonatomic) UIView *backgroundView;
 @property (strong, nonatomic) UIWebView *webview;
@@ -483,12 +494,12 @@
 
 - (IBAction)callNumber:(id)sender {
     NSString *urlString = ((UIButton*)sender).titleLabel.text;
-    [self openURL:[NSString stringWithFormat:@"tel://%@",urlString]];
+    [self openURL:[NSString stringWithFormat:@"tel://%@", [urlString stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]]]];
 }
 
 - (IBAction)mailAddress:(id)sender {
     NSString *urlString = ((UIButton*)sender).titleLabel.text;
-    [self openURL:[NSString stringWithFormat:@"mailto://%@",urlString]];
+    [self openURL:[NSString stringWithFormat:@"mailto://%@",[urlString stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]]]];
 }
 
 - (void) openURL:(NSString*)urlstring {
@@ -511,6 +522,205 @@
 }
 
 - (void)safariViewController:(SFSafariViewController *)controller didCompleteInitialLoad:(BOOL)didLoadSuccessfully {
+    
+}
+
+
+- (void)callPOSTAPI:(NSString*)method withParameters:(NSDictionary*)parameters completionHandler:(void (^)(id _Nullable response))completion{
+    
+    NSURL *baseURL = [NSURL URLWithString:kAPI_LINK];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:baseURL];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    
+    NETWORK_INDICATOR(YES)
+    
+    [manager POST:method parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+        //        NSLog(@"progress:%f",[uploadProgress fractionCompleted]);
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NETWORK_INDICATOR(NO)
+        completion(responseObject);
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        //        NSLog(@"task:%@\n\n[%@]%@",task,[error description],[error localizedDescription]);
+        NETWORK_INDICATOR(NO)
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Error %li",(long)[error code]] message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            [alert dismissViewControllerAnimated:YES completion:nil];
+        }];
+        [alert addAction:actionOK];
+        
+        [self presentViewController:alert animated:YES completion:^{
+            
+        }];
+    }];
+}
+
+
+- (void)callGETAPI:(NSString*)method withParameters:(NSDictionary*)parameters completionNotification:(NSString*)notificationName{
+    
+    NSURL *baseURL = [NSURL URLWithString:kAPI_LINK];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:baseURL];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    
+//    NSLog(@"base:%@ method:%@",baseURL,method);
+    [self callGetSessionManager:manager :method :parameters :notificationName];
+}
+
+- (void)callAPI:(NSString*)method withParameters:(NSDictionary*)parameters completionNotification:(NSString*)notificationName{
+    
+    NSURL *baseURL = [NSURL URLWithString:kAPI_LINK];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:baseURL];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    
+//    NSLog(@"base:%@ method:%@",baseURL,method);
+    [self callPostSessionManager:manager :method :parameters :notificationName];
+}
+
+- (void)callPostSessionManager:(AFHTTPSessionManager*)manager :(NSString*)method :(NSDictionary*)parameters :(NSString*)notificationName {
+    
+    NETWORK_INDICATOR(YES)
+    
+    //    NSLog(@"parameters:%@",parameters);
+    [manager POST:method parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+        //        NSLog(@"progress:%f",[uploadProgress fractionCompleted]);
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        NETWORK_INDICATOR(NO)
+        //        NSLog(@"response:%@",responseObject);
+        if ([responseObject isKindOfClass:[NSError class]] || ([responseObject isKindOfClass:[NSDictionary class]] && [[responseObject allKeys] containsObject:@"error"])) {
+            if ([responseObject isKindOfClass:[NSError class]]) {
+                
+                NSError *error = (NSError*)responseObject;
+                
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Error %li",(long)error.code] message:error.description preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                    [alert dismissViewControllerAnimated:YES completion:^{
+                    }];
+                }];
+                [alert addAction:actionOK];
+                
+                [self presentViewController:alert animated:YES completion:^{
+                    
+                }];
+            }
+            else {
+                
+//                [self resolveErrorResponse:responseObject withNotification:notificationName];
+            }
+            //            if([responseObject[@"error"] integerValue] == 404 && [notificationName isEqualToString:@"socialLoginObserver"]){
+            //                [self resolveErrorResponse:responseObject withNotification:notificationName];
+            //            }
+            
+        }
+        else if ([responseObject isKindOfClass:[NSArray class]] || [responseObject isKindOfClass:[NSDictionary class]]) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:responseObject];
+        }
+        else {
+//            [self resolveErrorResponse:responseObject withNotification:notificationName];
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        //        NSLog(@"task:%@\n\n[%@]%@",task,[error description],[error localizedDescription]);
+        NETWORK_INDICATOR(NO)
+        //        [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:error];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Error %li",(long)[error code]] message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            [alert dismissViewControllerAnimated:YES completion:nil];
+        }];
+        [alert addAction:actionOK];
+        
+        [self presentViewController:alert animated:YES completion:^{
+            
+        }];
+    }];
+}
+
+- (void)callGetSessionManager:(AFHTTPSessionManager*)manager :(NSString*)method :(NSDictionary*)parameters :(NSString*)notificationName {
+    
+    NETWORK_INDICATOR(YES)
+    
+    //    NSLog(@"[123]method:%@",method);
+    [manager GET:method parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+        //        NSLog(@"progress:%f",[uploadProgress fractionCompleted]);
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NETWORK_INDICATOR(NO)
+        if ([responseObject isKindOfClass:[NSError class]] || ([responseObject isKindOfClass:[NSDictionary class]] && [[responseObject allKeys] containsObject:@"error"])) {
+            if ([responseObject isKindOfClass:[NSError class]]) {
+                
+                NSError *error = (NSError*)responseObject;
+                
+                
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Error %li",(long)error.code] message:error.description preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                    [alert dismissViewControllerAnimated:YES completion:^{
+                    }];
+                }];
+                [alert addAction:actionOK];
+                
+                [self presentViewController:alert animated:YES completion:^{
+                    
+                }];
+            }
+            else {
+                
+//                [self resolveErrorResponse:responseObject withNotification:notificationName];
+            }
+            //            if([responseObject[@"error"] integerValue] == 404 && [notificationName isEqualToString:@"socialLoginObserver"]){
+            //                [self resolveErrorResponse:responseObject withNotification:notificationName];
+            //            }
+        }
+        else if ([responseObject isKindOfClass:[NSArray class]] || [responseObject isKindOfClass:[NSDictionary class]]) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:responseObject];
+        }
+        else {
+//            [self resolveErrorResponse:responseObject withNotification:notificationName];
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        //        NSLog(@"task:%@\n\n[%@]%@",task,[error description],[error localizedDescription]);
+        NETWORK_INDICATOR(NO)
+        //        [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:error];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Error %li",(long)[error code]] message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            [alert dismissViewControllerAnimated:YES completion:nil];
+        }];
+        [alert addAction:actionOK];
+        
+        [self presentViewController:alert animated:YES completion:^{
+            
+        }];
+    }];
+}
+
+- (void)getImageFromURL:(NSString*)urlPath  completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler andProgress:(void (^)(NSInteger expectedBytesToReceive, NSInteger receivedBytes))progress{
+    NETWORK_INDICATOR(YES)
+    NSURL *baseURL = [NSURL URLWithString:kAPI_LINK];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:baseURL];
+    manager.responseSerializer = [AFImageResponseSerializer serializer];
+//    NSLog(@"base:%@ url:%@",baseURL,urlPath);
+    NSURLSessionDataTask *task = [manager dataTaskWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlPath relativeToURL:baseURL]] completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        NETWORK_INDICATOR(NO)
+        
+        completionHandler(response, responseObject, error);
+    }];
+    
+    [manager setDataTaskDidReceiveDataBlock:^(NSURLSession * _Nonnull session, NSURLSessionDataTask * _Nonnull dataTask, NSData * _Nonnull data) {
+        NETWORK_INDICATOR(YES)
+        progress(dataTask.countOfBytesExpectedToReceive,dataTask.countOfBytesReceived);
+    }];
+    
+    
+    //    [manager setDataTaskDidReceiveDataBlock:^(NSURLSession * _Nonnull session, NSURLSessionDataTask * _Nonnull dataTask, NSData * _Nonnull data) {
+    //
+    //        NSLog(@"data:%@",data);
+    //    }];
+    
+    [task resume];
+    
     
 }
 

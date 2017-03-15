@@ -16,7 +16,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
-@property (strong, nonatomic) NSDictionary *allLocations;
+@property (strong, nonatomic) NSMutableDictionary *allLocations;
 @property (strong, nonatomic) NSArray *alphabetSections;
 @property (strong, nonatomic) NSArray *nearbySections;
 @property (strong, nonatomic) NSDictionary *nearbyLocations;
@@ -25,6 +25,14 @@
 
 @property (assign, nonatomic) BOOL isAllLocationSelected;
 @property (assign, nonatomic) BOOL isLocationFinished;
+
+
+@property (assign, nonatomic) NSInteger shownPerPage;
+
+@property (strong, nonatomic) NSMutableArray *sattelites_list;
+
+
+
 @end
 
 @implementation SattelitesTableViewController
@@ -46,88 +54,146 @@
     self.viewSearchBox.layer.cornerRadius = 5.0f;
     self.viewSearchBox.clipsToBounds = YES;
     
-    NSMutableDictionary *mutableAllLocations = [NSMutableDictionary dictionary];
-    /*dummy start*/
-    NSMutableArray *locationsPerLetter = [NSMutableArray array];
     
-    NSMutableDictionary *location = [NSMutableDictionary dictionary];
+    self.shownPerPage = 0;
     
-    [location setObject:@"Abu Dhabi" forKey:@"kLocationName"];
-    [location setObject:@"Foodlands Restaurant, Airport Road, Abu Dhabi, UAE Abu Dhabi, International" forKey:@"kAddress"];
-    [location setObject:@"ccf.abudhabi13@gmail.com" forKey:@"kEmail"];
-    [location setObject:@"+971-526422303" forKey:@"kContact"];
-    [location setObject:@"http://www.ccf.org.ph" forKey:@"kWebsite"];
-    [location setObject:@"24.478502" forKey:@"kLatitude"];
-    [location setObject:@"54.363265" forKey:@"kLongitude"];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendSattelitesList:) name:kOBS_SATTELITES_NOTIFICATION object:nil];
     
-    [locationsPerLetter addObject:location];
-    
-    [mutableAllLocations setObject:locationsPerLetter forKey:@"A"];
-    
-    locationsPerLetter = nil;
-    location = nil;
-    locationsPerLetter = [NSMutableArray array];
-    location = [NSMutableDictionary dictionary];
+    [self callGETAPI:kSATTELITES_LINK withParameters:nil completionNotification:kOBS_SATTELITES_NOTIFICATION];
     
     
-    [location setObject:@"Bacoor" forKey:@"kLocationName"];
-    [location setObject:@"V. Central Mall Molino Rd., Molino Blvd, Bacoor City, Cavite" forKey:@"kAddress"];
-    [location setObject:@"ccfbacoor@gmail.com" forKey:@"kEmail"];
-    [location setObject:@"+63-9434770020" forKey:@"kContact"];
-    [location setObject:@"http://www.ccf.org.ph" forKey:@"kWebsite"];
-    [location setObject:@"14.4063622" forKey:@"kLatitude"];
-    [location setObject:@"120.9734334" forKey:@"kLongitude"];
     
-    [locationsPerLetter addObject:location];
     
-    [mutableAllLocations setObject:locationsPerLetter forKey:@"B"];
     
-    locationsPerLetter = nil;
-    location = nil;
-    locationsPerLetter = [NSMutableArray array];
-    location = [NSMutableDictionary dictionary];
     
-    [location setObject:@"C. Raymundo" forKey:@"kLocationName"];
-    [location setObject:@"Danny Floro Bldg., C. Raymundo Ave., Canlogan, Pasig City, Pasig, Metro Manila" forKey:@"kAddress"];
-    [location setObject:@"ccf.abudhabi13@gmail.com" forKey:@"kEmail"];
-    [location setObject:@"+632-9111111" forKey:@"kContact"];
-    [location setObject:@"http://www.ccf.org.ph" forKey:@"kWebsite"];
-    [location setObject:@"14.572164" forKey:@"kLatitude"];
-    [location setObject:@"121.083508" forKey:@"kLongitude"];
+//    NSMutableDictionary *mutableAllLocations = [NSMutableDictionary dictionary];
+//    /*dummy start*/
+//    NSMutableArray *locationsPerLetter = [NSMutableArray array];
+//    
+//    NSMutableDictionary *location = [NSMutableDictionary dictionary];
+//    
+//    [location setObject:@"Abu Dhabi" forKey:@"kLocationName"];
+//    [location setObject:@"Foodlands Restaurant, Airport Road, Abu Dhabi, UAE Abu Dhabi, International" forKey:@"kAddress"];
+//    [location setObject:@"ccf.abudhabi13@gmail.com" forKey:@"kEmail"];
+//    [location setObject:@"+971-526422303" forKey:@"kContact"];
+//    [location setObject:@"http://www.ccf.org.ph" forKey:@"kWebsite"];
+//    [location setObject:@"24.478502" forKey:@"kLatitude"];
+//    [location setObject:@"54.363265" forKey:@"kLongitude"];
+//    
+//    [locationsPerLetter addObject:location];
+//    
+//    [mutableAllLocations setObject:locationsPerLetter forKey:@"A"];
+//    
+//    locationsPerLetter = nil;
+//    location = nil;
+//    locationsPerLetter = [NSMutableArray array];
+//    location = [NSMutableDictionary dictionary];
+//    
+//    
+//    [location setObject:@"Bacoor" forKey:@"kLocationName"];
+//    [location setObject:@"V. Central Mall Molino Rd., Molino Blvd, Bacoor City, Cavite" forKey:@"kAddress"];
+//    [location setObject:@"ccfbacoor@gmail.com" forKey:@"kEmail"];
+//    [location setObject:@"+63-9434770020" forKey:@"kContact"];
+//    [location setObject:@"http://www.ccf.org.ph" forKey:@"kWebsite"];
+//    [location setObject:@"14.4063622" forKey:@"kLatitude"];
+//    [location setObject:@"120.9734334" forKey:@"kLongitude"];
+//    
+//    [locationsPerLetter addObject:location];
+//    
+//    [mutableAllLocations setObject:locationsPerLetter forKey:@"B"];
+//    
+//    locationsPerLetter = nil;
+//    location = nil;
+//    locationsPerLetter = [NSMutableArray array];
+//    location = [NSMutableDictionary dictionary];
+//    
+//    [location setObject:@"C. Raymundo" forKey:@"kLocationName"];
+//    [location setObject:@"Danny Floro Bldg., C. Raymundo Ave., Canlogan, Pasig City, Pasig, Metro Manila" forKey:@"kAddress"];
+//    [location setObject:@"ccf.abudhabi13@gmail.com" forKey:@"kEmail"];
+//    [location setObject:@"+632-9111111" forKey:@"kContact"];
+//    [location setObject:@"http://www.ccf.org.ph" forKey:@"kWebsite"];
+//    [location setObject:@"14.572164" forKey:@"kLatitude"];
+//    [location setObject:@"121.083508" forKey:@"kLongitude"];
+//    
+//    [locationsPerLetter addObject:location];
+//    
+//    [mutableAllLocations setObject:locationsPerLetter forKey:@"C"];
+//    
+//    locationsPerLetter = nil;
+//    location = nil;
+//    locationsPerLetter = [NSMutableArray array];
+//    location = [NSMutableDictionary dictionary];
+//    
+//    [location setObject:@"Makati" forKey:@"kLocationName"];
+//    [location setObject:@"3rd Floor A. Venue Mall, Makati Ave, Makati City, Makati, Metro Manila" forKey:@"kAddress"];
+//    [location setObject:@"marco.ccfmakati@gmail.com" forKey:@"kEmail"];
+//    [location setObject:@"+632-7953019, +63-9177700251" forKey:@"kContact"];
+//    [location setObject:@"http://www.ccf.org.ph" forKey:@"kWebsite"];
+//    [location setObject:@"14.566184" forKey:@"kLatitude"];
+//    [location setObject:@"121.029731" forKey:@"kLongitude"];
+//    
+//    [locationsPerLetter addObject:location];
+//    
+//    [mutableAllLocations setObject:locationsPerLetter forKey:@"M"];
+//    
+//    locationsPerLetter = nil;
+//    location = nil;
+//    
+//    /*dummy end*/
     
-    [locationsPerLetter addObject:location];
     
-    [mutableAllLocations setObject:locationsPerLetter forKey:@"C"];
     
-    locationsPerLetter = nil;
-    location = nil;
-    locationsPerLetter = [NSMutableArray array];
-    location = [NSMutableDictionary dictionary];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+
+
+- (void)appendSattelitesList:(NSNotification*)notification {
+//    NSLog(@"### result:%@",notification.object);
     
-    [location setObject:@"Makati" forKey:@"kLocationName"];
-    [location setObject:@"3rd Floor A. Venue Mall, Makati Ave, Makati City, Makati, Metro Manila" forKey:@"kAddress"];
-    [location setObject:@"marco.ccfmakati@gmail.com" forKey:@"kEmail"];
-    [location setObject:@"+632-7953019, +63-9177700251" forKey:@"kContact"];
-    [location setObject:@"http://www.ccf.org.ph" forKey:@"kWebsite"];
-    [location setObject:@"14.566184" forKey:@"kLatitude"];
-    [location setObject:@"121.029731" forKey:@"kLongitude"];
     
-    [locationsPerLetter addObject:location];
+    if(!self.sattelites_list){
+        self.sattelites_list = [NSMutableArray array];
+    }
     
-    [mutableAllLocations setObject:locationsPerLetter forKey:@"M"];
+    NSDictionary *result = [NSDictionary dictionaryWithDictionary:notification.object];
     
-    locationsPerLetter = nil;
-    location = nil;
+    self.shownPerPage = [result[@"meta"][@"pagination"][@"per_page"] integerValue];
     
-    /*dummy end*/
+    NSArray *data = result[@"data"];
     
-    self.allLocations = [NSMutableDictionary dictionaryWithDictionary:mutableAllLocations];
+    for (NSDictionary *item in data) {
+        
+        NSDictionary *sattelite = @{@"kLocationName":item[@"name"],@"kLatitude":item[@"latitude"],@"kLongitude":item[@"longitude"],@"kAddress":item[@"address_full"],@"kCreatedTime":item[@"created_at"]};
+        
+        
+        [self.sattelites_list addObject:sattelite];
+    }
+    
+    for (NSDictionary *dictionary in self.sattelites_list) {
+        NSString *letter_key = [[dictionary objectForKey:@"kLocationName"] substringWithRange:NSMakeRange(0, 1)];
+        if (![[self.allLocations allKeys] containsObject:letter_key]) {
+            NSMutableArray *array = [NSMutableArray array];
+            [self.allLocations setObject:[array mutableCopy] forKey:letter_key];
+            
+        }
+        
+        NSMutableArray *subArray = [self.allLocations objectForKey:letter_key];
+        [subArray addObject:dictionary];
+        
+        [self.allLocations setObject:subArray forKey:letter_key];
+    }
     
     NSMutableArray *sortArray = [NSMutableArray arrayWithArray:[self.allLocations allKeys]];
     self.alphabetSections = [sortArray sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     
+    [self.tableView reloadData];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationUpdateFinished:) name:@"kUpdateLocationFinished" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationUpdateFinished:) name:kOBS_LOCATIONFINISHED_NOTIFICATION object:nil];
     
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
@@ -140,12 +206,9 @@
     [self.locationManager startUpdatingLocation];
     
     
+    
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
 #pragma mark - Table view data source
 
@@ -190,13 +253,13 @@
     
     [cell.labelAddress addTarget:self action:@selector(viewMapButton:) forControlEvents:UIControlEventTouchUpInside];
     
-    [cell.labelEmail setTitle:[location objectForKey:@"kEmail"] forState:UIControlStateNormal];
+    [cell.labelEmail setTitle:@"---"/*[location objectForKey:@"kEmail"]*/ forState:UIControlStateNormal];
     [cell.labelEmail addTarget:self action:@selector(emailButton:) forControlEvents:UIControlEventTouchUpInside];
     
-    [cell.labelContacts setTitle:[location objectForKey:@"kContact"] forState:UIControlStateNormal];
+    [cell.labelContacts setTitle:@"---"/*[location objectForKey:@"kContact"]*/ forState:UIControlStateNormal];
     [cell.labelContacts addTarget:self action:@selector(contactButton:) forControlEvents:UIControlEventTouchUpInside];
     
-    [cell.labelWebsite setTitle:[location objectForKey:@"kWebsite"] forState:UIControlStateNormal];
+    [cell.labelWebsite setTitle:@"---"/*[location objectForKey:@"kWebsite"]*/ forState:UIControlStateNormal];
     [cell.labelWebsite addTarget:self action:@selector(webURLButton:) forControlEvents:UIControlEventTouchUpInside];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -326,7 +389,7 @@
                  }
              }
              
-             [[NSNotificationCenter defaultCenter] postNotificationName:@"kUpdateLocationFinished" object:[NSDictionary dictionaryWithDictionary:dictionary]];
+             [[NSNotificationCenter defaultCenter] postNotificationName:kOBS_LOCATIONFINISHED_NOTIFICATION object:[NSDictionary dictionaryWithDictionary:dictionary]];
          }
          else
          {

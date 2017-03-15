@@ -9,9 +9,13 @@
 #import "EventsTableViewController.h"
 #import "MapViewController.h"
 #import "EventsDetailViewController.h"
+#import "EventsTableViewCell.h"
 
 @interface EventsTableViewController ()
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (assign, nonatomic) NSInteger shownPerPage;
+
+@property (strong, nonatomic) NSMutableArray *events_link;
 
 @end
 
@@ -25,12 +29,51 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    
+    
+    self.shownPerPage = 0;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendEventsList:) name:kOBS_EVENTS_NOTIFICATION object:nil];
+    
+    [self callGETAPI:kEVENTS_LINK withParameters:nil completionNotification:kOBS_EVENTS_NOTIFICATION];
+    
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
+- (void)appendEventsList:(NSNotification*)notification {
+//    NSLog(@"### result:%@",notification.object);
+    
+    
+    if(!self.events_link){
+        self.events_link = [NSMutableArray array];
+    }
+    
+    NSDictionary *result = [NSDictionary dictionaryWithDictionary:notification.object];
+    
+    self.shownPerPage = [result[@"meta"][@"pagination"][@"per_page"] integerValue];
+    
+    NSArray *data = result[@"data"];
+    
+    for (NSDictionary *item in data) {
+        
+        NSDictionary *events = @{@"kTitle":item[@"title"],@"kImage":item[@"image"],@"kDescription":item[@"description"],@"kDate":item[@"date"],@"kTime":item[@"time"],@"kDateRaw":item[@"dateRaw"][@"date"],@"kRegLink":item[@"registration_link"],@"kSpeaker":item[@"speakers"],@"kMobile":item[@"contact_info"],@"kVenue":item[@"venue"],@"kCreatedTime":item[@"created_at"]};
+        
+        
+        
+        [self.events_link addObject:events];
+    }
+    
+    [self.tableView reloadData];
+}
+
 
 #pragma mark - Table view data source
 
@@ -39,12 +82,27 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 3;
+    return self.events_link.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"eventsCell"];
+    EventsTableViewCell *cell = (EventsTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"eventsCell"];
+    
+    NSDictionary *events = [self.events_link objectAtIndex:[indexPath row]];
+    
+    NSURL *urlImage = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",kAPI_LINK,events[@"kImage"]]];
+    
+    UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:urlImage]];
+    
+    [cell.eventsImageView setImage:image];
+    
+    [cell.eventsDate setTitle:[NSString stringWithFormat:@"  %@",events[@"kDate"]] forState:UIControlStateNormal];
+    [cell.eventsTime setTitle:[NSString stringWithFormat:@"  %@",events[@"kTime"]] forState:UIControlStateNormal];
+    [cell.eventsVenue setTitle:[NSString stringWithFormat:@"  %@",events[@"kVenue"]] forState:UIControlStateNormal];
+    
+    cell.eventsTitle.text = events[@"kTitle"];
+    
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
@@ -54,6 +112,19 @@
     
     EventsDetailViewController *eventsDetailVC = [self.storyboard instantiateViewControllerWithIdentifier:@"eventsDetail"];
     eventsDetailVC.showRegisterCell = YES;
+    
+    NSDictionary *events = [self.events_link objectAtIndex:[indexPath row]];
+    
+    eventsDetailVC.titleText = events[@"kTitle"];
+    eventsDetailVC.locationName = events[@"kVenue"];
+    eventsDetailVC.dateText = events[@"kDate"];
+    eventsDetailVC.timeText = events[@"kTime"];
+    eventsDetailVC.imageURL = events[@"kImage"];
+    eventsDetailVC.detailDescription = events[@"kDescription"];
+    eventsDetailVC.personName = events[@"kSpeaker"];
+    eventsDetailVC.personMobile = [NSString stringWithFormat:@"+63%@",[events[@"kMobile"] substringFromIndex:1]];
+    eventsDetailVC.registerLink = events[@"kRegLink"];
+    
     
     CATransition *transition = [CATransition animation];
     transition.duration = 0.3;

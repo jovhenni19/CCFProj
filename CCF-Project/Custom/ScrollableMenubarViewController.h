@@ -15,8 +15,10 @@
 @interface ScrollableMenubarViewController : UIViewController <UIScrollViewDelegate>
 @property (strong, nonatomic) IBOutlet UIView *menuBarView;
 @property (strong, nonatomic) IBOutlet UIView *containerView;
+@property (weak, nonatomic) IBOutlet UIScrollView *pagingScrollview;
 
 @property (strong, nonatomic) NSArray *viewControllers;
+@property (strong, nonatomic) NSMutableArray *menuButtonList;
 @property (strong, nonatomic) UIViewController *selectedViewController;
 @property (assign, nonatomic) NSInteger selectedIndex;
 @property (strong, nonatomic) id<ScrollableMenubarViewControllerDelegate> delegate;

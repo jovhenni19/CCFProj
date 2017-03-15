@@ -14,6 +14,9 @@
 @interface NewsTableViewController () <NewsCellDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
+@property (strong, nonatomic) NSMutableArray *news_list;
+@property (assign, nonatomic) NSInteger shownPerPage;
+
 //@property (strong, nonatomic) NSIndexPath *indexPath_expanded;
 
 @end
@@ -31,11 +34,40 @@
     
 //    self.indexPath_expanded = [NSIndexPath indexPathForRow:-1 inSection:-1];
     
+    self.shownPerPage = 0;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendNewsList:) name:kOBS_NEWS_NOTIFICATION object:nil];
+    
+    [self callGETAPI:kNEWS_LINK withParameters:nil completionNotification:kOBS_NEWS_NOTIFICATION];
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)appendNewsList:(NSNotification*)notification {
+//    NSLog(@"### result:%@",notification.object);
+    
+    if(!self.news_list){
+        self.news_list = [NSMutableArray array];
+    }
+    
+    NSDictionary *result = [NSDictionary dictionaryWithDictionary:notification.object];
+    
+    self.shownPerPage = [result[@"meta"][@"pagination"][@"per_page"] integerValue];
+    
+    NSArray *data = result[@"data"];
+    
+    for (NSDictionary *item in data) {
+        NSDictionary *news = @{@"kTitle":item[@"title"],@"kImage":item[@"image"],@"kDescription":item[@"description"],@"kGroupName":item[@"groups"][0][@"name"],@"kCreatedTime":item[@"created_at"]};
+        [self.news_list addObject:news];
+    }
+    
+    [self.tableView reloadData];
+        
 }
 
 #pragma mark - Table view data source
@@ -45,7 +77,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 6;
+    return self.news_list.count;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -66,18 +98,21 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NewsCollapsedTableViewCell *cell = (NewsCollapsedTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"newsCell"];
+    NewsCollapsedTableViewCell *cell = (NewsCollapsedTableViewCell*)[tableView dequeueReusableCellWithIdentifier:/*@"newsCell"*/@"newsCell-noLocation"];
     
-    cell.labelNewsTitle.text = @"YOUTH GATHERING";
-    cell.labelTimeCreated.text = @"1hr ago";
-    cell.textNewsDetails.text = @"Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
+    NSDictionary *news = [self.news_list objectAtIndex:[indexPath row]];
+    
+    cell.labelNewsTitle.text = news[@"kTitle"];
+    cell.labelTimeCreated.text = [self getTimepassedTextFrom:news[@"kCreatedTime"]];
+    cell.textNewsDetails.text = news[@"kDescription"];
     [cell.textNewsDetails scrollsToTop];
     
-    [cell.buttonGroupName setTitle:@"  YOUTH GROUP" forState:UIControlStateNormal];
+    [cell.buttonGroupName setTitle:[NSString stringWithFormat:@"  %@",news[@"kGroupName"]] forState:UIControlStateNormal];
     [cell.buttonLocation setTitle:@"  CCF CENTER" forState:UIControlStateNormal];
-    [cell.buttonDate setTitle:@"  NOVEMBER 5\n10:15pm" forState:UIControlStateNormal];
+    [cell.buttonDate setTitle:[NSString stringWithFormat:@"  %@",news[@"kCreatedTime"]] forState:UIControlStateNormal];
     [cell.buttonSpeaker setTitle:@"  Speaker Name here" forState:UIControlStateNormal];
     [cell.buttonSpeaker setHidden:YES];
+    [cell.buttonLocation setHidden:YES];
     
     cell.delegate = self;
     cell.indexPath = indexPath;
@@ -93,6 +128,12 @@
     
     EventsDetailViewController *detailsVC = [self.storyboard instantiateViewControllerWithIdentifier:@"eventsDetail"];
     detailsVC.showRegisterCell = NO;
+    
+    NSDictionary *news = [self.news_list objectAtIndex:[indexPath row]];
+    detailsVC.titleText = news[@"kTitle"];
+    detailsVC.dateText = news[@"kCreatedTime"];
+    detailsVC.detailDescription = news[@"kDescription"];
+    detailsVC.imageURL = news[@"kImage"];
     
     
     CATransition *transition = [CATransition animation];
@@ -160,6 +201,49 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+
+- (NSString*) getTimepassedTextFrom:(NSString*)date {
+    NSDateFormatter *dF = [[NSDateFormatter alloc] init];
+    [dF setDateFormat:@"yyyy-MM-dd"];
+    NSDate *postDate = [dF dateFromString:date];
+    
+    //wrong time!
+    
+    NSCalendar *c = [NSCalendar currentCalendar];
+    NSString *today = [dF stringFromDate:[NSDate date]];
+    NSDate *d1 = [dF dateFromString:today];
+    NSDateComponents *components = [c components:NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:postDate toDate:d1 options:0];
+    
+    NSInteger days = components.day;
+    NSInteger hours = components.hour;
+    NSInteger minutes = components.minute;
+    NSInteger seconds = components.second;
+//    NSLog(@"(%@)date:%@ [%li:%li:%li:%li]",date,postDate,(long)days,(long)hours,(long)minutes,(long)seconds);
+    
+    NSString *text = @"";
+    if (days > 6) {
+        text = date;
+    }
+    else {
+        if (days > 0) {
+            text = [NSString stringWithFormat:@"%li days ago",(long)days];
+        }
+        else if (hours > 0 && hours < 24) {
+            text = [NSString stringWithFormat:@"%li hours ago",(long)hours];
+        }
+        else if (minutes > 0 && minutes < 60) {
+            text = [NSString stringWithFormat:@"%li minutes ago",(long)minutes];
+        }
+        else if (seconds > 0 && seconds < 60) {
+            text = [NSString stringWithFormat:@"%li seconds ago",(long)seconds];
+        }
+    }
+    
+    
+    return text;
+}
+
 
 #pragma mark NewsCellDelagate
 
