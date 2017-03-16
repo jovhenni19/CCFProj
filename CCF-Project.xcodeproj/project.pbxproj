@@ -29,6 +29,14 @@
 		333724DC1E360E8D001DBE50 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 333724DB1E360E8D001DBE50 /* SystemConfiguration.framework */; };
 		333724DE1E360E98001DBE50 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 333724DD1E360E98001DBE50 /* UIKit.framework */; };
 		333724E11E361229001DBE50 /* NewsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 333724E01E361229001DBE50 /* NewsTableViewController.m */; };
+		334DC3B61E7AA6D2002E4EA8 /* NewsItem+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 334DC3A71E7AA6D0002E4EA8 /* NewsItem+CoreDataClass.m */; };
+		334DC3B71E7AA6D2002E4EA8 /* NewsItem+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 334DC3A91E7AA6D0002E4EA8 /* NewsItem+CoreDataProperties.m */; };
+		334DC3B81E7AA6D2002E4EA8 /* SatellitesItem+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 334DC3AB1E7AA6D0002E4EA8 /* SatellitesItem+CoreDataClass.m */; };
+		334DC3B91E7AA6D2002E4EA8 /* SatellitesItem+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 334DC3AD1E7AA6D0002E4EA8 /* SatellitesItem+CoreDataProperties.m */; };
+		334DC3BA1E7AA6D2002E4EA8 /* PodcastsItem+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 334DC3AF1E7AA6D0002E4EA8 /* PodcastsItem+CoreDataClass.m */; };
+		334DC3BB1E7AA6D2002E4EA8 /* PodcastsItem+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 334DC3B11E7AA6D0002E4EA8 /* PodcastsItem+CoreDataProperties.m */; };
+		334DC3BC1E7AA6D2002E4EA8 /* EventsItem+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 334DC3B31E7AA6D0002E4EA8 /* EventsItem+CoreDataClass.m */; };
+		334DC3BD1E7AA6D2002E4EA8 /* EventsItem+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 334DC3B51E7AA6D0002E4EA8 /* EventsItem+CoreDataProperties.m */; };
 		335EA7081E31D5E800416E67 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 335EA7071E31D5E800416E67 /* main.m */; };
 		335EA70B1E31D5E800416E67 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 335EA70A1E31D5E800416E67 /* AppDelegate.m */; };
 		335EA7111E31D5E800416E67 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 335EA70F1E31D5E800416E67 /* Main.storyboard */; };
@@ -136,6 +144,22 @@
 		333724DD1E360E98001DBE50 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		333724DF1E361229001DBE50 /* NewsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsTableViewController.h; sourceTree = "<group>"; };
 		333724E01E361229001DBE50 /* NewsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsTableViewController.m; sourceTree = "<group>"; };
+		334DC3A61E7AA6D0002E4EA8 /* NewsItem+CoreDataClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NewsItem+CoreDataClass.h"; path = "Custom/NewsItem+CoreDataClass.h"; sourceTree = "<group>"; };
+		334DC3A71E7AA6D0002E4EA8 /* NewsItem+CoreDataClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NewsItem+CoreDataClass.m"; path = "Custom/NewsItem+CoreDataClass.m"; sourceTree = "<group>"; };
+		334DC3A81E7AA6D0002E4EA8 /* NewsItem+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NewsItem+CoreDataProperties.h"; path = "Custom/NewsItem+CoreDataProperties.h"; sourceTree = "<group>"; };
+		334DC3A91E7AA6D0002E4EA8 /* NewsItem+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NewsItem+CoreDataProperties.m"; path = "Custom/NewsItem+CoreDataProperties.m"; sourceTree = "<group>"; };
+		334DC3AA1E7AA6D0002E4EA8 /* SatellitesItem+CoreDataClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SatellitesItem+CoreDataClass.h"; path = "Custom/SatellitesItem+CoreDataClass.h"; sourceTree = "<group>"; };
+		334DC3AB1E7AA6D0002E4EA8 /* SatellitesItem+CoreDataClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "SatellitesItem+CoreDataClass.m"; path = "Custom/SatellitesItem+CoreDataClass.m"; sourceTree = "<group>"; };
+		334DC3AC1E7AA6D0002E4EA8 /* SatellitesItem+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SatellitesItem+CoreDataProperties.h"; path = "Custom/SatellitesItem+CoreDataProperties.h"; sourceTree = "<group>"; };
+		334DC3AD1E7AA6D0002E4EA8 /* SatellitesItem+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "SatellitesItem+CoreDataProperties.m"; path = "Custom/SatellitesItem+CoreDataProperties.m"; sourceTree = "<group>"; };
+		334DC3AE1E7AA6D0002E4EA8 /* PodcastsItem+CoreDataClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PodcastsItem+CoreDataClass.h"; path = "Custom/PodcastsItem+CoreDataClass.h"; sourceTree = "<group>"; };
+		334DC3AF1E7AA6D0002E4EA8 /* PodcastsItem+CoreDataClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PodcastsItem+CoreDataClass.m"; path = "Custom/PodcastsItem+CoreDataClass.m"; sourceTree = "<group>"; };
+		334DC3B01E7AA6D0002E4EA8 /* PodcastsItem+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PodcastsItem+CoreDataProperties.h"; path = "Custom/PodcastsItem+CoreDataProperties.h"; sourceTree = "<group>"; };
+		334DC3B11E7AA6D0002E4EA8 /* PodcastsItem+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PodcastsItem+CoreDataProperties.m"; path = "Custom/PodcastsItem+CoreDataProperties.m"; sourceTree = "<group>"; };
+		334DC3B21E7AA6D0002E4EA8 /* EventsItem+CoreDataClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "EventsItem+CoreDataClass.h"; path = "Custom/EventsItem+CoreDataClass.h"; sourceTree = "<group>"; };
+		334DC3B31E7AA6D0002E4EA8 /* EventsItem+CoreDataClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "EventsItem+CoreDataClass.m"; path = "Custom/EventsItem+CoreDataClass.m"; sourceTree = "<group>"; };
+		334DC3B41E7AA6D0002E4EA8 /* EventsItem+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "EventsItem+CoreDataProperties.h"; path = "Custom/EventsItem+CoreDataProperties.h"; sourceTree = "<group>"; };
+		334DC3B51E7AA6D0002E4EA8 /* EventsItem+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "EventsItem+CoreDataProperties.m"; path = "Custom/EventsItem+CoreDataProperties.m"; sourceTree = "<group>"; };
 		335EA7031E31D5E800416E67 /* CCF-Project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CCF-Project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		335EA7071E31D5E800416E67 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		335EA7091E31D5E800416E67 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -354,6 +378,29 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		334DC3BE1E7AA6E5002E4EA8 /* CoreData Objects */ = {
+			isa = PBXGroup;
+			children = (
+				334DC3A61E7AA6D0002E4EA8 /* NewsItem+CoreDataClass.h */,
+				334DC3A71E7AA6D0002E4EA8 /* NewsItem+CoreDataClass.m */,
+				334DC3A81E7AA6D0002E4EA8 /* NewsItem+CoreDataProperties.h */,
+				334DC3A91E7AA6D0002E4EA8 /* NewsItem+CoreDataProperties.m */,
+				334DC3AA1E7AA6D0002E4EA8 /* SatellitesItem+CoreDataClass.h */,
+				334DC3AB1E7AA6D0002E4EA8 /* SatellitesItem+CoreDataClass.m */,
+				334DC3AC1E7AA6D0002E4EA8 /* SatellitesItem+CoreDataProperties.h */,
+				334DC3AD1E7AA6D0002E4EA8 /* SatellitesItem+CoreDataProperties.m */,
+				334DC3AE1E7AA6D0002E4EA8 /* PodcastsItem+CoreDataClass.h */,
+				334DC3AF1E7AA6D0002E4EA8 /* PodcastsItem+CoreDataClass.m */,
+				334DC3B01E7AA6D0002E4EA8 /* PodcastsItem+CoreDataProperties.h */,
+				334DC3B11E7AA6D0002E4EA8 /* PodcastsItem+CoreDataProperties.m */,
+				334DC3B21E7AA6D0002E4EA8 /* EventsItem+CoreDataClass.h */,
+				334DC3B31E7AA6D0002E4EA8 /* EventsItem+CoreDataClass.m */,
+				334DC3B41E7AA6D0002E4EA8 /* EventsItem+CoreDataProperties.h */,
+				334DC3B51E7AA6D0002E4EA8 /* EventsItem+CoreDataProperties.m */,
+			);
+			name = "CoreData Objects";
+			sourceTree = "<group>";
+		};
 		335EA6FA1E31D5E700416E67 = {
 			isa = PBXGroup;
 			children = (
@@ -460,6 +507,7 @@
 		335EA73C1E31E51F00416E67 /* Customs */ = {
 			isa = PBXGroup;
 			children = (
+				334DC3BE1E7AA6E5002E4EA8 /* CoreData Objects */,
 				332746AA1E322BCA003A0A20 /* ScrollableMenubarViewController.h */,
 				332746AB1E322BCA003A0A20 /* ScrollableMenubarViewController.m */,
 				33CD19FC1E6BEF660019C279 /* UIButton+LocationValues.h */,
@@ -715,14 +763,20 @@
 				335EA70B1E31D5E800416E67 /* AppDelegate.m in Sources */,
 				33ACB7651E795F1F005ACBBB /* UIActivityIndicatorView+AFNetworking.m in Sources */,
 				33ACB76D1E7985E0005ACBBB /* EventsTableViewCell.m in Sources */,
+				334DC3BD1E7AA6D2002E4EA8 /* EventsItem+CoreDataProperties.m in Sources */,
 				33C260241E457CAC00C251C0 /* PodDetailAudioTableViewCell.m in Sources */,
+				334DC3B91E7AA6D2002E4EA8 /* SatellitesItem+CoreDataProperties.m in Sources */,
 				33A8DF751E3C0C9C003EB844 /* SattelitesTableViewController.m in Sources */,
+				334DC3B81E7AA6D2002E4EA8 /* SatellitesItem+CoreDataClass.m in Sources */,
+				334DC3B71E7AA6D2002E4EA8 /* NewsItem+CoreDataProperties.m in Sources */,
 				33ACB7671E795F1F005ACBBB /* UIImageView+AFNetworking.m in Sources */,
 				333724E11E361229001DBE50 /* NewsTableViewController.m in Sources */,
+				334DC3BA1E7AA6D2002E4EA8 /* PodcastsItem+CoreDataClass.m in Sources */,
 				33A5CD981E41F57700B6D9EC /* PodcastTableViewCell.m in Sources */,
 				33ACB7611E795F1F005ACBBB /* AFURLSessionManager.m in Sources */,
 				33A76CD61E76C45300A6757F /* AMapViewController.m in Sources */,
 				33ACB75D1E795F1F005ACBBB /* AFNetworkReachabilityManager.m in Sources */,
+				334DC3B61E7AA6D2002E4EA8 /* NewsItem+CoreDataClass.m in Sources */,
 				33D721771E3F5FC30071FC2D /* YTPlayerView.m in Sources */,
 				33EFBC4E1E3CBC9B00A72040 /* SattelitesTableViewCell.m in Sources */,
 				33ACB76A1E795F1F005ACBBB /* UIWebView+AFNetworking.m in Sources */,
@@ -738,6 +792,7 @@
 				332746AC1E322BCA003A0A20 /* ScrollableMenubarViewController.m in Sources */,
 				33ACB7621E795F1F005ACBBB /* AFAutoPurgingImageCache.m in Sources */,
 				33D721701E3F4AA40071FC2D /* LiveStreamingViewController.m in Sources */,
+				334DC3BB1E7AA6D2002E4EA8 /* PodcastsItem+CoreDataProperties.m in Sources */,
 				332C08641E718A41000175DF /* PodcastListViewController.m in Sources */,
 				33ACB75E1E795F1F005ACBBB /* AFSecurityPolicy.m in Sources */,
 				33CD19FE1E6BEF660019C279 /* UIButton+LocationValues.m in Sources */,
@@ -746,6 +801,7 @@
 				33F500771E38BC7500A16D32 /* EventsDetailViewController.m in Sources */,
 				33C2602B1E45B7C100C251C0 /* YMCAudioPlayer.m in Sources */,
 				33ACB75F1E795F1F005ACBBB /* AFURLRequestSerialization.m in Sources */,
+				334DC3BC1E7AA6D2002E4EA8 /* EventsItem+CoreDataClass.m in Sources */,
 				33C260301E45D0BA00C251C0 /* SettingsTableViewController.m in Sources */,
 				335EA7081E31D5E800416E67 /* main.m in Sources */,
 			);

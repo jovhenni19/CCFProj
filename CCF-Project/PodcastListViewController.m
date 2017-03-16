@@ -23,7 +23,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self.headerImage setImage:self.categoryImage];
+//    [self.headerImage setImage:self.categoryImage];
     self.categoryTitleLabel.text = self.podcastCategoryTitle;
 }
 
@@ -85,7 +85,7 @@
     [category replaceOccurrencesOfString:@"-" withString:@" " options:NSLiteralSearch range:NSMakeRange(0, category.length)];
     details.otherText = [category capitalizedString];
     details.podcastSpeaker = @"Speaker 1";
-    details.image = self.categoryImage;//[[self.categories objectAtIndex:[indexPath section]] objectForKey:@"kImage"];
+//    details.image = self.categoryImage;//[[self.categories objectAtIndex:[indexPath section]] objectForKey:@"kImage"];
     details.youtubeID = @"Xd_6MSWz2J4";
     details.urlForAudio = @"audiofile";
     

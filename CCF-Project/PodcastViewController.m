@@ -44,6 +44,7 @@
     
     [self callGETAPI:kPODCAST_LINK withParameters:nil completionNotification:kOBS_PODCAST_NOTIFICATION];
     
+    [self showLoadingAnimation:self.view];
     
     
 //    self.podcastList = [NSMutableArray array];
@@ -147,29 +148,50 @@
     
     for (NSDictionary *item in data) {
         
-        NSDictionary *podcasts = @{@"kTitle":item[@"title"],@"kImage":item[@"image"],@"kDescription":item[@"description"],@"kCategory":item[@"series"][0][@"name"],@"kCreatedTime":item[@"created_at"]};
+        NSManagedObjectContext *context = MANAGE_CONTEXT;
         
+        PodcastsItem *podcastsItem = (PodcastsItem*)[PodcastsItem addItemWithContext:context];
         
+        podcastsItem.id_num = isNIL(item[@"id"]);
+        podcastsItem.title = isNIL(item[@"title"]);
+        podcastsItem.image = isNIL(item[@"image"]);
+        podcastsItem.description_detail = isNIL(item[@"description"]);
+        podcastsItem.category_name = isNIL(item[@"series"][0][@"name"]);
+        podcastsItem.created_date = isNIL(item[@"created_at"]);
         
-        [self.podcastList addObject:podcasts];
+        NSError *error = nil;
+        
+        if (![context save:&error]) {
+            UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Fatal Error" message:@"Error saving data. Please contact developer." preferredStyle:UIAlertControllerStyleActionSheet];
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }];
+            
+            [ac addAction:cancel];
+            
+            [self presentViewController:ac animated:YES completion:nil];
+        }
+        
+        [self.podcastList addObject:podcastsItem];
     }
     
-    for (NSDictionary *dictionary in self.podcastList) {
-        NSString *key = [dictionary objectForKey:@"kCategory"];
+    for (PodcastsItem *item in self.podcastList) {
+        NSString *key = item.category_name;
         if (![[self.categorizedPodcast allKeys] containsObject:key]) {
             NSMutableArray *array = [NSMutableArray array];
             [self.categorizedPodcast setObject:[array mutableCopy] forKey:key];
             
-            NSDictionary *category = @{@"kTitle":key,@"kImage":dictionary[@"kImage"]};
+            NSDictionary *category = @{@"kTitle":key,@"kImage":item.image,@"kImageData":isNIL(item.image_data)};
             [self.categories addObject:category];
         }
         
         NSMutableArray *subArray = [self.categorizedPodcast objectForKey:key];
-        [subArray addObject:dictionary];
+        [subArray addObject:item];
         
         [self.categorizedPodcast setObject:subArray forKey:key];
     }
 
+    [self removeLoadingAnimation];
 
     [self.mainTableView reloadData];
     
@@ -228,9 +250,34 @@
     if (self.isCategoriesShown) {
         NSString *title = [self.categories[section] objectForKey:@"kTitle"];
         
-        NSURL *urlImage = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",kAPI_LINK,[self.categories[section] objectForKey:@"kImage"]]];
+        NSData *imageData = nil;
+        if ([self.categories[section] objectForKey:@"kImageData"]) {
+            imageData = [self.categories[section] objectForKey:@"kImageData"];
+        }
+        else {
+            if ([[self.categories[section] objectForKey:@"kImage"] length]) {
+                
+                NSString *urlPath = [self.categories[section] objectForKey:@"kImage"];
+                [self getImageFromURL:urlPath completionHandler:^(NSURLResponse * _Nullable response, id  _Nullable responseObject, NSError * _Nullable error) {
+                    
+                    if(!error) {
+                        UIImage *image = (UIImage*)responseObject;
+                        NSMutableDictionary *updated = [[NSMutableDictionary alloc] initWithDictionary:self.categories[section]];
+                        
+                        [updated setObject:UIImageJPEGRepresentation(image, 100.0f) forKey:@"kImageData"];
+                        
+                        [self.categories replaceObjectAtIndex:section withObject:updated];
+                        
+                        [self.mainTableView reloadData];
+                    }
+                } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
+                    
+                }];
+            }
+        }
         
-        UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:urlImage]];
+        
+        UIImage *image = [UIImage imageWithData:imageData];
 //        UIImage *image = [self.categories[section] objectForKey:@"kImage"];
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         [button setFrame:CGRectMake(0.0f, 0.0f, self.view.bounds.size.width, 160.0f)];
@@ -254,30 +301,31 @@
     
     PodcastTableViewCell *cell = (PodcastTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"podcastCell"];
     
-    NSDictionary *dictionary = nil;
+    PodcastsItem *item = nil;
     if (self.isCategoriesShown) {
         NSString *key = [[self.categories objectAtIndex:[indexPath section]] objectForKey:@"kTitle"];
-        dictionary = [[self.categorizedPodcast objectForKey:key] objectAtIndex:[indexPath row]];
+        item = [[self.categorizedPodcast objectForKey:key] objectAtIndex:[indexPath row]];
         
     }
     else {
-        dictionary = [self.podcastList objectAtIndex:[indexPath row]];
+        item = [self.podcastList objectAtIndex:[indexPath row]];
     }
     
-    cell.podcastTitle.text = [NSString stringWithFormat:@"%@ %li",[dictionary objectForKey:@"kTitle"],(long)[indexPath row]];
-    cell.podcastDescription.text = [dictionary objectForKey:@"kDescription"];
+    cell.podcastTitle.text = [NSString stringWithFormat:@"%@",item.title];
+    cell.podcastDescription.text = item.description_detail;
     [cell.podcastSpeaker setTitle:@"  Speaker 1" forState:UIControlStateNormal];
-    [cell.podcastDate setTitle:[NSString stringWithFormat:@"  %@",dictionary[@"kCreatedTime"]] forState:UIControlStateNormal];
+    [cell.podcastDate setTitle:[NSString stringWithFormat:@"  %@",item.created_date] forState:UIControlStateNormal];
     [cell.podcastLocation setTitle:@"  CCF CENTER" forState:UIControlStateNormal];
     
-//    NSURL *urlImage = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",kAPI_LINK,[dictionary objectForKey:@"kImage"]]];
-//    [cell.podcastImage setImage:[UIImage imageWithData:[NSData dataWithContentsOfURL:urlImage]]];
-
-    [self getImageFromURL:[dictionary objectForKey:@"kImage"] completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-        [cell.podcastImage setImage: (UIImage*) responseObject];
-    } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
-        
-    }];
+    
+    if (item.image_data) {
+        cell.podcastImage.image = [UIImage imageWithData:item.image_data];
+    }
+    else {
+        if ([item.image length]) {
+            [self getImageFromURL:item.image onIndex:[indexPath row]];
+        }
+    }
     
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -288,28 +336,25 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    NSDictionary *dictionary = nil;
+    
+    PodcastsItem *item = nil;
     if (self.isCategoriesShown) {
         NSString *key = [[self.categories objectAtIndex:[indexPath section]] objectForKey:@"kTitle"];
-        dictionary = [[self.categorizedPodcast objectForKey:key] objectAtIndex:[indexPath row]];
+        item = [[self.categorizedPodcast objectForKey:key] objectAtIndex:[indexPath row]];
         
     }
     else {
-        dictionary = [self.podcastList objectAtIndex:[indexPath row]];
+        item = [self.podcastList objectAtIndex:[indexPath row]];
     }
     
     PodcastDetailsTableViewController *details = [self.storyboard instantiateViewControllerWithIdentifier:@"podcastDetailsView"];
     
-    details.podcastTitle = [NSString stringWithFormat:@"%@ %li",[dictionary objectForKey:@"kTitle"],(long)[indexPath row]];
-    details.podcastDescription = [dictionary objectForKey:@"kDescription"];
-    NSMutableString *category = [[dictionary objectForKey:@"kCategory"] mutableCopy];
-    [category replaceOccurrencesOfString:@"-" withString:@" " options:NSLiteralSearch range:NSMakeRange(0, category.length)];
-    details.otherText = [category capitalizedString];
+    details.podcastTitle = [NSString stringWithFormat:@"%@",item.title];
+    details.podcastDescription = item.description_detail;
+    details.otherText = [item.category_name capitalizedString];
     details.podcastSpeaker = @"Speaker 1";
     
-    NSURL *urlImage = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",kAPI_LINK,[dictionary objectForKey:@"kImage"]]];
-    
-    details.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:urlImage]];
+    details.imageURL = item.image;
     details.youtubeID = @"Xd_6MSWz2J4";
     details.urlForAudio = @"audiofile";
     
@@ -360,15 +405,11 @@
     
     NSString *key = [self.categories[sender.tag] objectForKey:@"kTitle"];
     
-    NSURL *urlImage = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",kAPI_LINK,[self.categories[sender.tag] objectForKey:@"kImage"]]];
+    PodcastsItem *item = [[self.categorizedPodcast objectForKey:key] lastObject];
     
-    UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:urlImage]];
-    podcastListVC.categoryImage = image;
+    podcastListVC.categoryImageURL = item.image;
     podcastListVC.podcastList = [self.categorizedPodcast objectForKey:key];
-    
-    NSMutableString *category = [[self.categories[sender.tag] objectForKey:@"kTitle"] mutableCopy];
-    [category replaceOccurrencesOfString:@"-" withString:@" " options:NSLiteralSearch range:NSMakeRange(0, category.length)];
-    podcastListVC.podcastCategoryTitle = [category capitalizedString];
+    podcastListVC.podcastCategoryTitle = [item.category_name capitalizedString];
     
     
     CATransition *transition = [CATransition animation];
@@ -387,5 +428,46 @@
     
 }
 
+
+- (void) getImageFromURL:(NSString*)urlPath onIndex:(NSInteger)index {
+    [self getImageFromURL:urlPath completionHandler:^(NSURLResponse * _Nullable response, id  _Nullable responseObject, NSError * _Nullable error) {
+        if(!error) {
+            UIImage *image = (UIImage*)responseObject;
+            
+            
+            NSManagedObjectContext *context = MANAGE_CONTEXT;
+            
+            NSFetchRequest *request = [PodcastsItem fetchRequest];
+            [request setReturnsObjectsAsFaults:NO];
+            NSError *error = nil;
+            
+            NSArray *result = [NSArray arrayWithArray:[context executeFetchRequest:request error:&error]];
+            
+            id podcastItem = nil;
+            
+            for (PodcastsItem *item in result) {
+                if ([item.id_num integerValue] == [((PodcastsItem*)[self.podcastList objectAtIndex:index]).id_num integerValue]) {
+                    podcastItem = item;
+                    break;
+                }
+            }
+            
+            ((PodcastsItem*)podcastItem).image_data = UIImageJPEGRepresentation(image, 100.0f);
+            
+            NSError *saveError = nil;
+            
+            if([context save:&saveError]) {
+                
+                PodcastTableViewCell *cell = (PodcastTableViewCell*)[self.mainTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+                
+                cell.podcastImage.image = image;
+                
+                
+            }
+        }
+    } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
+        
+    }];
+}
 
 @end

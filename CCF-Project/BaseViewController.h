@@ -18,9 +18,20 @@
 #import "UIButton+LocationValues.h"
 #import "AFNetworking.h"
 
+#import "NewsItem+CoreDataClass.h"
+#import "PodcastsItem+CoreDataClass.h"
+#import "EventsItem+CoreDataClass.h"
+#import "SatellitesItem+CoreDataClass.h"
 
+#import "AppDelegate.h"
 
 #define NETWORK_INDICATOR(bool)                                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:bool];
+
+#define MANAGE_CONTEXT                                                  ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext
+
+
+#define isNIL(key)                                                      (key && ![key isKindOfClass:[NSNull class]])?key:@""
+
 
 //api links
 extern NSString * const kAPI_LINK;
@@ -56,4 +67,10 @@ extern NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION;
 - (void)callPOSTAPI:( nullable NSString*)method withParameters:( nullable NSDictionary*)parameters completionHandler:(void  (^_Nullable)(id _Nullable response))completion;
 
 - (void)getImageFromURL:(NSString*)urlPath  completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler andProgress:(void (^)(NSInteger expectedBytesToReceive, NSInteger receivedBytes))progress;
+
+
+- (void) showLoadingAnimation:(UIView*)view;
+
+
+- (void) removeLoadingAnimation;
 @end

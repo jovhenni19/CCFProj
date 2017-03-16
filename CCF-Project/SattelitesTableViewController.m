@@ -57,6 +57,8 @@
     
     self.shownPerPage = 0;
     
+    NETWORK_INDICATOR(YES)
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendSattelitesList:) name:kOBS_SATTELITES_NOTIFICATION object:nil];
     
     [self callGETAPI:kSATTELITES_LINK withParameters:nil completionNotification:kOBS_SATTELITES_NOTIFICATION];
@@ -155,9 +157,13 @@
 - (void)appendSattelitesList:(NSNotification*)notification {
 //    NSLog(@"### result:%@",notification.object);
     
+    NETWORK_INDICATOR(NO)
     
     if(!self.sattelites_list){
         self.sattelites_list = [NSMutableArray array];
+    }
+    if(!self.allLocations){
+        self.allLocations = [NSMutableDictionary dictionary];
     }
     
     NSDictionary *result = [NSDictionary dictionaryWithDictionary:notification.object];
@@ -191,8 +197,9 @@
     NSMutableArray *sortArray = [NSMutableArray arrayWithArray:[self.allLocations allKeys]];
     self.alphabetSections = [sortArray sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     
-    [self.tableView reloadData];
+//    NSLog(@"locations:%@\n\n\nsections:%@",self.allLocations,self.alphabetSections);
     
+    NETWORK_INDICATOR(YES)
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationUpdateFinished:) name:kOBS_LOCATIONFINISHED_NOTIFICATION object:nil];
     
     self.locationManager = [[CLLocationManager alloc] init];
@@ -339,6 +346,10 @@
     __block NSArray *userCurrentAddressLine = [NSArray array];
     
     [manager stopUpdatingLocation];
+    
+    
+//    NSLog(@"locations:%@",self.allLocations);
+    
     CLGeocoder *geocoder = [[CLGeocoder alloc] init] ;
     [geocoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray *placemarks, NSError *error)
      {
@@ -430,6 +441,10 @@
     self.nearbySections = [sortArray sortedArrayUsingSelector:@selector(localizedStandardCompare:)];
     
     self.isLocationFinished = YES;
+    
+    
+    NETWORK_INDICATOR(NO)
+    
     [self.tableView reloadData];
 }
 

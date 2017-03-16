@@ -58,13 +58,13 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.066666666666666666" green="0.70196078431372544" blue="0.76862745098039209" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstItem="pCF-mB-n4L" firstAttribute="top" secondItem="tZk-N2-GBg" secondAttribute="top" constant="6" id="4G6-dz-Jzi"/>
-                                    <constraint firstAttribute="bottom" secondItem="tmK-6R-Kux" secondAttribute="bottom" constant="14" id="Ai9-sp-zb6"/>
+                                    <constraint firstAttribute="bottom" secondItem="tmK-6R-Kux" secondAttribute="bottom" constant="15" id="Ai9-sp-zb6"/>
                                     <constraint firstAttribute="trailing" secondItem="tmK-6R-Kux" secondAttribute="trailing" constant="40" id="Ctz-bj-oBe"/>
-                                    <constraint firstItem="J8S-1m-oIm" firstAttribute="centerY" secondItem="tZk-N2-GBg" secondAttribute="centerY" id="HhE-u0-gIV"/>
+                                    <constraint firstItem="J8S-1m-oIm" firstAttribute="centerY" secondItem="tZk-N2-GBg" secondAttribute="centerY" constant="9" id="HhE-u0-gIV"/>
                                     <constraint firstItem="pCF-mB-n4L" firstAttribute="leading" secondItem="tZk-N2-GBg" secondAttribute="leading" constant="8" id="Qys-k7-Euv"/>
                                     <constraint firstAttribute="trailing" secondItem="J8S-1m-oIm" secondAttribute="trailing" constant="20" id="U8P-sU-ZIx"/>
-                                    <constraint firstAttribute="height" constant="55" id="UGx-8l-NYC"/>
+                                    <constraint firstAttribute="height" constant="75" id="UGx-8l-NYC"/>
+                                    <constraint firstAttribute="bottom" secondItem="pCF-mB-n4L" secondAttribute="bottom" constant="8" id="Ze6-S7-F0D"/>
                                 </constraints>
                             </view>
                             <scrollView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceHorizontal="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IX9-Or-9jl">
@@ -115,17 +115,21 @@
                         <constraints>
                             <constraint firstItem="eew-Sh-vJH" firstAttribute="top" secondItem="tZk-N2-GBg" secondAttribute="bottom" id="3Q1-fS-tvW"/>
                             <constraint firstItem="IX9-Or-9jl" firstAttribute="leading" secondItem="9sg-qI-Cp5" secondAttribute="leading" id="B1J-L9-tY3"/>
+                            <constraint firstItem="eew-Sh-vJH" firstAttribute="top" secondItem="tZk-N2-GBg" secondAttribute="bottom" id="C8e-iW-DBd"/>
                             <constraint firstItem="Bjy-Qp-KGp" firstAttribute="top" secondItem="IX9-Or-9jl" secondAttribute="bottom" id="MLc-sB-J7l"/>
                             <constraint firstItem="eew-Sh-vJH" firstAttribute="leading" secondItem="9sg-qI-Cp5" secondAttribute="leading" id="QWj-6h-FN5"/>
                             <constraint firstAttribute="trailing" secondItem="eew-Sh-vJH" secondAttribute="trailing" id="XUr-Xt-G7g"/>
+                            <constraint firstItem="IX9-Or-9jl" firstAttribute="top" secondItem="eew-Sh-vJH" secondAttribute="bottom" id="Zds-9w-uW1"/>
                             <constraint firstItem="IX9-Or-9jl" firstAttribute="top" secondItem="eew-Sh-vJH" secondAttribute="bottom" id="aLs-aP-sn7"/>
                             <constraint firstItem="tZk-N2-GBg" firstAttribute="leading" secondItem="9sg-qI-Cp5" secondAttribute="leading" id="h6J-k7-MP2"/>
+                            <constraint firstAttribute="trailing" secondItem="eew-Sh-vJH" secondAttribute="trailing" id="meA-aF-hQj"/>
                             <constraint firstAttribute="trailing" secondItem="tZk-N2-GBg" secondAttribute="trailing" id="mwv-Rz-va3"/>
                             <constraint firstAttribute="trailing" secondItem="IX9-Or-9jl" secondAttribute="trailing" id="rvp-Q2-nrd"/>
-                            <constraint firstItem="tZk-N2-GBg" firstAttribute="top" secondItem="V04-xd-3Ap" secondAttribute="bottom" id="uML-Q4-Ay2"/>
+                            <constraint firstItem="tZk-N2-GBg" firstAttribute="top" secondItem="V04-xd-3Ap" secondAttribute="bottom" constant="-20" id="uML-Q4-Ay2"/>
+                            <constraint firstItem="eew-Sh-vJH" firstAttribute="leading" secondItem="9sg-qI-Cp5" secondAttribute="leading" id="x1A-7F-G7r"/>
                         </constraints>
                     </view>
-                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <connections>
                         <outlet property="containerView" destination="9no-4D-x50" id="eS7-fU-kdH"/>
                         <outlet property="labelNotificationBadge" destination="tmK-6R-Kux" id="4Xx-33-zbi"/>

@@ -23,6 +23,8 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 @property (strong, nonatomic) UIView *backgroundView;
 @property (strong, nonatomic) UIWebView *webview;
 @property (strong, nonatomic) TWTRLogInButton *twitterLoginButton;
+//@property (strong, nonatomic) UIImageView *loading;
+@property (assign, nonatomic) BOOL isLoadingContent;
 @end
 
 @implementation BaseViewController
@@ -30,6 +32,7 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.isLoadingContent = NO;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -702,9 +705,10 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:baseURL];
     manager.responseSerializer = [AFImageResponseSerializer serializer];
 //    NSLog(@"base:%@ url:%@",baseURL,urlPath);
-    NSURLSessionDataTask *task = [manager dataTaskWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlPath relativeToURL:baseURL]] completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+    NSURLSessionDataTask *task = [manager dataTaskWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"/image/%@",urlPath] relativeToURL:baseURL]] completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
         NETWORK_INDICATOR(NO)
         
+        NSLog(@"error:%@",[error description]);
         completionHandler(response, responseObject, error);
     }];
     
@@ -722,6 +726,42 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     [task resume];
     
     
+}
+
+- (void) showLoadingAnimation:(UIView*)view {
+    
+    UIImageView *loading = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"loading-logo"]];
+    [loading setFrame:CGRectMake(0.0f, 0.0f, 160.0f, 160.0f)];
+    
+    [view addSubview:loading];
+    
+    loading.center = view.center;
+    
+    self.isLoadingContent = YES;
+    [self animateLoading:loading];
+}
+
+- (void) removeLoadingAnimation {
+    self.isLoadingContent = NO;
+}
+
+- (void) animateLoading:(UIView*)loadingView {
+    loadingView.transform = CGAffineTransformMakeScale(0.3f, 0.3f);
+    
+    [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
+        loadingView.transform = CGAffineTransformMakeScale(1.5f, 1.5f);
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.1f delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
+            loadingView.transform = CGAffineTransformMakeScale(0.75f, 0.75f);
+        } completion:^(BOOL finished) {
+            if (self.isLoadingContent) {
+                [self animateLoading:loadingView];
+            }
+            else {
+                [loadingView removeFromSuperview];                
+            }
+        }];
+    }];
 }
 
 @end

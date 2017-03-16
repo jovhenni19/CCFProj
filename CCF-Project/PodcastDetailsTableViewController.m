@@ -38,7 +38,7 @@
     [self.buttonSpeaker setTitle:self.podcastSpeaker forState:UIControlStateNormal];
     self.labelPodcastTitle.text = self.podcastTitle;
     
-    self.arrayContents = @[isNil(self.image),isNil(self.podcastDescription),isNil(self.urlForAudio),isNil(self.youtubeID)];
+    self.arrayContents = @[isNil(self.imageURL),isNil(self.podcastDescription),isNil(self.urlForAudio),isNil(self.youtubeID)];
     [self.tableView reloadData];
 }
 
@@ -167,7 +167,7 @@
             break;
         default:{
             PodDetailImageTableViewCell *custom = (PodDetailImageTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"imageCell" forIndexPath:indexPath];
-            custom.podcastImage.image = self.image;
+//            custom.podcastImage.image = self.image;
             cell = custom;
         }
             break;

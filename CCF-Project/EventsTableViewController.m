@@ -38,6 +38,7 @@
     
     [self callGETAPI:kEVENTS_LINK withParameters:nil completionNotification:kOBS_EVENTS_NOTIFICATION];
     
+    [self showLoadingAnimation:self.view];
     
     
 }
@@ -70,6 +71,8 @@
         
         [self.events_link addObject:events];
     }
+    
+    [self removeLoadingAnimation];
     
     [self.tableView reloadData];
 }

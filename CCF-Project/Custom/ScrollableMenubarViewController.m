@@ -50,6 +50,17 @@
 //            NSLog(@"  %@", name);
 //        }
 //    }
+    
+//    UIApplication *app = [UIApplication sharedApplication];
+//    UIWindow *window = [app keyWindow];
+//    
+//    UIView *statusBarView = [[UIView alloc] initWithFrame:CGRectMake(0, -app.statusBarFrame.size.height, window.rootViewController.view.bounds.size.width + 200.0f, app.statusBarFrame.size.height)];
+//    statusBarView.backgroundColor = [UIColor colorWithRed:17.0f/255.0f green:179.0f/255.0f blue:196.0f/255.0f alpha:1.0f];
+//    
+//    [window addSubview:statusBarView];
+    
+    [self setNeedsStatusBarAppearanceUpdate];
+    
     UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:CGRectMake(self.menuBarView.bounds.origin.x, self.menuBarView.bounds.origin.y, self.menuBarView.bounds.size.width + 10.0f, 30.0f)];
     self.menuBarView.layer.masksToBounds = NO;
     self.menuBarView.layer.shadowColor = [UIColor blackColor].CGColor;
@@ -72,7 +83,7 @@
     
     self.viewControllers = [[NSArray alloc] initWithObjects:newsViewController, podcastViewController, eventsViewController,sViewController,streamViewController,downloadedViewController,settingsViewController, nil];
     
-    self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.bounds.size.width, 34.0f)];
+    self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.menuBarView.bounds.size.width, 34.0f)];
     [self.scrollView setZoomScale:0.0f];
     [self.scrollView setScrollEnabled:YES];
     [self.scrollView setBounces:NO];
@@ -213,12 +224,23 @@
             prevVC.view.frame = prevView.bounds;
             [prevView addSubview:prevVC.view];
             
+            [self.pagingScrollview setContentSize:CGSizeMake(self.pagingScrollview.contentSize.width + viewSize.width, 0.0f)];
+            
+//            CGRect frame = prevView.frame;
+//            frame.origin = CGPointMake(0.0f, 0.0f);
+//            prevView.frame = frame;
+//            
+//            frame = self.containerView.frame;
+//            frame.origin = CGPointMake(viewSize.width, 0.0f);
+//            self.containerView.frame = frame;
+//            
+//            [self.pagingScrollview setContentOffset:CGPointMake(viewSize.width, 0.0f)];
             
         }
         
         
         if (self.selectedIndex < self.viewControllers.count-1) {
-            nextView = [[UIView alloc] initWithFrame:CGRectMake(viewSize.width, 0.0f, viewSize.width, viewSize.height)];
+            nextView = [[UIView alloc] initWithFrame:CGRectMake(self.containerView.frame.origin.x + self.containerView.frame.size.width, 0.0f, viewSize.width, viewSize.height)];
             nextView.backgroundColor = [UIColor yellowColor];
             
             [self.pagingScrollview addSubview:nextView];
@@ -226,6 +248,8 @@
             UIViewController *nextVC = [self.viewControllers objectAtIndex:self.selectedIndex+1];
             nextVC.view.frame = nextView.bounds;
             [nextView addSubview:nextVC.view];
+            
+            [self.pagingScrollview setContentSize:CGSizeMake(self.pagingScrollview.contentSize.width + viewSize.width, 0.0f)];
         }
         
         self.settingView = NO;
@@ -235,8 +259,13 @@
 }
 
 - (BOOL)prefersStatusBarHidden {
-    return YES;
+    return NO;
 }
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
 - (IBAction)showNotifications:(id)sender {
 }
 

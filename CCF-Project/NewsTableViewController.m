@@ -40,6 +40,7 @@
     
     [self callGETAPI:kNEWS_LINK withParameters:nil completionNotification:kOBS_NEWS_NOTIFICATION];
     
+    [self showLoadingAnimation:self.view];
     
 }
 
@@ -62,9 +63,38 @@
     NSArray *data = result[@"data"];
     
     for (NSDictionary *item in data) {
-        NSDictionary *news = @{@"kTitle":item[@"title"],@"kImage":item[@"image"],@"kDescription":item[@"description"],@"kGroupName":item[@"groups"][0][@"name"],@"kCreatedTime":item[@"created_at"]};
-        [self.news_list addObject:news];
+        
+        NSManagedObjectContext *context = MANAGE_CONTEXT;
+        
+        NewsItem *newsItem = (NewsItem*)[NewsItem addItemWithContext:context];
+        
+        newsItem.id_num = isNIL(item[@"id"]);
+        newsItem.title = isNIL(item[@"title"]);
+        newsItem.image = isNIL(item[@"image"]);
+        newsItem.group_name = isNIL(item[@"groups"][0][@"name"]);
+        newsItem.description_detail = isNIL(item[@"description"]);
+        newsItem.created_date = isNIL(item[@"created_at"]);
+        
+        
+        
+        NSError *error = nil;
+        
+        if (![context save:&error]) {
+            UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Fatal Error" message:@"Error saving data. Please contact developer." preferredStyle:UIAlertControllerStyleActionSheet];
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }];
+            
+            [ac addAction:cancel];
+            
+            [self presentViewController:ac animated:YES completion:nil];
+        }
+        
+        
+        [self.news_list addObject:newsItem];
     }
+    
+    [self removeLoadingAnimation];
     
     [self.tableView reloadData];
         
@@ -100,16 +130,16 @@
     
     NewsCollapsedTableViewCell *cell = (NewsCollapsedTableViewCell*)[tableView dequeueReusableCellWithIdentifier:/*@"newsCell"*/@"newsCell-noLocation"];
     
-    NSDictionary *news = [self.news_list objectAtIndex:[indexPath row]];
+    NewsItem *newsItem = (NewsItem*)[self.news_list objectAtIndex:[indexPath row]];
     
-    cell.labelNewsTitle.text = news[@"kTitle"];
-    cell.labelTimeCreated.text = [self getTimepassedTextFrom:news[@"kCreatedTime"]];
-    cell.textNewsDetails.text = news[@"kDescription"];
+    cell.labelNewsTitle.text = newsItem.title;
+    cell.labelTimeCreated.text = [self getTimepassedTextFrom:newsItem.created_date];
+    cell.textNewsDetails.text = newsItem.description_detail;
     [cell.textNewsDetails scrollsToTop];
     
-    [cell.buttonGroupName setTitle:[NSString stringWithFormat:@"  %@",news[@"kGroupName"]] forState:UIControlStateNormal];
+    [cell.buttonGroupName setTitle:[NSString stringWithFormat:@"  %@",newsItem.group_name] forState:UIControlStateNormal];
     [cell.buttonLocation setTitle:@"  CCF CENTER" forState:UIControlStateNormal];
-    [cell.buttonDate setTitle:[NSString stringWithFormat:@"  %@",news[@"kCreatedTime"]] forState:UIControlStateNormal];
+    [cell.buttonDate setTitle:[NSString stringWithFormat:@"  %@",newsItem.created_date] forState:UIControlStateNormal];
     [cell.buttonSpeaker setTitle:@"  Speaker Name here" forState:UIControlStateNormal];
     [cell.buttonSpeaker setHidden:YES];
     [cell.buttonLocation setHidden:YES];
@@ -129,11 +159,12 @@
     EventsDetailViewController *detailsVC = [self.storyboard instantiateViewControllerWithIdentifier:@"eventsDetail"];
     detailsVC.showRegisterCell = NO;
     
-    NSDictionary *news = [self.news_list objectAtIndex:[indexPath row]];
-    detailsVC.titleText = news[@"kTitle"];
-    detailsVC.dateText = news[@"kCreatedTime"];
-    detailsVC.detailDescription = news[@"kDescription"];
-    detailsVC.imageURL = news[@"kImage"];
+    NewsItem *newsItem = (NewsItem*)[self.news_list objectAtIndex:[indexPath row]];
+    
+    detailsVC.titleText = newsItem.title;
+    detailsVC.dateText = newsItem.created_date;
+    detailsVC.detailDescription = newsItem.description_detail;
+    detailsVC.imageURL = newsItem.image;
     
     
     CATransition *transition = [CATransition animation];
