@@ -441,4 +441,8 @@
     [self removeFromParentViewController];
 }
 
+- (void)didMoveToParentViewController:(UIViewController *)parent {
+    [self.audioPlayer pauseAudio];
+}
+
 @end

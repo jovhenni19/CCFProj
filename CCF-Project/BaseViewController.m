@@ -50,6 +50,18 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 }
 */
 
+- (void)reloadTables {
+    
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Success" message:@"YOUTH GATHERING saved in calendar" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *close = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [ac addAction:close];
+    [self presentViewController:ac animated:YES completion:^{
+        
+    }];
+}
+
 - (IBAction)viewMapButton:(id)sender {
     
     UIButton *button = (UIButton*)sender;
@@ -215,7 +227,11 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 
 - (IBAction)backButton:(id)sender {
     
-    UIView *viewShown = [[[(self.parentViewController.view) viewWithTag:1990] subviews] lastObject];
+    
+    NSInteger index = [((ScrollableMenubarViewController*)self.parentViewController) selectedIndex];
+    
+    
+    UIView *viewShown = [[[(self.parentViewController.view) viewWithTag:1990 + index] subviews] lastObject];
     
     if (viewShown == nil) {
         NSLog(@"ERROR !!");
@@ -447,7 +463,7 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
         self.backgroundView.backgroundColor = [UIColor colorWithWhite:0.3f alpha:0.5f];
     }
     
-    self.webview = [[UIWebView alloc] initWithFrame:CGRectMake(15.0f, 15.0f, self.backgroundView.frame.size.width - 30.0f, self.backgroundView.frame.size.height - 30.0f)];
+    self.webview = [[UIWebView alloc] initWithFrame:CGRectMake(15.0f, 35.0f, self.backgroundView.frame.size.width - 30.0f, self.backgroundView.frame.size.height - 50.0f)];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     self.webview.backgroundColor = [UIColor clearColor];
     self.webview.scrollView.bounces = NO;
@@ -462,6 +478,8 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     [button addTarget:self action:@selector(closeWebView) forControlEvents:UIControlEventTouchUpInside];
     [button setFrame:CGRectMake(-15.0f, -15.0f, 28.0f, 28.0f)];
     button.layer.zPosition = 1.0f;
+    button.layer.borderWidth = 2.0f;
+    button.layer.borderColor = [UIColor whiteColor].CGColor;
     
     [self.webview addSubview:button];
     
@@ -736,6 +754,10 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     [view addSubview:loading];
     
     loading.center = view.center;
+    
+    CGRect frame = loading.frame;
+    frame.origin.y = 150.0f;
+    loading.frame = frame;
     
     self.isLoadingContent = YES;
     [self animateLoading:loading];

@@ -127,6 +127,10 @@
 - (void)appendPodcastsList:(NSNotification*)notification {
 //    NSLog(@"### result:%@",notification.object);
     
+    
+    [self removeLoadingAnimation];
+    
+    
     if(!self.podcastList){
         self.podcastList = [NSMutableArray array];
     }
@@ -146,9 +150,10 @@
     
     NSArray *data = result[@"data"];
     
+    NSManagedObjectContext *context = MANAGE_CONTEXT;
+    
+    [self showLoadingAnimation:self.view];
     for (NSDictionary *item in data) {
-        
-        NSManagedObjectContext *context = MANAGE_CONTEXT;
         
         PodcastsItem *podcastsItem = (PodcastsItem*)[PodcastsItem addItemWithContext:context];
         
@@ -190,15 +195,19 @@
         
         [self.categorizedPodcast setObject:subArray forKey:key];
     }
-
-    [self removeLoadingAnimation];
-
+    
+    
+    
+    
     [self.mainTableView reloadData];
+    
+    [self removeLoadingAnimation];
     
 }
 
-
 - (IBAction)changeView:(id)sender {
+    
+    [self showLoadingAnimation:self.view];
     if ([self.segmentedControl selectedSegmentIndex] == 1) {
         self.isCategoriesShown = YES;
     }
@@ -207,6 +216,7 @@
     }
     
     [self.mainTableView reloadData];
+    [self removeLoadingAnimation];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -251,7 +261,7 @@
         NSString *title = [self.categories[section] objectForKey:@"kTitle"];
         
         NSData *imageData = nil;
-        if ([self.categories[section] objectForKey:@"kImageData"]) {
+        if ([self.categories[section] objectForKey:@"kImageData"] && [[self.categories[section] objectForKey:@"kImageData"] isKindOfClass:[NSData class]]) {
             imageData = [self.categories[section] objectForKey:@"kImageData"];
         }
         else {
@@ -276,16 +286,20 @@
             }
         }
         
-        
-        UIImage *image = [UIImage imageWithData:imageData];
 //        UIImage *image = [self.categories[section] objectForKey:@"kImage"];
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         [button setFrame:CGRectMake(0.0f, 0.0f, self.view.bounds.size.width, 160.0f)];
-        [button setBackgroundImage:image forState:UIControlStateNormal];
         [button setTitle:title forState:UIControlStateNormal];
         button.titleLabel.font = [UIFont fontWithName:@"OpenSans" size:14.0f];
         button.tag = section;
         [button addTarget:self action:@selector(setSectionExpandedWithButton:) forControlEvents:UIControlEventTouchUpInside];
+        
+        if (imageData) {
+            UIImage *image = [UIImage imageWithData:imageData];
+            [button setImage:image forState:UIControlStateNormal];
+            [button.imageView setContentMode:UIViewContentModeScaleAspectFill];
+            [button setTitle:@"" forState:UIControlStateNormal];
+        }
         
         button.layer.borderWidth = 1.0f;
         button.layer.borderColor = [UIColor whiteColor].CGColor;
@@ -299,8 +313,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    PodcastTableViewCell *cell = (PodcastTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"podcastCell"];
-    
     PodcastsItem *item = nil;
     if (self.isCategoriesShown) {
         NSString *key = [[self.categories objectAtIndex:[indexPath section]] objectForKey:@"kTitle"];
@@ -311,12 +323,19 @@
         item = [self.podcastList objectAtIndex:[indexPath row]];
     }
     
+    NSString *identifier = ([item.image length])?@"podcastCellImage":@"podcastCell";
+    
+    PodcastTableViewCell *cell = (PodcastTableViewCell*)[tableView dequeueReusableCellWithIdentifier:identifier];
+    
     cell.podcastTitle.text = [NSString stringWithFormat:@"%@",item.title];
     cell.podcastDescription.text = item.description_detail;
     [cell.podcastSpeaker setTitle:@"  Speaker 1" forState:UIControlStateNormal];
     [cell.podcastDate setTitle:[NSString stringWithFormat:@"  %@",item.created_date] forState:UIControlStateNormal];
     [cell.podcastLocation setTitle:@"  CCF CENTER" forState:UIControlStateNormal];
-    
+    cell.podcastLocation.latitude = [NSNumber numberWithDouble:14.589221];
+    cell.podcastLocation.longitude = [NSNumber numberWithDouble:121.078906];
+    cell.podcastLocation.locationName = @"CCF CENTER";
+    [cell.podcastLocation addTarget:self action:@selector(viewMapButton:) forControlEvents:UIControlEventTouchUpInside];
     
     if (item.image_data) {
         cell.podcastImage.image = [UIImage imageWithData:item.image_data];
@@ -407,7 +426,8 @@
     
     PodcastsItem *item = [[self.categorizedPodcast objectForKey:key] lastObject];
     
-    podcastListVC.categoryImageURL = item.image;
+    podcastListVC.categoryImageURL = [self.categories[sender.tag] objectForKey:@"kImage"];
+    podcastListVC.categoryImageData = [self.categories[sender.tag] objectForKey:@"kImageData"];
     podcastListVC.podcastList = [self.categorizedPodcast objectForKey:key];
     podcastListVC.podcastCategoryTitle = [item.category_name capitalizedString];
     

@@ -22,6 +22,8 @@
 #import "PodcastsItem+CoreDataClass.h"
 #import "EventsItem+CoreDataClass.h"
 #import "SatellitesItem+CoreDataClass.h"
+#import "ScrollableMenubarViewController.h"
+
 
 #import "AppDelegate.h"
 
@@ -68,9 +70,9 @@ extern NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION;
 
 - (void)getImageFromURL:(NSString*)urlPath  completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler andProgress:(void (^)(NSInteger expectedBytesToReceive, NSInteger receivedBytes))progress;
 
-
 - (void) showLoadingAnimation:(UIView*)view;
 
-
 - (void) removeLoadingAnimation;
+
+- (void) reloadTables;
 @end

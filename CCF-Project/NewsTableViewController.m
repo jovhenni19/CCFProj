@@ -52,6 +52,8 @@
 - (void)appendNewsList:(NSNotification*)notification {
 //    NSLog(@"### result:%@",notification.object);
     
+    [self removeLoadingAnimation];
+    
     if(!self.news_list){
         self.news_list = [NSMutableArray array];
     }
@@ -62,6 +64,7 @@
     
     NSArray *data = result[@"data"];
     
+    [self showLoadingAnimation:self.view];
     for (NSDictionary *item in data) {
         
         NSManagedObjectContext *context = MANAGE_CONTEXT;
@@ -94,10 +97,10 @@
         [self.news_list addObject:newsItem];
     }
     
+    [self.tableView reloadData];
+    
     [self removeLoadingAnimation];
     
-    [self.tableView reloadData];
-        
 }
 
 #pragma mark - Table view data source
@@ -179,6 +182,9 @@
     [[self.view superview] addSubview:detailsVC.view];
     [[self parentViewController] addChildViewController:detailsVC];
     [detailsVC didMoveToParentViewController:[self parentViewController]];
+    
+    
+    
     
 //    if ([indexPath isEqual:self.indexPath_expanded]) {
 //        self.indexPath_expanded = [NSIndexPath indexPathForRow:-1 inSection:-1];

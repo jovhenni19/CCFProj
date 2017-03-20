@@ -13,4 +13,5 @@
 @property (strong, nonatomic) NSString *podcastCategoryTitle;
 @property (strong, nonatomic) NSArray *podcastList;
 @property (strong, nonatomic) NSString *categoryImageURL;
+@property (strong, nonatomic) NSData *categoryImageData;
 @end

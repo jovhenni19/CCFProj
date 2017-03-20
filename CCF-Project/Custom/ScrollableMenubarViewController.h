@@ -12,7 +12,8 @@
 @optional
 
 @end
-@interface ScrollableMenubarViewController : UIViewController <UIScrollViewDelegate>
+@interface ScrollableMenubarViewController : UIViewController <UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource>
+@property (strong, nonatomic) IBOutlet UIScrollView *scrollViewBar;
 @property (strong, nonatomic) IBOutlet UIView *menuBarView;
 @property (strong, nonatomic) IBOutlet UIView *containerView;
 @property (weak, nonatomic) IBOutlet UIScrollView *pagingScrollview;

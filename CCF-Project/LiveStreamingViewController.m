@@ -11,6 +11,8 @@
 @interface LiveStreamingViewController ()
 @property (weak, nonatomic) IBOutlet YTPlayerView *youtubePlayerView;
 @property (weak, nonatomic) IBOutlet UILabel *labelTimer;
+@property (weak, nonatomic) IBOutlet UIScrollView *mainScrollView;
+@property (weak, nonatomic) IBOutlet UIView *viewMain;
 
 @end
 
@@ -60,6 +62,13 @@
     [timer fire];
     
 }
+
+
+//- (void)viewDidAppear:(BOOL)animated {
+//    [super viewDidAppear:animated];
+//    
+//    NSLog(@"view:%@ scroll:%@",NSStringFromCGSize(self.viewMain.frame.size),NSStringFromCGSize(self.mainScrollView.frame.size));
+//}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

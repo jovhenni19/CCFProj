@@ -52,6 +52,7 @@
 - (void)appendEventsList:(NSNotification*)notification {
 //    NSLog(@"### result:%@",notification.object);
     
+    [self removeLoadingAnimation];
     
     if(!self.events_link){
         self.events_link = [NSMutableArray array];
@@ -63,6 +64,7 @@
     
     NSArray *data = result[@"data"];
     
+    [self showLoadingAnimation:self.view];
     for (NSDictionary *item in data) {
         
         NSDictionary *events = @{@"kTitle":item[@"title"],@"kImage":item[@"image"],@"kDescription":item[@"description"],@"kDate":item[@"date"],@"kTime":item[@"time"],@"kDateRaw":item[@"dateRaw"][@"date"],@"kRegLink":item[@"registration_link"],@"kSpeaker":item[@"speakers"],@"kMobile":item[@"contact_info"],@"kVenue":item[@"venue"],@"kCreatedTime":item[@"created_at"]};
@@ -72,9 +74,9 @@
         [self.events_link addObject:events];
     }
     
-    [self removeLoadingAnimation];
     
     [self.tableView reloadData];
+    [self removeLoadingAnimation];
 }
 
 
@@ -94,15 +96,23 @@
     
     NSDictionary *events = [self.events_link objectAtIndex:[indexPath row]];
     
-    NSURL *urlImage = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",kAPI_LINK,events[@"kImage"]]];
-    
-    UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:urlImage]];
-    
-    [cell.eventsImageView setImage:image];
+//    NSURL *urlImage = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",kAPI_LINK,events[@"kImage"]]];
+//    
+//    UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:urlImage]];
+//    
+//    [cell.eventsImageView setImage:image];
     
     [cell.eventsDate setTitle:[NSString stringWithFormat:@"  %@",events[@"kDate"]] forState:UIControlStateNormal];
     [cell.eventsTime setTitle:[NSString stringWithFormat:@"  %@",events[@"kTime"]] forState:UIControlStateNormal];
-    [cell.eventsVenue setTitle:[NSString stringWithFormat:@"  %@",events[@"kVenue"]] forState:UIControlStateNormal];
+    
+    
+    NSMutableString *venue = events[@"kVenue"];
+    [venue replaceOccurrencesOfString:@"," withString:@",\n" options:NSCaseInsensitiveSearch range:NSMakeRange(0, venue.length)];
+    [cell.eventsVenue setTitle:[NSString stringWithFormat:@"  %@",venue] forState:UIControlStateNormal];
+    
+//    cell.eventsVenue
+    
+    
     
     cell.eventsTitle.text = events[@"kTitle"];
     

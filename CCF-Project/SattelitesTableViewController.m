@@ -64,6 +64,7 @@
     [self callGETAPI:kSATTELITES_LINK withParameters:nil completionNotification:kOBS_SATTELITES_NOTIFICATION];
     
     
+    [self showLoadingAnimation:self.view];
     
     
     
@@ -157,6 +158,8 @@
 - (void)appendSattelitesList:(NSNotification*)notification {
 //    NSLog(@"### result:%@",notification.object);
     
+    [self removeLoadingAnimation];
+    
     NETWORK_INDICATOR(NO)
     
     if(!self.sattelites_list){
@@ -172,6 +175,7 @@
     
     NSArray *data = result[@"data"];
     
+    [self showLoadingAnimation:self.view];
     for (NSDictionary *item in data) {
         
         NSDictionary *sattelite = @{@"kLocationName":item[@"name"],@"kLatitude":item[@"latitude"],@"kLongitude":item[@"longitude"],@"kAddress":item[@"address_full"],@"kCreatedTime":item[@"created_at"]};
@@ -199,6 +203,8 @@
     
 //    NSLog(@"locations:%@\n\n\nsections:%@",self.allLocations,self.alphabetSections);
     
+    [self removeLoadingAnimation];
+    
     NETWORK_INDICATOR(YES)
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationUpdateFinished:) name:kOBS_LOCATIONFINISHED_NOTIFICATION object:nil];
     
@@ -212,6 +218,8 @@
     
     [self.locationManager startUpdatingLocation];
     
+    
+    [self showLoadingAnimation:self.view];
     
     
 }
@@ -257,6 +265,7 @@
     cell.labelAddress.longitude = [NSNumber numberWithDouble:[[location objectForKey:@"kLongitude"] doubleValue]];
     cell.labelAddress.locationName = [location objectForKey:@"kLocationName"];
     cell.labelAddress.locationSnippet = [location objectForKey:@"kAddress"];
+    
     
     [cell.labelAddress addTarget:self action:@selector(viewMapButton:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -318,6 +327,7 @@
 */
 - (IBAction)segmentedControlChange:(id)sender {
     
+    [self showLoadingAnimation:self.view];
     if ([self.segmentedControl selectedSegmentIndex] == 1) {
         self.isAllLocationSelected = YES;
         self.currentLocationList = self.allLocations;
@@ -330,6 +340,8 @@
     }
     
     [self.tableView reloadData];
+    
+    [self removeLoadingAnimation];
 }
 
 #pragma mark - CLLocationDelegate Methods
@@ -350,6 +362,7 @@
     
 //    NSLog(@"locations:%@",self.allLocations);
     
+    [self removeLoadingAnimation];
     CLGeocoder *geocoder = [[CLGeocoder alloc] init] ;
     [geocoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray *placemarks, NSError *error)
      {
