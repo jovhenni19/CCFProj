@@ -35,6 +35,8 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
+    self.audioPlayerPauser = self.audioPlayer;
+    
     [self.buttonSpeaker setTitle:self.podcastSpeaker forState:UIControlStateNormal];
     self.labelPodcastTitle.text = self.podcastTitle;
     
@@ -82,7 +84,7 @@
     switch ([indexPath section]) {
         case 1:{
             UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 280.0f, 80.0f)];
-            tv.text = @"Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
+            tv.text = self.podcastDescription;
             tv.font = [UIFont systemFontOfSize:14.0f];
             CGSize contentSize = [tv contentSize];
             
@@ -167,7 +169,18 @@
             break;
         default:{
             PodDetailImageTableViewCell *custom = (PodDetailImageTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"imageCell" forIndexPath:indexPath];
-//            custom.podcastImage.image = self.image;
+            if (self.imageData) {
+                custom.imageView.image = [UIImage imageWithData:self.imageData];
+            }
+            else {
+                if ([self.imageURL length]) {
+                    [self getImageFromURL:self.imageURL onIndex:[indexPath row]];
+                }
+                else {
+                    custom.imageView.image = [UIImage imageNamed:@"placeholder"];
+                    custom.imageView.alpha = 0.8f;
+                }
+            }
             cell = custom;
         }
             break;
@@ -441,8 +454,26 @@
     [self removeFromParentViewController];
 }
 
-- (void)didMoveToParentViewController:(UIViewController *)parent {
+- (void)removeFromParentViewController {
     [self.audioPlayer pauseAudio];
+}
+
+
+- (void) getImageFromURL:(NSString*)urlPath onIndex:(NSInteger)index {
+    [self getImageFromURL:urlPath completionHandler:^(NSURLResponse * _Nullable response, id  _Nullable responseObject, NSError * _Nullable error) {
+        if(!error) {
+            UIImage *image = (UIImage*)responseObject;
+            
+            self.imageData = UIImageJPEGRepresentation(image, 100.0f);
+            
+            PodDetailImageTableViewCell *cell = (PodDetailImageTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+            
+            cell.podcastImage.image = image;
+            
+        }
+    } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
+        
+    }];
 }
 
 @end

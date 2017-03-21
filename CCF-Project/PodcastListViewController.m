@@ -67,9 +67,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    PodcastsItem *item = [self.podcastList objectAtIndex:[indexPath row]];
+    PodcastsObject *item = [self.podcastList objectAtIndex:[indexPath row]];
         
-    NSString *identifier = ([item.image length])?@"podcastCellImage":@"podcastCell";
+    NSString *identifier = ([item.image_url length])?@"podcastCellImage":@"podcastCell";
     
     PodcastTableViewCell *cell = (PodcastTableViewCell*)[tableView dequeueReusableCellWithIdentifier:identifier];
     
@@ -89,8 +89,13 @@
         cell.podcastImage.image = [UIImage imageWithData:item.image_data];
     }
     else {
-        if ([item.image length]) {
-            [self getImageFromURL:item.image onIndex:[indexPath row]];
+        if ([item.image_url length]) {
+            [self getImageFromURL:item.image_url onIndex:[indexPath row]];
+        }
+        else {
+            
+            cell.podcastImage.image = [UIImage imageNamed:@"placeholder"];
+            cell.podcastImage.contentMode = UIViewContentModeScaleToFill;
         }
     }
     
@@ -142,35 +147,46 @@
             UIImage *image = (UIImage*)responseObject;
             
             
-            NSManagedObjectContext *context = MANAGE_CONTEXT;
-            
-            NSFetchRequest *request = [PodcastsItem fetchRequest];
-            [request setReturnsObjectsAsFaults:NO];
-            NSError *error = nil;
-            
-            NSArray *result = [NSArray arrayWithArray:[context executeFetchRequest:request error:&error]];
-            
-            id podcastItem = nil;
-            
-            for (PodcastsItem *item in result) {
-                if ([item.id_num integerValue] == [((PodcastsItem*)[self.podcastList objectAtIndex:index]).id_num integerValue]) {
-                    podcastItem = item;
+            for (PodcastsObject *item in self.podcastList) {
+                if ([item.id_num integerValue] == [((PodcastsObject*)[self.podcastList objectAtIndex:index]).id_num integerValue]) {
+                    item.image_data = UIImageJPEGRepresentation(image, 100.0f);
                     break;
                 }
             }
             
-            ((PodcastsItem*)podcastItem).image_data = UIImageJPEGRepresentation(image, 100.0f);
+            PodcastTableViewCell *cell = (PodcastTableViewCell*)[self.mainTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
             
-            NSError *saveError = nil;
+            cell.podcastImage.image = image;
             
-            if([context save:&saveError]) {
-                
-                PodcastTableViewCell *cell = (PodcastTableViewCell*)[self.mainTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-                
-                cell.podcastImage.image = image;
-                
-                
-            }
+            //            NSManagedObjectContext *context = MANAGE_CONTEXT;
+            //
+            //            NSFetchRequest *request = [PodcastsItem fetchRequest];
+            //            [request setReturnsObjectsAsFaults:NO];
+            //            NSError *error = nil;
+            //
+            //            NSArray *result = [NSArray arrayWithArray:[context executeFetchRequest:request error:&error]];
+            //
+            //            id podcastItem = nil;
+            //
+            //            for (PodcastsItem *item in result) {
+            //                if ([item.id_num integerValue] == [((PodcastsItem*)[self.podcastList objectAtIndex:index]).id_num integerValue]) {
+            //                    podcastItem = item;
+            //                    break;
+            //                }
+            //            }
+            //
+            //            ((PodcastsItem*)podcastItem).image_data = UIImageJPEGRepresentation(image, 100.0f);
+            //
+            //            NSError *saveError = nil;
+            //
+            //            if([context save:&saveError]) {
+            //
+            //                PodcastTableViewCell *cell = (PodcastTableViewCell*)[self.mainTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+            //                
+            //                cell.podcastImage.image = image;
+            //                
+            //                
+            //            }
         }
     } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
         

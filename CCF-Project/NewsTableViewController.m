@@ -67,31 +67,47 @@
     [self showLoadingAnimation:self.view];
     for (NSDictionary *item in data) {
         
-        NSManagedObjectContext *context = MANAGE_CONTEXT;
-        
-        NewsItem *newsItem = (NewsItem*)[NewsItem addItemWithContext:context];
-        
+//        NSManagedObjectContext *context = MANAGE_CONTEXT;
+//        
+//        NewsItem *newsItem = (NewsItem*)[NewsItem addItemWithContext:context];
+//        
+//        newsItem.id_num = isNIL(item[@"id"]);
+//        newsItem.title = isNIL(item[@"title"]);
+//        newsItem.image = isNIL(item[@"image"]);
+//        newsItem.group_name = isNIL(item[@"groups"][0][@"name"]);
+//        newsItem.description_detail = isNIL(item[@"description"]);
+//        newsItem.created_date = isNIL(item[@"created_at"]);
+//
+//        
+//        
+//        NSError *error = nil;
+//        
+//        if (![context save:&error]) {
+//            UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Fatal Error" message:@"Error saving data. Please contact developer." preferredStyle:UIAlertControllerStyleActionSheet];
+//            UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//                [self dismissViewControllerAnimated:YES completion:nil];
+//            }];
+//            
+//            [ac addAction:cancel];
+//            
+//            [self presentViewController:ac animated:YES completion:nil];
+//        }
+                
+        NewsObject *newsItem = [[NewsObject alloc] init];
         newsItem.id_num = isNIL(item[@"id"]);
         newsItem.title = isNIL(item[@"title"]);
-        newsItem.image = isNIL(item[@"image"]);
-        newsItem.group_name = isNIL(item[@"groups"][0][@"name"]);
+        newsItem.image_url = isNIL(item[@"image"]);
         newsItem.description_detail = isNIL(item[@"description"]);
         newsItem.created_date = isNIL(item[@"created_at"]);
         
-        
-        
-        NSError *error = nil;
-        
-        if (![context save:&error]) {
-            UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Fatal Error" message:@"Error saving data. Please contact developer." preferredStyle:UIAlertControllerStyleActionSheet];
-            UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-                [self dismissViewControllerAnimated:YES completion:nil];
-            }];
+        if ([item[@"groups"] isKindOfClass:[NSArray class]]) {
             
-            [ac addAction:cancel];
-            
-            [self presentViewController:ac animated:YES completion:nil];
+            newsItem.group_name = isNIL(item[@"groups"][0][@"name"]);
         }
+        else {
+            newsItem.group_name = isNIL(item[@"groups"]);
+        }
+
         
         
         [self.news_list addObject:newsItem];
@@ -133,14 +149,15 @@
     
     NewsCollapsedTableViewCell *cell = (NewsCollapsedTableViewCell*)[tableView dequeueReusableCellWithIdentifier:/*@"newsCell"*/@"newsCell-noLocation"];
     
-    NewsItem *newsItem = (NewsItem*)[self.news_list objectAtIndex:[indexPath row]];
+//    NewsItem *newsItem = (NewsItem*)[self.news_list objectAtIndex:[indexPath row]];
+    NewsObject *newsItem = (NewsObject*)[self.news_list objectAtIndex:[indexPath row]];
     
     cell.labelNewsTitle.text = newsItem.title;
     cell.labelTimeCreated.text = [self getTimepassedTextFrom:newsItem.created_date];
     cell.textNewsDetails.text = newsItem.description_detail;
     [cell.textNewsDetails scrollsToTop];
     
-    [cell.buttonGroupName setTitle:[NSString stringWithFormat:@"  %@",newsItem.group_name] forState:UIControlStateNormal];
+    [cell.buttonGroupName setTitle:[NSString stringWithFormat:@"  %@",[newsItem.group_name capitalizedString]] forState:UIControlStateNormal];
     [cell.buttonLocation setTitle:@"  CCF CENTER" forState:UIControlStateNormal];
     [cell.buttonDate setTitle:[NSString stringWithFormat:@"  %@",newsItem.created_date] forState:UIControlStateNormal];
     [cell.buttonSpeaker setTitle:@"  Speaker Name here" forState:UIControlStateNormal];
@@ -162,12 +179,14 @@
     EventsDetailViewController *detailsVC = [self.storyboard instantiateViewControllerWithIdentifier:@"eventsDetail"];
     detailsVC.showRegisterCell = NO;
     
-    NewsItem *newsItem = (NewsItem*)[self.news_list objectAtIndex:[indexPath row]];
+//    NewsItem *newsItem = (NewsItem*)[self.news_list objectAtIndex:[indexPath row]];
+    NewsObject *newsItem = (NewsObject*)[self.news_list objectAtIndex:[indexPath row]];
     
     detailsVC.titleText = newsItem.title;
     detailsVC.dateText = newsItem.created_date;
     detailsVC.detailDescription = newsItem.description_detail;
-    detailsVC.imageURL = newsItem.image;
+//    detailsVC.imageURL = newsItem.image;
+    detailsVC.imageURL = newsItem.image_url;
     
     
     CATransition *transition = [CATransition animation];

@@ -748,19 +748,21 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 
 - (void) showLoadingAnimation:(UIView*)view {
     
-    UIImageView *loading = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"loading-logo"]];
-    [loading setFrame:CGRectMake(0.0f, 0.0f, 160.0f, 160.0f)];
-    
-    [view addSubview:loading];
-    
-    loading.center = view.center;
-    
-    CGRect frame = loading.frame;
-    frame.origin.y = 150.0f;
-    loading.frame = frame;
+//    UIImageView *loading = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"loading-logo"]];
+//    [loading setFrame:CGRectMake(0.0f, 0.0f, 160.0f, 160.0f)];
+//    
+//    [view addSubview:loading];
+//    
+//    loading.center = view.center;
+//    
+//    CGRect frame = loading.frame;
+//    frame.origin.y = 150.0f;
+//    loading.frame = frame;
     
     self.isLoadingContent = YES;
-    [self animateLoading:loading];
+    self.loadingProgressView.hidden = NO;
+    [self animateLoading:view];
+    
 }
 
 - (void) removeLoadingAnimation {
@@ -768,22 +770,48 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 }
 
 - (void) animateLoading:(UIView*)loadingView {
-    loadingView.transform = CGAffineTransformMakeScale(0.3f, 0.3f);
+//    loadingView.transform = CGAffineTransformMakeScale(0.3f, 0.3f);
+//    
+//    [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
+//        loadingView.transform = CGAffineTransformMakeScale(1.5f, 1.5f);
+//    } completion:^(BOOL finished) {
+//        [UIView animateWithDuration:0.1f delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
+//            loadingView.transform = CGAffineTransformMakeScale(0.75f, 0.75f);
+//        } completion:^(BOOL finished) {
+//            if (self.isLoadingContent) {
+//                [self animateLoading:loadingView];
+//            }
+//            else {
+//                [loadingView removeFromSuperview];                
+//            }
+//        }];
+//    }];
     
-    [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
-        loadingView.transform = CGAffineTransformMakeScale(1.5f, 1.5f);
-    } completion:^(BOOL finished) {
-        [UIView animateWithDuration:0.1f delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
-            loadingView.transform = CGAffineTransformMakeScale(0.75f, 0.75f);
-        } completion:^(BOOL finished) {
-            if (self.isLoadingContent) {
-                [self animateLoading:loadingView];
+    
+    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        
+        
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            self.loadingProgressView.progress += 0.2f;
+            
+            if (self.loadingProgressView.progress == 1.0f) {
+                self.loadingProgressView.progress = 0.0f;
             }
-            else {
-                [loadingView removeFromSuperview];                
+            
+            
+            if (!self.isLoadingContent) {
+                self.loadingProgressView.hidden = YES;
+                [timer invalidate];
             }
-        }];
+            
+        });
+        
     }];
+    
+    [timer fire];
+    
 }
 
 @end

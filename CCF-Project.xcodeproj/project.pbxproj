@@ -45,6 +45,9 @@
 		335EA7191E31D5E800416E67 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 335EA7171E31D5E800416E67 /* LaunchScreen.storyboard */; };
 		335EA7241E31D5E800416E67 /* CCF_ProjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 335EA7231E31D5E800416E67 /* CCF_ProjectTests.m */; };
 		335EA72F1E31D5E800416E67 /* CCF_ProjectUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 335EA72E1E31D5E800416E67 /* CCF_ProjectUITests.m */; };
+		337F35B61E813D290009D6CD /* PodcastsObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 337F35B51E813D290009D6CD /* PodcastsObject.m */; };
+		337F35B91E813E230009D6CD /* EventsObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 337F35B81E813E230009D6CD /* EventsObject.m */; };
+		337F35BC1E813F820009D6CD /* SatellitesObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 337F35BB1E813F820009D6CD /* SatellitesObject.m */; };
 		3391BE171E726CCE005BC164 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3391BE151E726CCD005BC164 /* Crashlytics.framework */; };
 		3391BE181E726CCE005BC164 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3391BE161E726CCE005BC164 /* Fabric.framework */; };
 		3391BE1D1E727734005BC164 /* TwitterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3391BE1A1E727734005BC164 /* TwitterKit.framework */; };
@@ -94,6 +97,7 @@
 		33D721701E3F4AA40071FC2D /* LiveStreamingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33D7216F1E3F4AA40071FC2D /* LiveStreamingViewController.m */; };
 		33D721761E3F5FC30071FC2D /* Assets.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 33D721721E3F5FC30071FC2D /* Assets.bundle */; };
 		33D721771E3F5FC30071FC2D /* YTPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 33D721751E3F5FC30071FC2D /* YTPlayerView.m */; };
+		33EA91C01E800B640087E19C /* NewsObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 33EA91BF1E800B640087E19C /* NewsObject.m */; };
 		33EFBC4E1E3CBC9B00A72040 /* SattelitesTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 33EFBC4D1E3CBC9B00A72040 /* SattelitesTableViewCell.m */; };
 		33F500771E38BC7500A16D32 /* EventsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F500761E38BC7500A16D32 /* EventsDetailViewController.m */; };
 		33F5007A1E38BEE200A16D32 /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F500791E38BEE200A16D32 /* BaseViewController.m */; };
@@ -175,6 +179,12 @@
 		335EA72A1E31D5E800416E67 /* CCF-ProjectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CCF-ProjectUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		335EA72E1E31D5E800416E67 /* CCF_ProjectUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCF_ProjectUITests.m; sourceTree = "<group>"; };
 		335EA7301E31D5E800416E67 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		337F35B41E813D290009D6CD /* PodcastsObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PodcastsObject.h; sourceTree = "<group>"; };
+		337F35B51E813D290009D6CD /* PodcastsObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PodcastsObject.m; sourceTree = "<group>"; };
+		337F35B71E813E230009D6CD /* EventsObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsObject.h; sourceTree = "<group>"; };
+		337F35B81E813E230009D6CD /* EventsObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsObject.m; sourceTree = "<group>"; };
+		337F35BA1E813F820009D6CD /* SatellitesObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SatellitesObject.h; sourceTree = "<group>"; };
+		337F35BB1E813F820009D6CD /* SatellitesObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SatellitesObject.m; sourceTree = "<group>"; };
 		3391BE151E726CCD005BC164 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		3391BE161E726CCE005BC164 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		3391BE1A1E727734005BC164 /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterKit.framework; sourceTree = "<group>"; };
@@ -260,6 +270,8 @@
 		33D721731E3F5FC30071FC2D /* YouTubeiOSPlayerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YouTubeiOSPlayerHelper.h; sourceTree = "<group>"; };
 		33D721741E3F5FC30071FC2D /* YTPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YTPlayerView.h; sourceTree = "<group>"; };
 		33D721751E3F5FC30071FC2D /* YTPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YTPlayerView.m; sourceTree = "<group>"; };
+		33EA91BE1E800B640087E19C /* NewsObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsObject.h; sourceTree = "<group>"; };
+		33EA91BF1E800B640087E19C /* NewsObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsObject.m; sourceTree = "<group>"; };
 		33EFBC4C1E3CBC9B00A72040 /* SattelitesTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SattelitesTableViewCell.h; sourceTree = "<group>"; };
 		33EFBC4D1E3CBC9B00A72040 /* SattelitesTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SattelitesTableViewCell.m; sourceTree = "<group>"; };
 		33F500751E38BC7500A16D32 /* EventsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsDetailViewController.h; sourceTree = "<group>"; };
@@ -510,6 +522,7 @@
 				334DC3BE1E7AA6E5002E4EA8 /* CoreData Objects */,
 				332746AA1E322BCA003A0A20 /* ScrollableMenubarViewController.h */,
 				332746AB1E322BCA003A0A20 /* ScrollableMenubarViewController.m */,
+				33EA91C11E800B6D0087E19C /* Custom Data Objects */,
 				33CD19FC1E6BEF660019C279 /* UIButton+LocationValues.h */,
 				33CD19FD1E6BEF660019C279 /* UIButton+LocationValues.m */,
 			);
@@ -592,6 +605,21 @@
 				33D721751E3F5FC30071FC2D /* YTPlayerView.m */,
 			);
 			path = Youtube;
+			sourceTree = "<group>";
+		};
+		33EA91C11E800B6D0087E19C /* Custom Data Objects */ = {
+			isa = PBXGroup;
+			children = (
+				33EA91BE1E800B640087E19C /* NewsObject.h */,
+				33EA91BF1E800B640087E19C /* NewsObject.m */,
+				337F35B41E813D290009D6CD /* PodcastsObject.h */,
+				337F35B51E813D290009D6CD /* PodcastsObject.m */,
+				337F35B71E813E230009D6CD /* EventsObject.h */,
+				337F35B81E813E230009D6CD /* EventsObject.m */,
+				337F35BA1E813F820009D6CD /* SatellitesObject.h */,
+				337F35BB1E813F820009D6CD /* SatellitesObject.m */,
+			);
+			name = "Custom Data Objects";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -758,10 +786,12 @@
 				33AC57341E38AA5800F71699 /* EventsTableViewController.m in Sources */,
 				33ACB7691E795F1F005ACBBB /* UIRefreshControl+AFNetworking.m in Sources */,
 				33C2601B1E456FD000C251C0 /* PodcastDetailsTableViewController.m in Sources */,
+				337F35BC1E813F820009D6CD /* SatellitesObject.m in Sources */,
 				33ACB7631E795F1F005ACBBB /* AFImageDownloader.m in Sources */,
 				33F5007A1E38BEE200A16D32 /* BaseViewController.m in Sources */,
 				335EA70B1E31D5E800416E67 /* AppDelegate.m in Sources */,
 				33ACB7651E795F1F005ACBBB /* UIActivityIndicatorView+AFNetworking.m in Sources */,
+				33EA91C01E800B640087E19C /* NewsObject.m in Sources */,
 				33ACB76D1E7985E0005ACBBB /* EventsTableViewCell.m in Sources */,
 				334DC3BD1E7AA6D2002E4EA8 /* EventsItem+CoreDataProperties.m in Sources */,
 				33C260241E457CAC00C251C0 /* PodDetailAudioTableViewCell.m in Sources */,
@@ -792,10 +822,12 @@
 				332746AC1E322BCA003A0A20 /* ScrollableMenubarViewController.m in Sources */,
 				33ACB7621E795F1F005ACBBB /* AFAutoPurgingImageCache.m in Sources */,
 				33D721701E3F4AA40071FC2D /* LiveStreamingViewController.m in Sources */,
+				337F35B61E813D290009D6CD /* PodcastsObject.m in Sources */,
 				334DC3BB1E7AA6D2002E4EA8 /* PodcastsItem+CoreDataProperties.m in Sources */,
 				332C08641E718A41000175DF /* PodcastListViewController.m in Sources */,
 				33ACB75E1E795F1F005ACBBB /* AFSecurityPolicy.m in Sources */,
 				33CD19FE1E6BEF660019C279 /* UIButton+LocationValues.m in Sources */,
+				337F35B91E813E230009D6CD /* EventsObject.m in Sources */,
 				33ACB75C1E795F1F005ACBBB /* AFHTTPSessionManager.m in Sources */,
 				33C2601E1E457C5100C251C0 /* PodDetailImageTableViewCell.m in Sources */,
 				33F500771E38BC7500A16D32 /* EventsDetailViewController.m in Sources */,

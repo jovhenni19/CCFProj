@@ -945,6 +945,9 @@
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0as-Cv-0Ta" customClass="YTPlayerView">
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="300" id="h81-lB-WJt"/>
+                                                        </constraints>
                                                     </view>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="WATCH LATEST VIDEO" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kJQ-gU-xp8">
                                                         <constraints>
@@ -1036,7 +1039,7 @@
                                             <constraint firstItem="DOs-Ki-FVS" firstAttribute="top" secondItem="Kkw-qP-7cp" secondAttribute="bottom" constant="38" id="324-TZ-hyc"/>
                                             <constraint firstItem="Kkw-qP-7cp" firstAttribute="centerX" secondItem="2xI-Lt-cO6" secondAttribute="centerX" id="3xl-tf-EqO"/>
                                             <constraint firstItem="bER-8i-Az6" firstAttribute="centerX" secondItem="2xI-Lt-cO6" secondAttribute="centerX" id="6AM-7J-49X"/>
-                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="600" id="9IU-sX-gir"/>
+                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="575" id="9IU-sX-gir"/>
                                             <constraint firstItem="Kkw-qP-7cp" firstAttribute="centerX" secondItem="PDy-3a-MRA" secondAttribute="centerX" id="KLB-Qh-WWo"/>
                                             <constraint firstItem="bER-8i-Az6" firstAttribute="leading" secondItem="PDy-3a-MRA" secondAttribute="leading" constant="16" id="MoI-OF-Dmu"/>
                                             <constraint firstItem="Kkw-qP-7cp" firstAttribute="top" secondItem="2xI-Lt-cO6" secondAttribute="bottom" constant="8" symbolic="YES" id="NgL-5o-mez"/>
@@ -2182,7 +2185,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                        <imageView key="tableHeaderView" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="enc-qU-zva">
+                                        <imageView key="tableHeaderView" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="enc-qU-zva">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="130"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
@@ -2518,18 +2521,28 @@
                                     <constraint firstItem="U4F-0q-rJM" firstAttribute="top" secondItem="aLo-bz-wda" secondAttribute="top" id="zY7-D0-zSr"/>
                                 </constraints>
                             </view>
+                            <progressView hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="1" translatesAutoresizingMaskIntoConstraints="NO" id="9TQ-Ph-LbR">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="2" id="6l2-wu-vtz"/>
+                                </constraints>
+                                <color key="progressTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="trackTintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </progressView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="aLo-bz-wda" secondAttribute="trailing" id="7ln-mc-f7D"/>
                             <constraint firstItem="PTV-yz-5Ph" firstAttribute="top" secondItem="aLo-bz-wda" secondAttribute="bottom" id="EHW-4N-u7n"/>
+                            <constraint firstItem="aLo-bz-wda" firstAttribute="top" secondItem="9TQ-Ph-LbR" secondAttribute="bottom" id="Edd-sN-dEd"/>
                             <constraint firstAttribute="trailing" secondItem="PTV-yz-5Ph" secondAttribute="trailing" id="JN2-A4-rWB"/>
                             <constraint firstAttribute="trailing" secondItem="aLo-bz-wda" secondAttribute="trailing" id="KAg-WO-Bed"/>
                             <constraint firstItem="aLo-bz-wda" firstAttribute="leading" secondItem="UUK-IU-c7t" secondAttribute="leading" id="R9R-SO-Aam"/>
                             <constraint firstItem="aLo-bz-wda" firstAttribute="top" secondItem="ogx-cc-35W" secondAttribute="bottom" id="SNK-pf-SgE"/>
+                            <constraint firstItem="9TQ-Ph-LbR" firstAttribute="leading" secondItem="UUK-IU-c7t" secondAttribute="leading" id="UCC-Ja-6dL"/>
                             <constraint firstAttribute="trailing" secondItem="ogx-cc-35W" secondAttribute="trailing" id="V1i-tk-b5S"/>
                             <constraint firstItem="Pb0-R5-5EK" firstAttribute="top" secondItem="PTV-yz-5Ph" secondAttribute="bottom" id="aO8-Ze-fDP"/>
                             <constraint firstItem="aLo-bz-wda" firstAttribute="leading" secondItem="UUK-IU-c7t" secondAttribute="leading" id="b5h-Sh-2qN"/>
+                            <constraint firstAttribute="trailing" secondItem="9TQ-Ph-LbR" secondAttribute="trailing" id="e9X-Uo-Sgz"/>
                             <constraint firstItem="aLo-bz-wda" firstAttribute="top" secondItem="ogx-cc-35W" secondAttribute="bottom" id="jTd-Xh-7rE"/>
                             <constraint firstItem="PTV-yz-5Ph" firstAttribute="leading" secondItem="UUK-IU-c7t" secondAttribute="leading" id="kvT-U3-FRs"/>
                             <constraint firstItem="ogx-cc-35W" firstAttribute="leading" secondItem="UUK-IU-c7t" secondAttribute="leading" id="l6V-AN-h8P"/>
@@ -2543,6 +2556,7 @@
                         <outlet property="labelNotificationBadge" destination="Zpd-wX-ubw" id="lSu-qr-68p"/>
                         <outlet property="leftarrow" destination="6DY-as-MZ3" id="hHz-Og-5kl"/>
                         <outlet property="menuBarView" destination="aLo-bz-wda" id="nXC-l5-DPj"/>
+                        <outlet property="progressView" destination="9TQ-Ph-LbR" id="6XA-rx-jcZ"/>
                         <outlet property="rightarrow" destination="RYq-Dq-TPL" id="VsT-B5-zhA"/>
                         <outlet property="scrollViewBar" destination="U4F-0q-rJM" id="QRx-H2-umF"/>
                         <outlet property="view" destination="UUK-IU-c7t" id="1XW-Tn-TEf"/>

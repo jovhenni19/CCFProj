@@ -150,43 +150,45 @@
     
     NSArray *data = result[@"data"];
     
-    NSManagedObjectContext *context = MANAGE_CONTEXT;
+//    NSManagedObjectContext *context = MANAGE_CONTEXT;
     
     [self showLoadingAnimation:self.view];
     for (NSDictionary *item in data) {
         
-        PodcastsItem *podcastsItem = (PodcastsItem*)[PodcastsItem addItemWithContext:context];
+//        PodcastsItem *podcastsItem = (PodcastsItem*)[PodcastsItem addItemWithContext:context];
+        
+        PodcastsObject *podcastsItem = [[PodcastsObject alloc] init];
         
         podcastsItem.id_num = isNIL(item[@"id"]);
         podcastsItem.title = isNIL(item[@"title"]);
-        podcastsItem.image = isNIL(item[@"image"]);
+        podcastsItem.image_url = isNIL(item[@"image"]);
         podcastsItem.description_detail = isNIL(item[@"description"]);
         podcastsItem.category_name = isNIL(item[@"series"][0][@"name"]);
         podcastsItem.created_date = isNIL(item[@"created_at"]);
         
-        NSError *error = nil;
-        
-        if (![context save:&error]) {
-            UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Fatal Error" message:@"Error saving data. Please contact developer." preferredStyle:UIAlertControllerStyleActionSheet];
-            UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-                [self dismissViewControllerAnimated:YES completion:nil];
-            }];
-            
-            [ac addAction:cancel];
-            
-            [self presentViewController:ac animated:YES completion:nil];
-        }
+//        NSError *error = nil;
+//        
+//        if (![context save:&error]) {
+//            UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Fatal Error" message:@"Error saving data. Please contact developer." preferredStyle:UIAlertControllerStyleActionSheet];
+//            UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//                [self dismissViewControllerAnimated:YES completion:nil];
+//            }];
+//            
+//            [ac addAction:cancel];
+//            
+//            [self presentViewController:ac animated:YES completion:nil];
+//        }
         
         [self.podcastList addObject:podcastsItem];
     }
     
-    for (PodcastsItem *item in self.podcastList) {
+    for (PodcastsObject *item in self.podcastList) {
         NSString *key = item.category_name;
         if (![[self.categorizedPodcast allKeys] containsObject:key]) {
             NSMutableArray *array = [NSMutableArray array];
             [self.categorizedPodcast setObject:[array mutableCopy] forKey:key];
             
-            NSDictionary *category = @{@"kTitle":key,@"kImage":item.image,@"kImageData":isNIL(item.image_data)};
+            NSDictionary *category = @{@"kTitle":key,@"kImage":item.image_url,@"kImageData":isNIL(item.image_data)};
             [self.categories addObject:category];
         }
         
@@ -313,7 +315,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    PodcastsItem *item = nil;
+    PodcastsObject *item = nil;
     if (self.isCategoriesShown) {
         NSString *key = [[self.categories objectAtIndex:[indexPath section]] objectForKey:@"kTitle"];
         item = [[self.categorizedPodcast objectForKey:key] objectAtIndex:[indexPath row]];
@@ -323,7 +325,7 @@
         item = [self.podcastList objectAtIndex:[indexPath row]];
     }
     
-    NSString *identifier = ([item.image length])?@"podcastCellImage":@"podcastCell";
+    NSString *identifier = ([item.image_url length])?@"podcastCellImage":@"podcastCell";
     
     PodcastTableViewCell *cell = (PodcastTableViewCell*)[tableView dequeueReusableCellWithIdentifier:identifier];
     
@@ -341,8 +343,12 @@
         cell.podcastImage.image = [UIImage imageWithData:item.image_data];
     }
     else {
-        if ([item.image length]) {
-            [self getImageFromURL:item.image onIndex:[indexPath row]];
+        if ([item.image_url length]) {
+            [self getImageFromURL:item.image_url onIndex:[indexPath row]];
+        }
+        else {
+            cell.podcastImage.image = [UIImage imageNamed:@"placeholder"];
+            cell.podcastImage.alpha = 0.8f;
         }
     }
     
@@ -356,7 +362,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     
-    PodcastsItem *item = nil;
+    PodcastsObject *item = nil;
     if (self.isCategoriesShown) {
         NSString *key = [[self.categories objectAtIndex:[indexPath section]] objectForKey:@"kTitle"];
         item = [[self.categorizedPodcast objectForKey:key] objectAtIndex:[indexPath row]];
@@ -373,7 +379,7 @@
     details.otherText = [item.category_name capitalizedString];
     details.podcastSpeaker = @"Speaker 1";
     
-    details.imageURL = item.image;
+    details.imageURL = item.image_url;
     details.youtubeID = @"Xd_6MSWz2J4";
     details.urlForAudio = @"audiofile";
     
@@ -424,12 +430,12 @@
     
     NSString *key = [self.categories[sender.tag] objectForKey:@"kTitle"];
     
-    PodcastsItem *item = [[self.categorizedPodcast objectForKey:key] lastObject];
+//    PodcastsObject *item = [[self.categorizedPodcast objectForKey:key] lastObject];
     
     podcastListVC.categoryImageURL = [self.categories[sender.tag] objectForKey:@"kImage"];
     podcastListVC.categoryImageData = [self.categories[sender.tag] objectForKey:@"kImageData"];
     podcastListVC.podcastList = [self.categorizedPodcast objectForKey:key];
-    podcastListVC.podcastCategoryTitle = [item.category_name capitalizedString];
+    podcastListVC.podcastCategoryTitle = [key capitalizedString];
     
     
     CATransition *transition = [CATransition animation];
@@ -455,35 +461,46 @@
             UIImage *image = (UIImage*)responseObject;
             
             
-            NSManagedObjectContext *context = MANAGE_CONTEXT;
-            
-            NSFetchRequest *request = [PodcastsItem fetchRequest];
-            [request setReturnsObjectsAsFaults:NO];
-            NSError *error = nil;
-            
-            NSArray *result = [NSArray arrayWithArray:[context executeFetchRequest:request error:&error]];
-            
-            id podcastItem = nil;
-            
-            for (PodcastsItem *item in result) {
-                if ([item.id_num integerValue] == [((PodcastsItem*)[self.podcastList objectAtIndex:index]).id_num integerValue]) {
-                    podcastItem = item;
+            for (PodcastsObject *item in self.podcastList) {
+                if ([item.id_num integerValue] == [((PodcastsObject*)[self.podcastList objectAtIndex:index]).id_num integerValue]) {
+                    item.image_data = UIImageJPEGRepresentation(image, 100.0f);
                     break;
                 }
             }
             
-            ((PodcastsItem*)podcastItem).image_data = UIImageJPEGRepresentation(image, 100.0f);
+            PodcastTableViewCell *cell = (PodcastTableViewCell*)[self.mainTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
             
-            NSError *saveError = nil;
+            cell.podcastImage.image = image;
             
-            if([context save:&saveError]) {
-                
-                PodcastTableViewCell *cell = (PodcastTableViewCell*)[self.mainTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-                
-                cell.podcastImage.image = image;
-                
-                
-            }
+//            NSManagedObjectContext *context = MANAGE_CONTEXT;
+//            
+//            NSFetchRequest *request = [PodcastsItem fetchRequest];
+//            [request setReturnsObjectsAsFaults:NO];
+//            NSError *error = nil;
+//            
+//            NSArray *result = [NSArray arrayWithArray:[context executeFetchRequest:request error:&error]];
+//            
+//            id podcastItem = nil;
+//            
+//            for (PodcastsItem *item in result) {
+//                if ([item.id_num integerValue] == [((PodcastsItem*)[self.podcastList objectAtIndex:index]).id_num integerValue]) {
+//                    podcastItem = item;
+//                    break;
+//                }
+//            }
+//            
+//            ((PodcastsItem*)podcastItem).image_data = UIImageJPEGRepresentation(image, 100.0f);
+//            
+//            NSError *saveError = nil;
+//            
+//            if([context save:&saveError]) {
+//                
+//                PodcastTableViewCell *cell = (PodcastTableViewCell*)[self.mainTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+//                
+//                cell.podcastImage.image = image;
+//                
+//                
+//            }
         }
     } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
         

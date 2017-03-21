@@ -17,6 +17,7 @@
 #import "AMapViewController.h"
 #import "UIButton+LocationValues.h"
 #import "AFNetworking.h"
+#import "YMCAudioPlayer.h"
 
 #import "NewsItem+CoreDataClass.h"
 #import "PodcastsItem+CoreDataClass.h"
@@ -24,6 +25,10 @@
 #import "SatellitesItem+CoreDataClass.h"
 #import "ScrollableMenubarViewController.h"
 
+#import "NewsObject.h"
+#import "PodcastsObject.h"
+#import "EventsObject.h"
+#import "SatellitesObject.h"
 
 #import "AppDelegate.h"
 
@@ -54,6 +59,9 @@ extern NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION;
 @property (strong, nonatomic) EKEventStore *eventStore;
 @property (nonatomic) BOOL isAccessToEventStoreGranted;
 @property (strong, nonatomic) EKCalendar *calendar;
+
+@property (strong, nonatomic) UIProgressView *loadingProgressView;
+@property (strong, nonatomic) YMCAudioPlayer *audioPlayerPauser;
 
 - (void) showWebViewWithURL:(NSString*)urlString;
 - (void) openURL:(NSString*)urlstring;

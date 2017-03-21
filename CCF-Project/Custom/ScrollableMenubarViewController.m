@@ -14,6 +14,7 @@
 #import "LiveStreamingViewController.h"
 #import "PodcastViewController.h"
 #import "SettingsTableViewController.h"
+#import "PodcastDetailsTableViewController.h"
 
 @interface ScrollableMenubarViewController ()
 
@@ -23,6 +24,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *rightarrow;
 @property (weak, nonatomic) IBOutlet UIView *containerViewForTable;
 @property (weak, nonatomic) IBOutlet UITableView *horizontalTableview;
+@property (weak, nonatomic) IBOutlet UIProgressView *progressView;
 
 @property (assign, nonatomic) BOOL fromViewLoad;
 @property (assign, nonatomic) BOOL settingView;
@@ -311,7 +313,7 @@
         if (scrollView.contentOffset.x <= 0) {
             self.leftarrow.hidden = YES;
         }
-        else if(scrollView.contentOffset.x + scrollView.bounds.size.width >= scrollView.contentSize.width) {
+        else if(scrollView.contentOffset.x + scrollView.bounds.size.width + 20.0f >= scrollView.contentSize.width) {
             self.rightarrow.hidden = YES;
         }
     }
@@ -336,7 +338,33 @@
         self.selectedIndex = index;
         UIButton *button = [self.menuButtonList objectAtIndex:self.selectedIndex];
         self.indicatorView.frame = CGRectMake(button.frame.origin.x + 10.0f, 32.0f, button.frame.size.width - 20.0f, 2.0f);
-        [self.scrollViewBar scrollRectToVisible:self.indicatorView.bounds animated:YES];
+        
+        CGFloat result = 0.0f;
+        CGFloat buttonWidth = button.bounds.size.width + 5.0f;
+//        CGFloat contentWidth = self.menuBarView.bounds.size.width;
+        
+        CGFloat xPoint = buttonWidth * (self.selectedIndex + 1);
+        
+//        CGFloat diff = (contentWidth/2.0f) - (buttonWidth/2.0f);
+//        
+//        
+//        if (offsetX - diff > 0) {
+//            if (offsetX + self.scrollViewBar.bounds.size.width + diff) {
+//                result = self.scrollViewBar.contentSize.width - self.scrollViewBar.bounds.size.width;
+//            }
+//            else {
+//                result = offsetX - diff;
+//            }
+//        }
+        
+        if (xPoint > self.menuBarView.bounds.size.width) {
+            result = xPoint - self.menuBarView.bounds.size.width;
+        }
+        else if (xPoint < self.scrollViewBar.contentOffset.x) {
+            result = xPoint;
+        }
+            
+        [self.scrollViewBar setContentOffset:CGPointMake(result, 0.0f) animated:YES];
     }
 }
 
@@ -391,7 +419,19 @@
 - (void) loadViewControllerWithContentView:(UIView*)contentView index:(NSInteger)index {
     
     self.selectedIndex = index;
+    
     BaseViewController *vc = [self.viewControllers objectAtIndex:self.selectedIndex];
+    
+    if (self.selectedIndex == 6 /*settings index*/) {
+        
+    }
+    else {
+        
+        vc.loadingProgressView = self.progressView;
+        
+        [vc.audioPlayerPauser pauseAudio];
+    }
+    
     
     while ([[contentView subviews] count] > 0) {
         [[[contentView subviews] lastObject] removeFromSuperview];
@@ -406,8 +446,25 @@
 
     contentView.tag = 1990 + index;
     
+    
 }
 
 
+- (void) showProgressView {
+    self.progressView.progress = 0.0f;
+    self.progressView.hidden = NO;
+}
+
+- (void) addValueToProgressView {
+    self.progressView.hidden = NO;
+    self.progressView.progress += 0.2f;
+    if (self.progressView.progress == 1.0f) {
+        self.progressView.progress = 0.0f;
+    }
+}
+
+- (void) removeProgressView {
+    self.progressView.hidden = YES;
+}
 
 @end

@@ -12,6 +12,7 @@
 @interface PodcastDetailsTableViewController : BaseViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) NSString *imageURL;
+@property (strong, nonatomic) NSData *imageData;
 @property (strong, nonatomic) NSString *podcastTitle;
 @property (strong, nonatomic) NSString *podcastSpeaker;
 @property (strong, nonatomic) NSString *otherText;

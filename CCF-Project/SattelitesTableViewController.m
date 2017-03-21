@@ -156,7 +156,7 @@
 
 
 - (void)appendSattelitesList:(NSNotification*)notification {
-//    NSLog(@"### result:%@",notification.object);
+    NSLog(@"### result:%@",notification.object);
     
     [self removeLoadingAnimation];
     
@@ -178,14 +178,20 @@
     [self showLoadingAnimation:self.view];
     for (NSDictionary *item in data) {
         
-        NSDictionary *sattelite = @{@"kLocationName":item[@"name"],@"kLatitude":item[@"latitude"],@"kLongitude":item[@"longitude"],@"kAddress":item[@"address_full"],@"kCreatedTime":item[@"created_at"]};
+//        NSDictionary *sattelite = @{@"kLocationName":item[@"name"],@"kLatitude":item[@"latitude"],@"kLongitude":item[@"longitude"],@"kAddress":item[@"address_full"],@"kCreatedTime":item[@"created_at"]};
         
+        SatellitesObject *sattelite = [[SatellitesObject alloc] init];
+        sattelite.name = item[@"name"];
+        sattelite.latitude = item[@"latitude"];
+        sattelite.longitude = item[@"longitude"];
+        sattelite.address_full = item[@"address_full"];
+        sattelite.created_date = item[@"created_at"];
         
         [self.sattelites_list addObject:sattelite];
     }
     
-    for (NSDictionary *dictionary in self.sattelites_list) {
-        NSString *letter_key = [[dictionary objectForKey:@"kLocationName"] substringWithRange:NSMakeRange(0, 1)];
+    for (SatellitesObject *dictionary in self.sattelites_list) {
+        NSString *letter_key = [dictionary.name substringWithRange:NSMakeRange(0, 1)];
         if (![[self.allLocations allKeys] containsObject:letter_key]) {
             NSMutableArray *array = [NSMutableArray array];
             [self.allLocations setObject:[array mutableCopy] forKey:letter_key];
@@ -246,25 +252,25 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSDictionary *location = nil;
+    SatellitesObject *location = nil;
     NSInteger section = [indexPath section];
     NSInteger row = [indexPath row];
     if (self.isAllLocationSelected) {
-        location = [NSDictionary dictionaryWithDictionary:[[self.allLocations objectForKey:self.alphabetSections[section]] objectAtIndex:row]];
+        location = [[self.allLocations objectForKey:self.alphabetSections[section]] objectAtIndex:row];
     }
     else {
-        location = [NSDictionary dictionaryWithDictionary:[[self.nearbyLocations objectForKey:self.nearbySections[section]] objectAtIndex:row]];
+        location = [[self.nearbyLocations objectForKey:self.nearbySections[section]] objectAtIndex:row];
     }
     
     SattelitesTableViewCell *cell = (SattelitesTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"sattelitesCell"];
     
-    cell.labelLocationName.text = [location objectForKey:@"kLocationName"];
+    cell.labelLocationName.text = location.name;
     
-    [cell.labelAddress setTitle:[location objectForKey:@"kAddress"] forState:UIControlStateNormal];
-    cell.labelAddress.latitude = [NSNumber numberWithDouble:[[location objectForKey:@"kLatitude"]  doubleValue]];
-    cell.labelAddress.longitude = [NSNumber numberWithDouble:[[location objectForKey:@"kLongitude"] doubleValue]];
-    cell.labelAddress.locationName = [location objectForKey:@"kLocationName"];
-    cell.labelAddress.locationSnippet = [location objectForKey:@"kAddress"];
+    [cell.labelAddress setTitle:location.address_full forState:UIControlStateNormal];
+    cell.labelAddress.latitude = [NSNumber numberWithDouble:[location.latitude  doubleValue]];
+    cell.labelAddress.longitude = [NSNumber numberWithDouble:[location.longitude doubleValue]];
+    cell.labelAddress.locationName = location.name;
+    cell.labelAddress.locationSnippet = location.address_full;
     
     
     [cell.labelAddress addTarget:self action:@selector(viewMapButton:) forControlEvents:UIControlEventTouchUpInside];
@@ -289,18 +295,18 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (self.isAllLocationSelected) {
-        return [self.alphabetSections objectAtIndex:section];
+        return [NSString stringWithFormat:@"   %@",[self.alphabetSections objectAtIndex:section]];
     }
     else {
         NSString *title = @"";
         NSInteger km = [[self.nearbySections objectAtIndex:section] integerValue];
         switch (km) {
             case 6:
-                title = @"More than 5 KM";
+                title = @"   More than 5 KM";
                 break;
                 
             default:
-                title = [NSString stringWithFormat:@"Within %li KM",(long)km];
+                title = [NSString stringWithFormat:@"   Within %li KM",(long)km];
                 break;
         }
         return title;
@@ -382,10 +388,10 @@
              NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
 
              for (NSString *keys in self.alphabetSections) {
-                 for (NSDictionary *location in [self.allLocations objectForKey:keys]) {
+                 for (SatellitesObject *location in [self.allLocations objectForKey:keys]) {
                      
-                     CLLocationDegrees latitude = [[location objectForKey:@"kLatitude"] doubleValue];
-                     CLLocationDegrees longitude = [[location objectForKey:@"kLongitude"] doubleValue];
+                     CLLocationDegrees latitude = [location.latitude doubleValue];
+                     CLLocationDegrees longitude = [location.longitude doubleValue];
                      
                      CLLocation *restaurantLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
                      CLLocationDistance meters = [restaurantLocation distanceFromLocation:currentLocation];
@@ -461,7 +467,7 @@
     [self.tableView reloadData];
 }
 
-- (void) insertLocation:(NSDictionary*)location withKey:(NSString*)key inDictionary:(NSMutableDictionary*)dictionary {
+- (void) insertLocation:(SatellitesObject*)location withKey:(NSString*)key inDictionary:(NSMutableDictionary*)dictionary {
     
     if (![[dictionary allKeys] containsObject:key]) {
         NSMutableArray *array = [NSMutableArray array];

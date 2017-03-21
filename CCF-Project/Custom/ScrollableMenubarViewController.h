@@ -25,6 +25,11 @@
 @property (strong, nonatomic) id<ScrollableMenubarViewControllerDelegate> delegate;
 @property (strong, nonatomic) UIColor *foreColor;
 
+- (void) showProgressView;
+- (void) addValueToProgressView;
+- (void) removeProgressView;
+
+
 @end
 
 

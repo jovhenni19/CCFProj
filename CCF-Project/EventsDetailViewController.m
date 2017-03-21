@@ -20,16 +20,27 @@
     
     self.labelTitle.text = self.titleText;
     [self.buttondate setTitle:[NSString stringWithFormat:@"  %@",self.dateText] forState:UIControlStateNormal];
+    [self.buttonTime setTitle:[NSString stringWithFormat:@"  %@",self.timeText] forState:UIControlStateNormal];
+    [self.buttonLocation setTitle:[NSString stringWithFormat:@"  %@",self.locationName] forState:UIControlStateNormal];
+    self.buttonLocation.latitude = [NSNumber numberWithDouble:self.locationLatitude];
+    self.buttonLocation.longitude = [NSNumber numberWithDouble:self.locationLongitude];
+    self.buttonLocation.locationName = self.locationName;
     
-    [self getImageFromURL:self.imageURL completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    self.imageView.image = [UIImage imageNamed:@"placeholder"];
+    
+    if ([self.imageURL length]) {
         
-        UIImage *image = (UIImage*)responseObject;
-        
-        [self.imageView setImage:image];
-        
-    } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
-        
-    }];
+        [self getImageFromURL:self.imageURL completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+            
+            UIImage *image = (UIImage*)responseObject;
+            
+            [self.imageView setImage:image];
+            
+        } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
+            
+        }];
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -62,14 +73,14 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([indexPath row] == 0) {
         
-        UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, tableView.bounds.size.width, 40.0f)];
+        UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, tableView.bounds.size.width, 20.0f)];
         tv.text = self.detailDescription;
         
         tv.font = [UIFont fontWithName:@"OpenSans" size:14.0f];
         CGSize contentSize = [tv contentSize];
         
-        if (contentSize.height > 40.0f) {
-            return 165 + (contentSize.height - 40.0f);
+        if (contentSize.height > 20.0f) {
+            return 165 + (contentSize.height - 20.0f);
         }
         
     }

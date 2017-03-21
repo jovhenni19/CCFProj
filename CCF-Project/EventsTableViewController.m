@@ -67,8 +67,20 @@
     [self showLoadingAnimation:self.view];
     for (NSDictionary *item in data) {
         
-        NSDictionary *events = @{@"kTitle":item[@"title"],@"kImage":item[@"image"],@"kDescription":item[@"description"],@"kDate":item[@"date"],@"kTime":item[@"time"],@"kDateRaw":item[@"dateRaw"][@"date"],@"kRegLink":item[@"registration_link"],@"kSpeaker":item[@"speakers"],@"kMobile":item[@"contact_info"],@"kVenue":item[@"venue"],@"kCreatedTime":item[@"created_at"]};
+//        NSDictionary *events = @{@"kTitle":item[@"title"],@"kImage":item[@"image"],@"kDescription":item[@"description"],@"kDate":item[@"date"],@"kTime":item[@"time"],@"kDateRaw":item[@"dateRaw"][@"date"],@"kRegLink":item[@"registration_link"],@"kSpeaker":item[@"speakers"],@"kMobile":item[@"contact_info"],@"kVenue":item[@"venue"],@"kCreatedTime":item[@"created_at"]};
         
+        EventsObject *events = [[EventsObject alloc] init];
+        events.title = isNIL(item[@"title"]);
+        events.image_url = isNIL(item[@"image"]);
+        events.description_detail = isNIL(item[@"description"]);
+        events.date = isNIL(item[@"date"]);
+        events.time = isNIL(item[@"time"]);
+        events.date_raw = isNIL(item[@"dateRaw"][@"date"]);
+        events.registration_link = isNIL(item[@"registration_link"]);
+        events.speakers = isNIL(item[@"speakers"]);
+        events.contact_info = isNIL(item[@"contact_info"]);
+        events.venue = isNIL(item[@"venue"]);
+        events.created_date = isNIL(item[@"created_at"]);
         
         
         [self.events_link addObject:events];
@@ -94,27 +106,34 @@
     
     EventsTableViewCell *cell = (EventsTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"eventsCell"];
     
-    NSDictionary *events = [self.events_link objectAtIndex:[indexPath row]];
+    EventsObject *events = (EventsObject*)[self.events_link objectAtIndex:[indexPath row]];
     
-//    NSURL *urlImage = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",kAPI_LINK,events[@"kImage"]]];
-//    
-//    UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:urlImage]];
-//    
-//    [cell.eventsImageView setImage:image];
+    if (events.image_data) {
+        cell.eventsImageView.image = [UIImage imageWithData:events.image_data];
+    }
+    else {
+        if ([events.image_url length]) {
+            [self getImageFromURL:events.image_url onIndex:[indexPath row]];
+        }
+        else {
+            cell.eventsImageView.image = [UIImage imageNamed:@"placeholder"];
+            cell.eventsImageView.alpha = 0.8f;
+        }
+    }
     
-    [cell.eventsDate setTitle:[NSString stringWithFormat:@"  %@",events[@"kDate"]] forState:UIControlStateNormal];
-    [cell.eventsTime setTitle:[NSString stringWithFormat:@"  %@",events[@"kTime"]] forState:UIControlStateNormal];
+    [cell.eventsDate setTitle:[NSString stringWithFormat:@"  %@",events.date] forState:UIControlStateNormal];
+    [cell.eventsTime setTitle:[NSString stringWithFormat:@"  %@",events.time] forState:UIControlStateNormal];
     
     
-    NSMutableString *venue = events[@"kVenue"];
+    NSMutableString *venue = [NSMutableString stringWithFormat:@"%@",events.venue];
+    
     [venue replaceOccurrencesOfString:@"," withString:@",\n" options:NSCaseInsensitiveSearch range:NSMakeRange(0, venue.length)];
     [cell.eventsVenue setTitle:[NSString stringWithFormat:@"  %@",venue] forState:UIControlStateNormal];
     
-//    cell.eventsVenue
     
     
     
-    cell.eventsTitle.text = events[@"kTitle"];
+    cell.eventsTitle.text = events.title;
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
@@ -126,17 +145,17 @@
     EventsDetailViewController *eventsDetailVC = [self.storyboard instantiateViewControllerWithIdentifier:@"eventsDetail"];
     eventsDetailVC.showRegisterCell = YES;
     
-    NSDictionary *events = [self.events_link objectAtIndex:[indexPath row]];
+    EventsObject *events = (EventsObject*)[self.events_link objectAtIndex:[indexPath row]];
     
-    eventsDetailVC.titleText = events[@"kTitle"];
-    eventsDetailVC.locationName = events[@"kVenue"];
-    eventsDetailVC.dateText = events[@"kDate"];
-    eventsDetailVC.timeText = events[@"kTime"];
-    eventsDetailVC.imageURL = events[@"kImage"];
-    eventsDetailVC.detailDescription = events[@"kDescription"];
-    eventsDetailVC.personName = events[@"kSpeaker"];
-    eventsDetailVC.personMobile = [NSString stringWithFormat:@"+63%@",[events[@"kMobile"] substringFromIndex:1]];
-    eventsDetailVC.registerLink = events[@"kRegLink"];
+    eventsDetailVC.titleText = events.title;
+    eventsDetailVC.locationName = events.venue;
+    eventsDetailVC.dateText = events.date;
+    eventsDetailVC.timeText = events.time;
+    eventsDetailVC.imageURL = events.image_url;
+    eventsDetailVC.detailDescription = events.description_detail;
+    eventsDetailVC.personName = events.speakers;
+    eventsDetailVC.personMobile = [NSString stringWithFormat:@"+63%@",[events.contact_info substringFromIndex:1]];
+    eventsDetailVC.registerLink = events.registration_link;
     
     
     CATransition *transition = [CATransition animation];
@@ -213,5 +232,28 @@
 //    [self addChildViewController:mapVC];
 //    [mapVC didMoveToParentViewController:self];
 //}
+
+- (void) getImageFromURL:(NSString*)urlPath onIndex:(NSInteger)index {
+    [self getImageFromURL:urlPath completionHandler:^(NSURLResponse * _Nullable response, id  _Nullable responseObject, NSError * _Nullable error) {
+        if(!error) {
+            UIImage *image = (UIImage*)responseObject;
+            
+            
+            for (EventsObject *item in self.events_link) {
+                if ([item.id_num integerValue] == [((EventsObject*)[self.events_link objectAtIndex:index]).id_num integerValue]) {
+                    item.image_data = UIImageJPEGRepresentation(image, 100.0f);
+                    break;
+                }
+            }
+            
+            EventsTableViewCell *cell = (EventsTableViewCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+            
+            cell.eventsImageView.image = image;
+            
+        }
+    } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
+        
+    }];
+}
 
 @end
