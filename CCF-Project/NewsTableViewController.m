@@ -157,12 +157,28 @@
     cell.textNewsDetails.text = newsItem.description_detail;
     [cell.textNewsDetails scrollsToTop];
     
-    [cell.buttonGroupName setTitle:[NSString stringWithFormat:@"  %@",[newsItem.group_name capitalizedString]] forState:UIControlStateNormal];
-    [cell.buttonLocation setTitle:@"  CCF CENTER" forState:UIControlStateNormal];
-    [cell.buttonDate setTitle:[NSString stringWithFormat:@"  %@",newsItem.created_date] forState:UIControlStateNormal];
-    [cell.buttonSpeaker setTitle:@"  Speaker Name here" forState:UIControlStateNormal];
+//    [cell.buttonGroupName setTitle:[NSString stringWithFormat:@"  %@",[newsItem.group_name capitalizedString]] forState:UIControlStateNormal];
+//    [cell.buttonLocation setTitle:@"  CCF CENTER" forState:UIControlStateNormal];
+//    [cell.buttonDate setTitle:[NSString stringWithFormat:@"  %@",newsItem.created_date] forState:UIControlStateNormal];
+//    [cell.buttonSpeaker setTitle:@"  Speaker Name here" forState:UIControlStateNormal];
     [cell.buttonSpeaker setHidden:YES];
-    [cell.buttonLocation setHidden:YES];
+//    [cell.buttonLocation setHidden:YES];
+    
+    
+    while ([[cell.viewControls subviews] count] > 0) {
+        [[[cell.viewControls subviews] lastObject] removeFromSuperview];
+    }
+    
+    // add controls
+    
+    CGFloat buttonWidth = cell.contentView.frame.size.width; //divide per control
+    
+    CustomButton *buttonGroup = [[CustomButton alloc] initWithText:[newsItem.group_name capitalizedString] image:[UIImage imageNamed:@"group-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 25.0f)];
+    buttonGroup.labelText.textColor = [UIColor grayColor];
+    
+    [cell.viewControls addSubview:buttonGroup];
+    
+    
     
     cell.delegate = self;
     cell.indexPath = indexPath;

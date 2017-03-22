@@ -8,17 +8,15 @@
 
 #import "UIButton+LocationValues.h"
 
-
-NSString * const kLocationValuesLatitudeKey = @"kLocationValuesLatitudeKey";
-NSString * const kLocationValuesLongitudeKey = @"kLocationValuesLongitudeKey";
-NSString * const kLocationValuesNameKey = @"kLocationValuesNameKey";
-NSString * const kLocationValuesSnippetKey = @"kLocationValuesSnippetKey";
-
 @implementation UIButton (LocationValues)
 @dynamic latitude;
 @dynamic longitude;
 @dynamic locationSnippet;
 @dynamic locationName;
+@dynamic eventTitle;
+@dynamic eventAddress;
+@dynamic eventDate;
+@dynamic eventTime;
 
 - (NSNumber*)latitude {
     return objc_getAssociatedObject(self, @selector(latitude));
@@ -34,6 +32,22 @@ NSString * const kLocationValuesSnippetKey = @"kLocationValuesSnippetKey";
 
 - (NSString *)locationSnippet {
     return objc_getAssociatedObject(self, @selector(locationSnippet));
+}
+
+- (NSString *)eventTitle {
+    return objc_getAssociatedObject(self, @selector(eventTitle));
+}
+
+- (NSString *)eventAddress {
+    return objc_getAssociatedObject(self, @selector(eventAddress));
+}
+
+- (NSString *)eventDate {
+    return objc_getAssociatedObject(self, @selector(eventDate));
+}
+
+- (NSString *)eventTime {
+    return objc_getAssociatedObject(self, @selector(eventTime));
 }
 
 - (void)setLatitude:(NSNumber*)latitude {
@@ -52,5 +66,20 @@ NSString * const kLocationValuesSnippetKey = @"kLocationValuesSnippetKey";
     objc_setAssociatedObject(self, @selector(locationSnippet), locationSnippet, OBJC_ASSOCIATION_COPY);
 }
 
+- (void)setEventTitle:(NSString *)eventTitle {
+    objc_setAssociatedObject(self, @selector(eventTitle), eventTitle, OBJC_ASSOCIATION_COPY);
+}
+
+- (void)setEventAddress:(NSString *)eventAddress {
+    objc_setAssociatedObject(self, @selector(eventAddress), eventAddress, OBJC_ASSOCIATION_COPY);
+}
+
+- (void)setEventDate:(NSString *)eventDate {
+    objc_setAssociatedObject(self, @selector(eventDate), eventDate, OBJC_ASSOCIATION_COPY);
+}
+
+- (void)setEventTime:(NSString *)eventTime {
+    objc_setAssociatedObject(self, @selector(eventTime), eventTime, OBJC_ASSOCIATION_COPY);
+}
 
 @end

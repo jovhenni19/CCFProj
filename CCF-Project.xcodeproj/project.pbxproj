@@ -45,6 +45,7 @@
 		335EA7191E31D5E800416E67 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 335EA7171E31D5E800416E67 /* LaunchScreen.storyboard */; };
 		335EA7241E31D5E800416E67 /* CCF_ProjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 335EA7231E31D5E800416E67 /* CCF_ProjectTests.m */; };
 		335EA72F1E31D5E800416E67 /* CCF_ProjectUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 335EA72E1E31D5E800416E67 /* CCF_ProjectUITests.m */; };
+		3361BD111E827F9D00EA6440 /* CustomButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3361BD101E827F9D00EA6440 /* CustomButton.m */; };
 		337F35B61E813D290009D6CD /* PodcastsObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 337F35B51E813D290009D6CD /* PodcastsObject.m */; };
 		337F35B91E813E230009D6CD /* EventsObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 337F35B81E813E230009D6CD /* EventsObject.m */; };
 		337F35BC1E813F820009D6CD /* SatellitesObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 337F35BB1E813F820009D6CD /* SatellitesObject.m */; };
@@ -179,6 +180,8 @@
 		335EA72A1E31D5E800416E67 /* CCF-ProjectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CCF-ProjectUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		335EA72E1E31D5E800416E67 /* CCF_ProjectUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCF_ProjectUITests.m; sourceTree = "<group>"; };
 		335EA7301E31D5E800416E67 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3361BD0F1E827F9D00EA6440 /* CustomButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomButton.h; sourceTree = "<group>"; };
+		3361BD101E827F9D00EA6440 /* CustomButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomButton.m; sourceTree = "<group>"; };
 		337F35B41E813D290009D6CD /* PodcastsObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PodcastsObject.h; sourceTree = "<group>"; };
 		337F35B51E813D290009D6CD /* PodcastsObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PodcastsObject.m; sourceTree = "<group>"; };
 		337F35B71E813E230009D6CD /* EventsObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsObject.h; sourceTree = "<group>"; };
@@ -525,6 +528,8 @@
 				33EA91C11E800B6D0087E19C /* Custom Data Objects */,
 				33CD19FC1E6BEF660019C279 /* UIButton+LocationValues.h */,
 				33CD19FD1E6BEF660019C279 /* UIButton+LocationValues.m */,
+				3361BD0F1E827F9D00EA6440 /* CustomButton.h */,
+				3361BD101E827F9D00EA6440 /* CustomButton.m */,
 			);
 			name = Customs;
 			sourceTree = "<group>";
@@ -808,6 +813,7 @@
 				33ACB75D1E795F1F005ACBBB /* AFNetworkReachabilityManager.m in Sources */,
 				334DC3B61E7AA6D2002E4EA8 /* NewsItem+CoreDataClass.m in Sources */,
 				33D721771E3F5FC30071FC2D /* YTPlayerView.m in Sources */,
+				3361BD111E827F9D00EA6440 /* CustomButton.m in Sources */,
 				33EFBC4E1E3CBC9B00A72040 /* SattelitesTableViewCell.m in Sources */,
 				33ACB76A1E795F1F005ACBBB /* UIWebView+AFNetworking.m in Sources */,
 				33C260211E457C9800C251C0 /* PodDetailDescriptionTableViewCell.m in Sources */,

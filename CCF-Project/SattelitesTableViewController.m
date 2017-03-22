@@ -11,7 +11,6 @@
 
 
 @interface SattelitesTableViewController ()
-@property (weak, nonatomic) IBOutlet UITextField *searchTextfield;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
@@ -46,6 +45,9 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
+    
+    self.textField1 = self.searchTextfield;
+    
     self.isAllLocationSelected = NO;
     self.isLocationFinished = NO;
     
@@ -66,7 +68,8 @@
     
     [self showLoadingAnimation:self.view];
     
-    
+    UITapGestureRecognizer *yourTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollTap:)];
+    [self.tableView addGestureRecognizer:yourTap];
     
     
 //    NSMutableDictionary *mutableAllLocations = [NSMutableDictionary dictionary];
@@ -153,10 +156,17 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)scrollTap:(UIGestureRecognizer*)gestureRecognizer {
+    
+    //make keyboard disappear , you can use resignFirstResponder too, it's depend.
+    
+    [self.searchTextfield resignFirstResponder];
+    [self.view endEditing:YES];
+}
 
 
 - (void)appendSattelitesList:(NSNotification*)notification {
-    NSLog(@"### result:%@",notification.object);
+//    NSLog(@"### result:%@",notification.object);
     
     [self removeLoadingAnimation];
     
@@ -273,7 +283,7 @@
     cell.labelAddress.locationSnippet = location.address_full;
     
     
-    [cell.labelAddress addTarget:self action:@selector(viewMapButton:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.labelAddress addTarget:self action:@selector(viewMapButton1:) forControlEvents:UIControlEventTouchUpInside];
     
     [cell.labelEmail setTitle:@"---"/*[location objectForKey:@"kEmail"]*/ forState:UIControlStateNormal];
     [cell.labelEmail addTarget:self action:@selector(emailButton:) forControlEvents:UIControlEventTouchUpInside];
@@ -332,7 +342,7 @@
 }
 */
 - (IBAction)segmentedControlChange:(id)sender {
-    
+    [self.searchTextfield resignFirstResponder];
     [self showLoadingAnimation:self.view];
     if ([self.segmentedControl selectedSegmentIndex] == 1) {
         self.isAllLocationSelected = YES;
@@ -478,20 +488,39 @@
     [subArray addObject:location];
 }
 
+- (IBAction) viewMapButton1:(UIButton*)sender {
+    [self.searchTextfield resignFirstResponder];
+    
+    [self viewMapButton:sender];
+}
+
 - (IBAction) webURLButton:(UIButton*)sender {
+    [self.searchTextfield resignFirstResponder];
     NSString *urlString = sender.titleLabel.text;
     [self showWebViewWithURL:urlString];
 }
 
 - (IBAction) emailButton:(UIButton*)sender {
+    [self.searchTextfield resignFirstResponder];
     [self mailAddress:sender];
 //    NSString *urlString = sender.titleLabel.text;
 //    [self openURL:[NSString stringWithFormat:@"mailto://%@",urlString]];
 }
 
 - (IBAction) contactButton:(UIButton*)sender {
+    [self.searchTextfield resignFirstResponder];
     [self callNumber:sender];
 //    NSString *urlString = sender.titleLabel.text;
 //    [self openURL:[NSString stringWithFormat:@"tel://%@",urlString]];
+}
+
+
+- (void)removeFromParentViewController {
+    [self.searchTextfield resignFirstResponder];
+}
+
+
+- (void) scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self.searchTextfield resignFirstResponder];
 }
 @end

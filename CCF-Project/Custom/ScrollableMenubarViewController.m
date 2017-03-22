@@ -168,7 +168,8 @@
     
 //    if (self.fromViewLoad) {
 //        self.fromViewLoad = NO;
-//        [self setCurrentViewController:0];
+//        [self.horizontalTableview scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+//        [self.horizontalTableview scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
 //        
 //    }
 }
@@ -188,10 +189,11 @@
     frame.origin = CGPointZero;
     self.horizontalTableview.frame = frame;
     
-//    if(self.fromViewLoad){
-//        self.fromViewLoad = NO;
-//        self.selectedIndex = 0;
-//    }
+    if(self.fromViewLoad){
+        self.fromViewLoad = NO;
+        self.selectedIndex = 0;
+        
+    }
     
     
 //    self.horizontalTableview.layer.borderWidth = 3.0f;
@@ -402,6 +404,7 @@
     
     cell.contentView.transform=CGAffineTransformMakeRotation(M_PI_2);
     cell.contentView.clipsToBounds = YES;
+    cell.contentView.tag = 1990 + ([indexPath row]);
     
 //    BaseViewController *vc = [self.viewControllers objectAtIndex:[indexPath row]];
 //    [vc reloadTables];
@@ -411,8 +414,20 @@
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self.view endEditing:YES];
+//    if (self.selectedIndex == 3) {
+//       SattelitesTableViewController *vc = [self.viewControllers objectAtIndex:self.selectedIndex];
+//        [vc.searchTextfield resignFirstResponder];
+//    }
     
+    if (self.selectedIndex == 1) {
+        PodcastDetailsTableViewController *vc = [self.viewControllers objectAtIndex:self.selectedIndex];
+        if ([vc respondsToSelector:@selector(audioPlayer)]) {
+            [vc.audioPlayer pauseAudio];
+        }
+    }
     [self loadViewControllerWithContentView:cell.contentView index:[indexPath row]];
+    
 }
 
 
@@ -428,8 +443,7 @@
     else {
         
         vc.loadingProgressView = self.progressView;
-        
-        [vc.audioPlayerPauser pauseAudio];
+                
     }
     
     
@@ -444,7 +458,6 @@
     [self addChildViewController:vc];
     [vc didMoveToParentViewController:self];
 
-    contentView.tag = 1990 + index;
     
     
 }

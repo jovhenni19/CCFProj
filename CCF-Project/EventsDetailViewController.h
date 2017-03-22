@@ -24,6 +24,7 @@
 @property (strong, nonatomic) NSString *dateText;
 @property (strong, nonatomic) NSString *timeText;
 @property (strong, nonatomic) NSString *imageURL;
+@property (strong, nonatomic) NSData *imageData;
 @property (strong, nonatomic) NSString *detailDescription;
 @property (strong, nonatomic) NSString *personName;
 @property (strong, nonatomic) NSString *personMobile;

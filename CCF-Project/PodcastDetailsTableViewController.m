@@ -21,7 +21,6 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) NSArray *arrayContents;
 
-@property (strong, nonatomic) YMCAudioPlayer *audioPlayer;
 @end
 
 @implementation PodcastDetailsTableViewController
@@ -34,8 +33,6 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    
-    self.audioPlayerPauser = self.audioPlayer;
     
     [self.buttonSpeaker setTitle:self.podcastSpeaker forState:UIControlStateNormal];
     self.labelPodcastTitle.text = self.podcastTitle;
@@ -169,16 +166,17 @@
             break;
         default:{
             PodDetailImageTableViewCell *custom = (PodDetailImageTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"imageCell" forIndexPath:indexPath];
+            custom.podcastImage.image = nil;
             if (self.imageData) {
-                custom.imageView.image = [UIImage imageWithData:self.imageData];
+                custom.podcastImage.image = [UIImage imageWithData:self.imageData];
             }
             else {
                 if ([self.imageURL length]) {
                     [self getImageFromURL:self.imageURL onIndex:[indexPath row]];
                 }
                 else {
-                    custom.imageView.image = [UIImage imageNamed:@"placeholder"];
-                    custom.imageView.alpha = 0.8f;
+                    custom.podcastImage.image = [UIImage imageNamed:@"placeholder"];
+                    custom.podcastImage.alpha = 0.8f;
                 }
             }
             cell = custom;

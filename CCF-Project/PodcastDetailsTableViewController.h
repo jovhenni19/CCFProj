@@ -20,4 +20,6 @@
 @property (strong, nonatomic) NSString *urlForAudio;
 @property (strong, nonatomic) NSString *youtubeID;
 
+@property (strong, nonatomic) YMCAudioPlayer *audioPlayer;
+
 @end

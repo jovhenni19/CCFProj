@@ -18,6 +18,7 @@
 #import "UIButton+LocationValues.h"
 #import "AFNetworking.h"
 #import "YMCAudioPlayer.h"
+#import "CustomButton.h"
 
 #import "NewsItem+CoreDataClass.h"
 #import "PodcastsItem+CoreDataClass.h"
@@ -36,6 +37,7 @@
 
 #define MANAGE_CONTEXT                                                  ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext
 
+#define TEAL_COLOR                                                      [UIColor colorWithRed:17.0f/255.0f green:179.0f/255.0f blue:196/255.0f alpha:1.0f]
 
 #define isNIL(key)                                                      (key && ![key isKindOfClass:[NSNull class]])?key:@""
 
@@ -61,7 +63,8 @@ extern NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION;
 @property (strong, nonatomic) EKCalendar *calendar;
 
 @property (strong, nonatomic) UIProgressView *loadingProgressView;
-@property (strong, nonatomic) YMCAudioPlayer *audioPlayerPauser;
+@property (strong, nonatomic) YMCAudioPlayer *audioPlayerPauser1;
+@property (strong, nonatomic) UITextField *textField1;
 
 - (void) showWebViewWithURL:(NSString*)urlString;
 - (void) openURL:(NSString*)urlstring;

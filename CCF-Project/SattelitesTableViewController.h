@@ -12,4 +12,5 @@
 
 @interface SattelitesTableViewController : BaseViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, CLLocationManagerDelegate>
 
+@property (weak, nonatomic) IBOutlet UITextField *searchTextfield;
 @end

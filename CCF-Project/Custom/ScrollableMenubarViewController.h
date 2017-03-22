@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "YMCAudioPlayer.h"
 
 @protocol ScrollableMenubarViewControllerDelegate <NSObject>
 @optional
@@ -24,6 +25,9 @@
 @property (assign, nonatomic) NSInteger selectedIndex;
 @property (strong, nonatomic) id<ScrollableMenubarViewControllerDelegate> delegate;
 @property (strong, nonatomic) UIColor *foreColor;
+
+@property (strong, nonatomic) YMCAudioPlayer *audioPlayerPauser;
+@property (strong, nonatomic) UITextField *textField;
 
 - (void) showProgressView;
 - (void) addValueToProgressView;

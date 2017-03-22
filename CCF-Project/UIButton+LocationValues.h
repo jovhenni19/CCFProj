@@ -15,4 +15,9 @@
 @property (strong, nonatomic) NSString *locationName;
 @property (strong, nonatomic) NSString *locationSnippet;
 
+@property (strong, nonatomic) NSString *eventTitle;
+@property (strong, nonatomic) NSString *eventAddress;
+@property (strong, nonatomic) NSString *eventDate;
+@property (strong, nonatomic) NSString *eventTime;
+
 @end

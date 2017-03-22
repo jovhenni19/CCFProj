@@ -102,10 +102,64 @@
     return self.events_link.count;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    EventsObject *events = (EventsObject*)[self.events_link objectAtIndex:[indexPath row]];
+    
+    // add controls
+    
+    CGFloat buttonWidth = (tableView.frame.size.width-25.0f)/3; //divide per control
+    
+    CustomButton *buttonVenue = [[CustomButton alloc] initWithText:[events.venue capitalizedString] image:[UIImage imageNamed:@"pin-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 30.0f)];
+    
+    
+    CustomButton *buttonDate = [[CustomButton alloc] initWithText:[events.date capitalizedString] image:[UIImage imageNamed:@"calendar-icon-small"] frame:CGRectMake(buttonWidth, 0.0f, buttonWidth, 30.0f)];
+    
+    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[events.date capitalizedString] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 0.0f, buttonWidth, 30.0f)];
+    
+    CGFloat height = 30.0f;
+    for (CustomButton *button in @[buttonVenue,buttonDate,buttonTime]) {
+        if (button.frame.size.height > height) {
+            height = button.frame.size.height;
+        }
+    }
+    
+    
+    return height + 145.0f;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     EventsTableViewCell *cell = (EventsTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"eventsCell"];
     
+    EventsObject *events = (EventsObject*)[self.events_link objectAtIndex:[indexPath row]];
+    
+    
+    cell.eventsImageView.image = [UIImage imageNamed:@"placeholder"];
+//    [cell.eventsDate setTitle:[NSString stringWithFormat:@"  %@",events.date] forState:UIControlStateNormal];
+//    [cell.eventsTime setTitle:[NSString stringWithFormat:@"  %@",events.time] forState:UIControlStateNormal];
+//    
+//    
+//    NSMutableString *venue = [NSMutableString stringWithFormat:@"%@",events.venue];
+//    
+//    [venue replaceOccurrencesOfString:@"," withString:@",\n" options:NSCaseInsensitiveSearch range:NSMakeRange(0, venue.length)];
+//    [cell.eventsVenue setTitle:[NSString stringWithFormat:@"  %@",venue] forState:UIControlStateNormal];
+//    
+    
+    while ([[cell.viewControls subviews] count] > 0) {
+        [[[cell.viewControls subviews] lastObject] removeFromSuperview];
+    }
+    
+    
+    
+    cell.eventsTitle.text = events.title;
+    cell.eventsTitle.hidden = YES;
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(EventsTableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     EventsObject *events = (EventsObject*)[self.events_link objectAtIndex:[indexPath row]];
     
     if (events.image_data) {
@@ -117,26 +171,47 @@
         }
         else {
             cell.eventsImageView.image = [UIImage imageNamed:@"placeholder"];
-            cell.eventsImageView.alpha = 0.8f;
         }
     }
     
-    [cell.eventsDate setTitle:[NSString stringWithFormat:@"  %@",events.date] forState:UIControlStateNormal];
-    [cell.eventsTime setTitle:[NSString stringWithFormat:@"  %@",events.time] forState:UIControlStateNormal];
+    // add controls
+    
+    CGFloat buttonWidth = (cell.contentView.frame.size.width-25.0f)/3; //divide per control
+    
+    CustomButton *buttonVenue = [[CustomButton alloc] initWithText:[events.venue capitalizedString] image:[UIImage imageNamed:@"pin-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 30.0f)];
+    buttonVenue.labelText.textColor = TEAL_COLOR;
+    buttonVenue.button.latitude = [NSNumber numberWithDouble:14.589221];
+    buttonVenue.button.longitude = [NSNumber numberWithDouble:121.078906];
+    buttonVenue.button.locationName = @"CCF CENTER";
+    buttonVenue.button.locationSnippet = [events.venue capitalizedString];
+    [buttonVenue.button addTarget:self action:@selector(viewMapButton:) forControlEvents:UIControlEventTouchUpInside];
+    
+//    buttonVenue.layer.borderWidth = 1.0f;
+    
+    [cell.viewControls addSubview:buttonVenue];
     
     
-    NSMutableString *venue = [NSMutableString stringWithFormat:@"%@",events.venue];
+    CustomButton *buttonDate = [[CustomButton alloc] initWithText:[events.date capitalizedString] image:[UIImage imageNamed:@"calendar-icon-small"] frame:CGRectMake(buttonWidth, 0.0f, buttonWidth, 30.0f)];
+    buttonDate.labelText.textColor = TEAL_COLOR;
+    [buttonDate.button addTarget:self action:@selector(saveDateCalendar:) forControlEvents:UIControlEventTouchUpInside];
+    buttonDate.button.eventTitle = events.title;
+    buttonDate.button.eventAddress = events.venue;
+    buttonDate.button.eventDate = events.date;
+    buttonDate.button.eventTime = events.time;
+//    buttonDate.layer.borderWidth = 1.0f;
     
-    [venue replaceOccurrencesOfString:@"," withString:@",\n" options:NSCaseInsensitiveSearch range:NSMakeRange(0, venue.length)];
-    [cell.eventsVenue setTitle:[NSString stringWithFormat:@"  %@",venue] forState:UIControlStateNormal];
+    [cell.viewControls addSubview:buttonDate];
     
+    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[events.date capitalizedString] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 0.0f, buttonWidth, 30.0f)];
+    buttonTime.labelText.textColor = TEAL_COLOR;
+    [buttonTime.button addTarget:self action:@selector(saveDateCalendar:) forControlEvents:UIControlEventTouchUpInside];
+    buttonTime.button.eventTitle = events.title;
+    buttonTime.button.eventAddress = events.venue;
+    buttonTime.button.eventDate = events.date;
+    buttonTime.button.eventTime = events.time;
+//    buttonTime.layer.borderWidth = 1.0f;
     
-    
-    
-    cell.eventsTitle.text = events.title;
-    
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    return cell;
+    [cell.viewControls addSubview:buttonTime];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -152,6 +227,7 @@
     eventsDetailVC.dateText = events.date;
     eventsDetailVC.timeText = events.time;
     eventsDetailVC.imageURL = events.image_url;
+    eventsDetailVC.imageData = events.image_data;
     eventsDetailVC.detailDescription = events.description_detail;
     eventsDetailVC.personName = events.speakers;
     eventsDetailVC.personMobile = [NSString stringWithFormat:@"+63%@",[events.contact_info substringFromIndex:1]];

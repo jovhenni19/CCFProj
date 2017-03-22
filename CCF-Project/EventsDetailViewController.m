@@ -26,9 +26,11 @@
     self.buttonLocation.longitude = [NSNumber numberWithDouble:self.locationLongitude];
     self.buttonLocation.locationName = self.locationName;
     
-    self.imageView.image = [UIImage imageNamed:@"placeholder"];
     
-    if ([self.imageURL length]) {
+    if (self.imageData) {
+        self.imageView.image = [UIImage imageWithData:self.imageData];
+    }
+    else if ([self.imageURL length]) {
         
         [self getImageFromURL:self.imageURL completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
             
@@ -40,7 +42,9 @@
             
         }];
     }
-    
+    else {
+        self.imageView.image = [UIImage imageNamed:@"placeholder"];
+    }
 }
 
 - (void)didReceiveMemoryWarning {

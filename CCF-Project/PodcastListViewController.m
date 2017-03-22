@@ -37,6 +37,10 @@
             
         }];
     }
+    else {
+        [self.headerImage setImage:[UIImage imageNamed:@"placeholder"]];
+        
+    }
     self.categoryTitleLabel.text = self.podcastCategoryTitle;
 }
 
@@ -109,7 +113,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     
-    PodcastsItem *item  = [self.podcastList objectAtIndex:[indexPath row]];
+    PodcastsObject *item  = [self.podcastList objectAtIndex:[indexPath row]];
     
     
     PodcastDetailsTableViewController *details = [self.storyboard instantiateViewControllerWithIdentifier:@"podcastDetailsView"];
@@ -119,7 +123,7 @@
     details.otherText = [item.category_name capitalizedString];
     details.podcastSpeaker = @"Speaker 1";
     
-    details.imageURL = item.image;
+    details.imageURL = item.image_url;
     details.youtubeID = @"Xd_6MSWz2J4";
     details.urlForAudio = @"audiofile";
     

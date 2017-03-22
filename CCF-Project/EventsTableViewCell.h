@@ -14,5 +14,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *eventsTime;
 @property (weak, nonatomic) IBOutlet UIButton *eventsDate;
 @property (weak, nonatomic) IBOutlet UIButton *eventsVenue;
+@property (weak, nonatomic) IBOutlet UIView *viewControls;
 
 @end

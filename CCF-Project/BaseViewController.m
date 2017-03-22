@@ -95,6 +95,8 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 
 - (IBAction)saveDateCalendar:(id)sender {
     
+    UIButton *button = (UIButton*)sender;
+    
     [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
         // handle access here
         //            [self updateAuthorizationStatusToAccessEventStore];
@@ -109,15 +111,17 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
         else {
             self.isAccessToEventStoreGranted = YES;
             EKEvent *event = [EKEvent eventWithEventStore:self.eventStore];
-            event.title = [NSString stringWithFormat:@"%@",@"YOUTH GATHERING"];
+            event.title = [button.eventTitle capitalizedString];
             
             NSDateFormatter *dateFormmatter = [[NSDateFormatter alloc] init];
-            [dateFormmatter setDateFormat:@"MM/dd/yyyy"];
+            [dateFormmatter setDateFormat:@"MM/dd/yyyy HH:mm a"];
             
-            event.startDate = [dateFormmatter dateFromString:@"11/05/2017"];
+            NSString *fullDate = [NSString stringWithFormat:@"%@ %@",button.eventDate,button.eventTime];
+            
+            event.startDate = [dateFormmatter dateFromString:fullDate];
             event.endDate = [event.startDate dateByAddingTimeInterval:60*60];  //set 1 hour meeting
             event.calendar = [self.eventStore defaultCalendarForNewEvents];
-            event.notes = [NSString stringWithFormat:@"Event Details:\nAddress:%@\n",@"CCF CENTER"];
+            event.notes = [NSString stringWithFormat:@"Event Details:\nVenue:%@\n",[button.eventAddress capitalizedString]];
             NSTimeInterval aInterval = -1 * 60 * 60;
             EKAlarm *alaram = [EKAlarm alarmWithRelativeOffset:aInterval];
             [event addAlarm:alaram];
@@ -126,7 +130,8 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
             BOOL success = [self.eventStore saveEvent:event span:EKSpanThisEvent commit:YES error:&err];
             
             if (success) {
-                UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Success" message:@"YOUTH GATHERING saved in calendar" preferredStyle:UIAlertControllerStyleAlert];
+                NSString *message = [NSString stringWithFormat:@"Event %@ saved in Calendar",button.eventTitle];
+                UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Success" message:message preferredStyle:UIAlertControllerStyleAlert];
                 UIAlertAction *close = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
                     
                 }];
@@ -136,7 +141,8 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
                 }];
             }
             else {
-                UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Error" message:@"YOUTH GATHERING failed to saved in calendar.\nPlease allow the app to save in calendar." preferredStyle:UIAlertControllerStyleActionSheet];
+                NSString *message = [NSString stringWithFormat:@"Event %@ failed to saved in Calendar.\nPlease allow the app to save in Calendar.",button.eventTitle];
+                UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Error" message:message preferredStyle:UIAlertControllerStyleActionSheet];
                 UIAlertAction *close = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
                     
                 }];
@@ -232,7 +238,7 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     
     
     UIView *viewShown = [[[(self.parentViewController.view) viewWithTag:1990 + index] subviews] lastObject];
-    
+//    NSLog(@"[%li]subviews:%@",(long)index,[viewShown subviews]);
     if (viewShown == nil) {
         NSLog(@"ERROR !!");
         
@@ -515,16 +521,24 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 
 - (IBAction)callNumber:(id)sender {
     NSString *urlString = ((UIButton*)sender).titleLabel.text;
-    [self openURL:[NSString stringWithFormat:@"tel://%@", [urlString stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]]]];
+    if ([self canOpenURL:urlString]) {
+        [self openURL:[NSString stringWithFormat:@"tel://%@", [urlString stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]]]];
+    }
 }
 
 - (IBAction)mailAddress:(id)sender {
     NSString *urlString = ((UIButton*)sender).titleLabel.text;
-    [self openURL:[NSString stringWithFormat:@"mailto://%@",[urlString stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]]]];
+    if ([self canOpenURL:urlString]){
+        [self openURL:[NSString stringWithFormat:@"mailto://%@",[urlString stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]]]];
+    }
 }
 
-- (void) openURL:(NSString*)urlstring {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlstring] options:@{} completionHandler:^(BOOL success) {
+- (BOOL) canOpenURL:(NSString*)urlString {
+    return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:urlString]];
+}
+
+- (void) openURL:(NSString*)urlString {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString] options:@{} completionHandler:^(BOOL success) {
         
     }];
 }
