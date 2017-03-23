@@ -32,15 +32,20 @@
     }
     else if ([self.imageURL length]) {
         
-        [self getImageFromURL:self.imageURL completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-            
-            UIImage *image = (UIImage*)responseObject;
-            
-            [self.imageView setImage:image];
-            
-        } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
-            
+        [self.imageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/image/%@",kAPI_LINK,self.imageURL]] placeholderImage:[UIImage imageNamed:@"placeholder"] options:SDWebImageProgressiveDownload completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            self.imageData = UIImageJPEGRepresentation(image, 100.0f);
         }];
+        
+        
+//        [self getImageFromURL:self.imageURL completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+//            
+//            UIImage *image = (UIImage*)responseObject;
+//            
+//            [self.imageView setImage:image];
+//            
+//        } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
+//            
+//        }];
     }
     else {
         self.imageView.image = [UIImage imageNamed:@"placeholder"];

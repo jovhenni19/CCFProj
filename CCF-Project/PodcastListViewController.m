@@ -27,15 +27,21 @@
         [self.headerImage setImage:[UIImage imageWithData:self.categoryImageData]];
     }
     else if([self.categoryImageURL length]){
-        [self getImageFromURL:self.categoryImageURL completionHandler:^(NSURLResponse * _Nullable response, id  _Nullable responseObject, NSError * _Nullable error) {
-            if(!error) {
-                UIImage *image = (UIImage*)responseObject;
-                
-                [self.headerImage setImage:[UIImage imageWithData:UIImageJPEGRepresentation(image, 100.0f)]];
-            }
-        } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
-            
+        
+        [self.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/image/%@",kAPI_LINK,self.categoryImageURL]] placeholderImage:[UIImage imageNamed:@"placeholder"] options:SDWebImageProgressiveDownload completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            self.categoryImageData = UIImageJPEGRepresentation(image, 100.0f);
         }];
+        
+        
+//        [self getImageFromURL:self.categoryImageURL completionHandler:^(NSURLResponse * _Nullable response, id  _Nullable responseObject, NSError * _Nullable error) {
+//            if(!error) {
+//                UIImage *image = (UIImage*)responseObject;
+//                
+//                [self.headerImage setImage:[UIImage imageWithData:UIImageJPEGRepresentation(image, 100.0f)]];
+//            }
+//        } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
+//            
+//        }];
     }
     else {
         [self.headerImage setImage:[UIImage imageNamed:@"placeholder"]];
@@ -94,7 +100,10 @@
     }
     else {
         if ([item.image_url length]) {
-            [self getImageFromURL:item.image_url onIndex:[indexPath row]];
+//            [self getImageFromURL:item.image_url onIndex:[indexPath row]];
+            [cell.podcastImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/image/%@",kAPI_LINK,item.image_url]] placeholderImage:[UIImage imageNamed:@"placeholder"] options:SDWebImageProgressiveDownload completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                item.image_data = UIImageJPEGRepresentation(image, 100.0f);
+            }];
         }
         else {
             

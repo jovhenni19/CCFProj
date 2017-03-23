@@ -65,29 +65,39 @@
     NSArray *data = result[@"data"];
     
     [self showLoadingAnimation:self.view];
+    
+    
+    
+    
     for (NSDictionary *item in data) {
         
 //        NSDictionary *events = @{@"kTitle":item[@"title"],@"kImage":item[@"image"],@"kDescription":item[@"description"],@"kDate":item[@"date"],@"kTime":item[@"time"],@"kDateRaw":item[@"dateRaw"][@"date"],@"kRegLink":item[@"registration_link"],@"kSpeaker":item[@"speakers"],@"kMobile":item[@"contact_info"],@"kVenue":item[@"venue"],@"kCreatedTime":item[@"created_at"]};
         
-        EventsObject *events = [[EventsObject alloc] init];
-        events.title = isNIL(item[@"title"]);
-        events.image_url = isNIL(item[@"image"]);
-        events.description_detail = isNIL(item[@"description"]);
-        events.date = isNIL(item[@"date"]);
-        events.time = isNIL(item[@"time"]);
-        events.date_raw = isNIL(item[@"dateRaw"][@"date"]);
-        events.registration_link = isNIL(item[@"registration_link"]);
-        events.speakers = isNIL(item[@"speakers"]);
-        events.contact_info = isNIL(item[@"contact_info"]);
-        events.venue = isNIL(item[@"venue"]);
-        events.created_date = isNIL(item[@"created_at"]);
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
+            EventsObject *events = [[EventsObject alloc] init];
+            events.title = isNIL(item[@"title"]);
+            events.image_url = isNIL(item[@"image"]);
+            events.description_detail = isNIL(item[@"description"]);
+            events.date = isNIL(item[@"date"]);
+            events.time = isNIL(item[@"time"]);
+            events.date_raw = isNIL(item[@"dateRaw"][@"date"]);
+            events.registration_link = isNIL(item[@"registration_link"]);
+            events.speakers = isNIL(item[@"speakers"]);
+            events.contact_info = isNIL(item[@"contact_info"]);
+            events.venue = isNIL(item[@"venue"]);
+            events.created_date = isNIL(item[@"created_at"]);
+            
+            
+            [self.events_link addObject:events];
+//            dispatch_sync(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+//            });
+//        });
         
-        [self.events_link addObject:events];
     }
     
     
-    [self.tableView reloadData];
     [self removeLoadingAnimation];
 }
 
@@ -150,8 +160,6 @@
         [[[cell.viewControls subviews] lastObject] removeFromSuperview];
     }
     
-    
-    
     cell.eventsTitle.text = events.title;
     cell.eventsTitle.hidden = YES;
     
@@ -167,7 +175,10 @@
     }
     else {
         if ([events.image_url length]) {
-            [self getImageFromURL:events.image_url onIndex:[indexPath row]];
+//            [self getImageFromURL:events.image_url onIndex:[indexPath row]];
+            [cell.eventsImageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/image/%@",kAPI_LINK,events.image_url]] placeholderImage:[UIImage imageNamed:@"placeholder"] options:SDWebImageProgressiveDownload completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                events.image_data = UIImageJPEGRepresentation(image, 100.0f);
+            }];
         }
         else {
             cell.eventsImageView.image = [UIImage imageNamed:@"placeholder"];

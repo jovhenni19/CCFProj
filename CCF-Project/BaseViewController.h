@@ -33,6 +33,9 @@
 
 #import "AppDelegate.h"
 
+#import "SDImageCache.h"
+#import "UIImageView+WebCache.h"
+
 #define NETWORK_INDICATOR(bool)                                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:bool];
 
 #define MANAGE_CONTEXT                                                  ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext

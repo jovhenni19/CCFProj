@@ -92,28 +92,36 @@
 //            
 //            [self presentViewController:ac animated:YES completion:nil];
 //        }
-                
-        NewsObject *newsItem = [[NewsObject alloc] init];
-        newsItem.id_num = isNIL(item[@"id"]);
-        newsItem.title = isNIL(item[@"title"]);
-        newsItem.image_url = isNIL(item[@"image"]);
-        newsItem.description_detail = isNIL(item[@"description"]);
-        newsItem.created_date = isNIL(item[@"created_at"]);
         
-        if ([item[@"groups"] isKindOfClass:[NSArray class]]) {
+        
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NewsObject *newsItem = [[NewsObject alloc] init];
+            newsItem.id_num = isNIL(item[@"id"]);
+            newsItem.title = isNIL(item[@"title"]);
+            newsItem.image_url = isNIL(item[@"image"]);
+            newsItem.description_detail = isNIL(item[@"description"]);
+            newsItem.created_date = isNIL(item[@"created_at"]);
             
-            newsItem.group_name = isNIL(item[@"groups"][0][@"name"]);
-        }
-        else {
-            newsItem.group_name = isNIL(item[@"groups"]);
-        }
-
+            if ([item[@"groups"] isKindOfClass:[NSArray class]]) {
+                if ([item[@"groups"] count]) {
+                    newsItem.group_name = isNIL(item[@"groups"][0][@"name"]);
+                }
+            }
+            else {
+                newsItem.group_name = isNIL(item[@"groups"]);
+            }
+            
+            
+            
+            [self.news_list addObject:newsItem];
+            
+//            dispatch_sync(dispatch_get_main_queue(), ^{
         
-        
-        [self.news_list addObject:newsItem];
+                [self.tableView reloadData];
+//            });
+//        });
     }
     
-    [self.tableView reloadData];
     
     [self removeLoadingAnimation];
     
@@ -299,16 +307,39 @@
     }
     else {
         if (days > 0) {
-            text = [NSString stringWithFormat:@"%li days ago",(long)days];
+            if (days == 1) {
+                text = @"1 day ago";
+            }
+            else {
+                text = [NSString stringWithFormat:@"%li days ago",(long)days];
+            }
         }
         else if (hours > 0 && hours < 24) {
-            text = [NSString stringWithFormat:@"%li hours ago",(long)hours];
+            
+            if (hours == 1) {
+                text = @"1 hour ago";
+            }
+            else {
+                text = [NSString stringWithFormat:@"%li hours ago",(long)hours];
+            }
         }
         else if (minutes > 0 && minutes < 60) {
-            text = [NSString stringWithFormat:@"%li minutes ago",(long)minutes];
+            
+            if (minutes == 1) {
+                text = @"1 minute ago";
+            }
+            else {
+                text = [NSString stringWithFormat:@"%li minutes ago",(long)minutes];
+            }
         }
         else if (seconds > 0 && seconds < 60) {
-            text = [NSString stringWithFormat:@"%li seconds ago",(long)seconds];
+            
+            if (seconds == 1) {
+                text = @"1 second ago";
+            }
+            else {
+                text = [NSString stringWithFormat:@"%li seconds ago",(long)seconds];
+            }
         }
     }
     

@@ -172,7 +172,9 @@
             }
             else {
                 if ([self.imageURL length]) {
-                    [self getImageFromURL:self.imageURL onIndex:[indexPath row]];
+                    [custom.podcastImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/image/%@",kAPI_LINK,self.imageURL]] placeholderImage:[UIImage imageNamed:@"placeholder"] options:SDWebImageProgressiveDownload completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                        self.imageData = UIImageJPEGRepresentation(image, 100.0f);
+                    }];
                 }
                 else {
                     custom.podcastImage.image = [UIImage imageNamed:@"placeholder"];

@@ -38,7 +38,7 @@
         self.imageView = [[UIImageView alloc] initWithImage:image];
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
         self.imageView.clipsToBounds = YES;
-        CGFloat y = 10.0f;//(newFrame.size.height/2.0f) - (25.0f/2.0f);
+        CGFloat y = /*10.0f;*/(newFrame.size.height/2.0f) - (25.0f/2.0f);
         self.imageView.frame = CGRectMake(0.0f, y, 25.0f, 25.0f);
         
         [self addSubview:self.imageView];

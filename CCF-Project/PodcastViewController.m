@@ -155,53 +155,62 @@
     [self showLoadingAnimation:self.view];
     for (NSDictionary *item in data) {
         
-//        PodcastsItem *podcastsItem = (PodcastsItem*)[PodcastsItem addItemWithContext:context];
         
-        PodcastsObject *podcastsItem = [[PodcastsObject alloc] init];
-        
-        podcastsItem.id_num = isNIL(item[@"id"]);
-        podcastsItem.title = isNIL(item[@"title"]);
-        podcastsItem.image_url = isNIL(item[@"image"]);
-        podcastsItem.description_detail = isNIL(item[@"description"]);
-        podcastsItem.category_name = isNIL(item[@"series"][0][@"name"]);
-        podcastsItem.created_date = isNIL(item[@"created_at"]);
-        
-//        NSError *error = nil;
-//        
-//        if (![context save:&error]) {
-//            UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Fatal Error" message:@"Error saving data. Please contact developer." preferredStyle:UIAlertControllerStyleActionSheet];
-//            UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-//                [self dismissViewControllerAnimated:YES completion:nil];
-//            }];
-//            
-//            [ac addAction:cancel];
-//            
-//            [self presentViewController:ac animated:YES completion:nil];
-//        }
-        
-        [self.podcastList addObject:podcastsItem];
-    }
-    
-    for (PodcastsObject *item in self.podcastList) {
-        NSString *key = item.category_name;
-        if (![[self.categorizedPodcast allKeys] containsObject:key]) {
-            NSMutableArray *array = [NSMutableArray array];
-            [self.categorizedPodcast setObject:[array mutableCopy] forKey:key];
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            PodcastsObject *podcastsItem = [[PodcastsObject alloc] init];
             
-            NSDictionary *category = @{@"kTitle":key,@"kImage":item.image_url,@"kImageData":isNIL(item.image_data)};
-            [self.categories addObject:category];
-        }
+            podcastsItem.id_num = isNIL(item[@"id"]);
+            podcastsItem.title = isNIL(item[@"title"]);
+            podcastsItem.image_url = isNIL(item[@"image"]);
+            podcastsItem.description_detail = isNIL(item[@"description"]);
+            podcastsItem.category_name = isNIL(item[@"series"][0][@"name"]);
+            podcastsItem.created_date = isNIL(item[@"created_at"]);
+            
+            
+            [self.podcastList addObject:podcastsItem];
+            
+            NSString *key = podcastsItem.category_name;
+            if (![[self.categorizedPodcast allKeys] containsObject:key]) {
+                NSMutableArray *array = [NSMutableArray array];
+                [self.categorizedPodcast setObject:[array mutableCopy] forKey:key];
+                
+                NSDictionary *category = @{@"kTitle":key,@"kImage":podcastsItem.image_url,@"kImageData":isNIL(podcastsItem.image_data)};
+                [self.categories addObject:category];
+            }
+            
+            NSMutableArray *subArray = [self.categorizedPodcast objectForKey:key];
+            [subArray addObject:item];
+            
+            [self.categorizedPodcast setObject:subArray forKey:key];
+            
+            
+//            dispatch_sync(dispatch_get_main_queue(), ^{
         
-        NSMutableArray *subArray = [self.categorizedPodcast objectForKey:key];
-        [subArray addObject:item];
-        
-        [self.categorizedPodcast setObject:subArray forKey:key];
+                [self.mainTableView reloadData];
+//            });
+//            
+//        });
     }
     
+//    for (PodcastsObject *item in self.podcastList) {
+//        NSString *key = item.category_name;
+//        if (![[self.categorizedPodcast allKeys] containsObject:key]) {
+//            NSMutableArray *array = [NSMutableArray array];
+//            [self.categorizedPodcast setObject:[array mutableCopy] forKey:key];
+//            
+//            NSDictionary *category = @{@"kTitle":key,@"kImage":item.image_url,@"kImageData":isNIL(item.image_data)};
+//            [self.categories addObject:category];
+//        }
+//        
+//        NSMutableArray *subArray = [self.categorizedPodcast objectForKey:key];
+//        [subArray addObject:item];
+//        
+//        [self.categorizedPodcast setObject:subArray forKey:key];
+//    }
     
     
     
-    [self.mainTableView reloadData];
+    
     
     [self removeLoadingAnimation];
     
@@ -262,29 +271,44 @@
     if (self.isCategoriesShown) {
         NSString *title = [self.categories[section] objectForKey:@"kTitle"];
         
-        NSData *imageData = nil;
+        __block NSData *imageData = nil;
+        UIImageView *imageView = [[UIImageView alloc] init];
         if ([self.categories[section] objectForKey:@"kImageData"] && [[self.categories[section] objectForKey:@"kImageData"] isKindOfClass:[NSData class]]) {
             imageData = [self.categories[section] objectForKey:@"kImageData"];
+            imageView.image = [UIImage imageWithData:imageData];
         }
         else {
             if ([[self.categories[section] objectForKey:@"kImage"] length]) {
                 
                 NSString *urlPath = [self.categories[section] objectForKey:@"kImage"];
-                [self getImageFromURL:urlPath completionHandler:^(NSURLResponse * _Nullable response, id  _Nullable responseObject, NSError * _Nullable error) {
+                
+                [imageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/image/%@",kAPI_LINK,urlPath]] placeholderImage:[UIImage imageNamed:@"placeholder"] options:SDWebImageProgressiveDownload completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                    NSMutableDictionary *updated = [[NSMutableDictionary alloc] initWithDictionary:self.categories[section]];
                     
-                    if(!error) {
-                        UIImage *image = (UIImage*)responseObject;
-                        NSMutableDictionary *updated = [[NSMutableDictionary alloc] initWithDictionary:self.categories[section]];
-                        
-                        [updated setObject:UIImageJPEGRepresentation(image, 100.0f) forKey:@"kImageData"];
-                        
-                        [self.categories replaceObjectAtIndex:section withObject:updated];
-                        
-                        [self.mainTableView reloadData];
-                    }
-                } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
+                    imageData = UIImageJPEGRepresentation(image, 100.0f);
+                    
+                    [updated setObject:imageData forKey:@"kImageData"];
+                    
+                    
+                    [self.categories replaceObjectAtIndex:section withObject:updated];
                     
                 }];
+                
+//                [self getImageFromURL:urlPath completionHandler:^(NSURLResponse * _Nullable response, id  _Nullable responseObject, NSError * _Nullable error) {
+//                    
+//                    if(!error) {
+//                        UIImage *image = (UIImage*)responseObject;
+//                        NSMutableDictionary *updated = [[NSMutableDictionary alloc] initWithDictionary:self.categories[section]];
+//                        
+//                        [updated setObject:UIImageJPEGRepresentation(image, 100.0f) forKey:@"kImageData"];
+//                        
+//                        [self.categories replaceObjectAtIndex:section withObject:updated];
+//                        
+//                        [self.mainTableView reloadData];
+//                    }
+//                } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
+//                    
+//                }];
             }
         }
         
@@ -296,16 +320,19 @@
         button.tag = section;
         [button addTarget:self action:@selector(setSectionExpandedWithButton:) forControlEvents:UIControlEventTouchUpInside];
         
-        if (imageData) {
-            UIImage *image = [UIImage imageWithData:imageData];
+        if (imageData && imageView.image) {
+            UIImage *image = imageView.image;//[UIImage imageWithData:imageData];
             [button setImage:image forState:UIControlStateNormal];
             [button.imageView setContentMode:UIViewContentModeScaleAspectFill];
             [button setTitle:@"" forState:UIControlStateNormal];
+            button.backgroundColor = [UIColor clearColor];
+        }
+        else {
+            button.backgroundColor = [UIColor colorWithRed:36.0f/255.0f green:179.0f/255.0f blue:196/255.0f alpha:1.0f];
         }
         
         button.layer.borderWidth = 1.0f;
         button.layer.borderColor = [UIColor whiteColor].CGColor;
-        button.backgroundColor = [UIColor colorWithRed:36.0f/255.0f green:179.0f/255.0f blue:196/255.0f alpha:1.0f];
         
         return button;
     }
@@ -344,7 +371,10 @@
     }
     else {
         if ([item.image_url length]) {
-            [self getImageFromURL:item.image_url onIndex:[indexPath row]];
+//            [self getImageFromURL:item.image_url onIndex:[indexPath row]];
+            [cell.podcastImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/image/%@",kAPI_LINK,item.image_url]] placeholderImage:[UIImage imageNamed:@"placeholder"] options:SDWebImageProgressiveDownload completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                item.image_data = UIImageJPEGRepresentation(image, 100.0f);
+            }];
         }
         else {
             cell.podcastImage.image = [UIImage imageNamed:@"placeholder"];

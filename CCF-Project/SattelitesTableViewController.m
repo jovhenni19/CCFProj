@@ -10,7 +10,7 @@
 #import "SattelitesTableViewCell.h"
 
 
-@interface SattelitesTableViewController ()
+@interface SattelitesTableViewController () <UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
@@ -21,16 +21,23 @@
 @property (strong, nonatomic) NSDictionary *nearbyLocations;
 @property (strong, nonatomic) NSDictionary *currentLocationList;
 @property (weak, nonatomic) IBOutlet UIView *viewSearchBox;
+@property (weak, nonatomic) IBOutlet UIView *containerViewSearchResult;
 
 @property (assign, nonatomic) BOOL isAllLocationSelected;
 @property (assign, nonatomic) BOOL isLocationFinished;
 
+@property (assign, nonatomic) CGFloat heightSearchResult;
 
 @property (assign, nonatomic) NSInteger shownPerPage;
 
 @property (strong, nonatomic) NSMutableArray *sattelites_list;
 
+@property (strong, nonatomic) NSMutableArray *searchResultList;
+@property (strong, nonatomic) UITableView *tableSearchResult;
 
+@property (assign, nonatomic) CGFloat keyboardHeight;
+
+@property (strong, nonatomic) UITapGestureRecognizer *yourTap;
 
 @end
 
@@ -46,7 +53,15 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     
+//    self.viewSearchBox.layer.zPosition = 3.0f;
+//    self.containerViewSearchResult.layer.zPosition = 2.0f;
+    self.tableView.tableHeaderView.layer.zPosition = 2.0f;
     self.textField1 = self.searchTextfield;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(myNotificationMethod:)
+                                                 name:UIKeyboardDidShowNotification
+                                               object:nil];
     
     self.isAllLocationSelected = NO;
     self.isLocationFinished = NO;
@@ -68,8 +83,8 @@
     
     [self showLoadingAnimation:self.view];
     
-    UITapGestureRecognizer *yourTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollTap:)];
-    [self.tableView addGestureRecognizer:yourTap];
+    self.yourTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollTap:)];
+    [self.tableView addGestureRecognizer:self.yourTap];
     
     
 //    NSMutableDictionary *mutableAllLocations = [NSMutableDictionary dictionary];
@@ -151,6 +166,12 @@
     
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    self.heightSearchResult = self.containerViewSearchResult.frame.size.height;
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -190,29 +211,34 @@
         
 //        NSDictionary *sattelite = @{@"kLocationName":item[@"name"],@"kLatitude":item[@"latitude"],@"kLongitude":item[@"longitude"],@"kAddress":item[@"address_full"],@"kCreatedTime":item[@"created_at"]};
         
-        SatellitesObject *sattelite = [[SatellitesObject alloc] init];
-        sattelite.name = item[@"name"];
-        sattelite.latitude = item[@"latitude"];
-        sattelite.longitude = item[@"longitude"];
-        sattelite.address_full = item[@"address_full"];
-        sattelite.created_date = item[@"created_at"];
-        
-        [self.sattelites_list addObject:sattelite];
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            SatellitesObject *sattelite = [[SatellitesObject alloc] init];
+            sattelite.name = item[@"name"];
+            sattelite.latitude = item[@"latitude"];
+            sattelite.longitude = item[@"longitude"];
+            sattelite.address_full = item[@"address_full"];
+            sattelite.created_date = item[@"created_at"];
+            
+            [self.sattelites_list addObject:sattelite];
+            
+            
+            
+            NSString *letter_key = [sattelite.name substringWithRange:NSMakeRange(0, 1)];
+            if (![[self.allLocations allKeys] containsObject:letter_key]) {
+                NSMutableArray *array = [NSMutableArray array];
+                [self.allLocations setObject:[array mutableCopy] forKey:letter_key];
+                
+            }
+            
+            NSMutableArray *subArray = [self.allLocations objectForKey:letter_key];
+            [subArray addObject:sattelite];
+            
+            [self.allLocations setObject:subArray forKey:letter_key];
+            
+            
+//        });
     }
     
-    for (SatellitesObject *dictionary in self.sattelites_list) {
-        NSString *letter_key = [dictionary.name substringWithRange:NSMakeRange(0, 1)];
-        if (![[self.allLocations allKeys] containsObject:letter_key]) {
-            NSMutableArray *array = [NSMutableArray array];
-            [self.allLocations setObject:[array mutableCopy] forKey:letter_key];
-            
-        }
-        
-        NSMutableArray *subArray = [self.allLocations objectForKey:letter_key];
-        [subArray addObject:dictionary];
-        
-        [self.allLocations setObject:subArray forKey:letter_key];
-    }
     
     NSMutableArray *sortArray = [NSMutableArray arrayWithArray:[self.allLocations allKeys]];
     self.alphabetSections = [sortArray sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
@@ -244,20 +270,31 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (self.isAllLocationSelected) {
-        return self.alphabetSections.count;
+    if ([tableView isEqual:self.tableSearchResult]) {
+        return 1;
     }
-    else if(self.isLocationFinished) {
-        return self.nearbySections.count;
+    else {
+        if (self.isAllLocationSelected) {
+            return self.alphabetSections.count;
+        }
+        else if(self.isLocationFinished) {
+            return self.nearbySections.count;
+        }
+        return 0;
     }
-    return 0;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (self.isAllLocationSelected) {
-        return [[self.allLocations objectForKey:self.alphabetSections[section]] count];
+    if ([tableView isEqual:self.tableSearchResult]) {
+        return self.searchResultList.count?:1;
     }
-    return [[self.nearbyLocations objectForKey:self.nearbySections[section]] count];
+    else {
+        if (self.isAllLocationSelected) {
+            return [[self.allLocations objectForKey:self.alphabetSections[section]] count];
+        }
+        return [[self.nearbyLocations objectForKey:self.nearbySections[section]] count];
+        
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -272,55 +309,126 @@
         location = [[self.nearbyLocations objectForKey:self.nearbySections[section]] objectAtIndex:row];
     }
     
-    SattelitesTableViewCell *cell = (SattelitesTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"sattelitesCell"];
-    
-    cell.labelLocationName.text = location.name;
-    
-    [cell.labelAddress setTitle:location.address_full forState:UIControlStateNormal];
-    cell.labelAddress.latitude = [NSNumber numberWithDouble:[location.latitude  doubleValue]];
-    cell.labelAddress.longitude = [NSNumber numberWithDouble:[location.longitude doubleValue]];
-    cell.labelAddress.locationName = location.name;
-    cell.labelAddress.locationSnippet = location.address_full;
-    
-    
-    [cell.labelAddress addTarget:self action:@selector(viewMapButton1:) forControlEvents:UIControlEventTouchUpInside];
-    
-    [cell.labelEmail setTitle:@"---"/*[location objectForKey:@"kEmail"]*/ forState:UIControlStateNormal];
-    [cell.labelEmail addTarget:self action:@selector(emailButton:) forControlEvents:UIControlEventTouchUpInside];
-    
-    [cell.labelContacts setTitle:@"---"/*[location objectForKey:@"kContact"]*/ forState:UIControlStateNormal];
-    [cell.labelContacts addTarget:self action:@selector(contactButton:) forControlEvents:UIControlEventTouchUpInside];
-    
-    [cell.labelWebsite setTitle:@"---"/*[location objectForKey:@"kWebsite"]*/ forState:UIControlStateNormal];
-    [cell.labelWebsite addTarget:self action:@selector(webURLButton:) forControlEvents:UIControlEventTouchUpInside];
-    
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-    return cell;
+    if ([tableView isEqual:self.tableSearchResult]) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+        
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+        }
+        
+        if (self.searchResultList.count) {
+            cell.textLabel.text = [location.name capitalizedString];
+            cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+        }
+        else {
+            cell.textLabel.text = @"No Result Found";
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        }
+        
+        
+        return cell;
+    }
+    else {
+        
+        
+        SattelitesTableViewCell *cell = (SattelitesTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"sattelitesCell"];
+        
+        cell.labelLocationName.text = location.name;
+        
+        [cell.labelAddress setTitle:location.address_full forState:UIControlStateNormal];
+        cell.labelAddress.latitude = [NSNumber numberWithDouble:[location.latitude  doubleValue]];
+        cell.labelAddress.longitude = [NSNumber numberWithDouble:[location.longitude doubleValue]];
+        cell.labelAddress.locationName = location.name;
+        cell.labelAddress.locationSnippet = location.address_full;
+        
+        
+        [cell.labelAddress addTarget:self action:@selector(viewMapButton1:) forControlEvents:UIControlEventTouchUpInside];
+        
+        [cell.labelEmail setTitle:@"---"/*[location objectForKey:@"kEmail"]*/ forState:UIControlStateNormal];
+        [cell.labelEmail addTarget:self action:@selector(emailButton:) forControlEvents:UIControlEventTouchUpInside];
+        
+        [cell.labelContacts setTitle:@"---"/*[location objectForKey:@"kContact"]*/ forState:UIControlStateNormal];
+        [cell.labelContacts addTarget:self action:@selector(contactButton:) forControlEvents:UIControlEventTouchUpInside];
+        
+        [cell.labelWebsite setTitle:@"---"/*[location objectForKey:@"kWebsite"]*/ forState:UIControlStateNormal];
+        [cell.labelWebsite addTarget:self action:@selector(webURLButton:) forControlEvents:UIControlEventTouchUpInside];
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+        return cell;
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    
+    if ([tableView isEqual:self.tableSearchResult] && self.searchResultList.count) {
+        NSString *selected = [self.searchResultList objectAtIndex:[indexPath row]];
+        NSInteger section = 0;
+        NSInteger row = 0;
+        if (self.isAllLocationSelected) {
+            
+            for (NSString *key in self.alphabetSections) {
+                if ([key isEqualToString:[selected substringWithRange:NSMakeRange(0, 1)]]) {
+                    for (SatellitesObject *item in [self.allLocations objectForKey:key]) {
+                        if ([item.name isEqualToString:selected]) {
+                            [self scrollToLocation:[NSIndexPath indexPathForRow:row inSection:section]];
+                            break;
+                        }
+                        row += 1;
+                    }
+                }
+                section += 1;
+            }
+            
+        }
+        else {
+            
+            for (NSString *key in self.nearbySections) {
+                if ([key isEqualToString:[selected substringWithRange:NSMakeRange(0, 1)]]) {
+                    for (SatellitesObject *item in [self.nearbyLocations objectForKey:key]) {
+                        if ([item.name isEqualToString:selected]) {
+                            [self scrollToLocation:[NSIndexPath indexPathForRow:row inSection:section]];
+                            break;
+                        }
+                        row += 1;
+                    }
+                }
+                section += 1;
+            }
+            
+        }
+    }
+    else {
+        
+    }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (self.isAllLocationSelected) {
-        return [NSString stringWithFormat:@"   %@",[self.alphabetSections objectAtIndex:section]];
+    
+    if ([tableView isEqual:self.tableSearchResult]) {
     }
     else {
-        NSString *title = @"";
-        NSInteger km = [[self.nearbySections objectAtIndex:section] integerValue];
-        switch (km) {
-            case 6:
-                title = @"   More than 5 KM";
-                break;
-                
-            default:
-                title = [NSString stringWithFormat:@"   Within %li KM",(long)km];
-                break;
+        if (self.isAllLocationSelected) {
+            return [NSString stringWithFormat:@"   %@",[self.alphabetSections objectAtIndex:section]];
         }
-        return title;
+        else {
+            NSString *title = @"";
+            NSInteger km = [[self.nearbySections objectAtIndex:section] integerValue];
+            switch (km) {
+                case 6:
+                    title = @"   More than 5 KM";
+                    break;
+                    
+                default:
+                    title = [NSString stringWithFormat:@"   Within %li KM",(long)km];
+                    break;
+            }
+            return title;
+        }
     }
+    
     return nil;
 }
 
@@ -331,6 +439,9 @@
     return nil;
 }
 
+- (void) scrollToLocation:(NSIndexPath*)indexPath {
+    
+}
 
 /*
 #pragma mark - Navigation
@@ -523,4 +634,77 @@
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView {
     [self.searchTextfield resignFirstResponder];
 }
+
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    
+    CGFloat height = self.tableView.frame.size.height -  self.keyboardHeight - 50.0f;
+    
+    self.tableSearchResult = [[UITableView alloc] initWithFrame:CGRectMake(5.0f, self.heightSearchResult, self.containerViewSearchResult.frame.size.width - 10.0f, height - self.heightSearchResult - 5.0f) style:UITableViewStylePlain];
+    self.tableSearchResult.delegate = self;
+    self.tableSearchResult.dataSource = self;
+    
+    [self.containerViewSearchResult addSubview:self.tableSearchResult];
+    
+    [self.tableSearchResult removeGestureRecognizer:self.yourTap];
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        CGRect frame = self.containerViewSearchResult.frame;
+        frame.size.height = height;
+        self.containerViewSearchResult.frame = frame;
+    } completion:^(BOOL finished) {
+        [self searchString:textField.text];
+    }];
+    
+    
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    self.searchResultList = nil;
+    [self.tableSearchResult removeFromSuperview];
+    self.tableSearchResult = nil;
+    [UIView animateWithDuration:0.2 animations:^{
+        CGRect frame = self.containerViewSearchResult.frame;
+        frame.size.height = self.heightSearchResult;
+        self.containerViewSearchResult.frame = frame;
+    }];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return NO;
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    NSString *searchString = [NSString stringWithFormat:@"%@%@",textField.text,string];
+    
+    [self searchString:searchString];
+    
+    return YES;
+}
+
+- (void) searchString:(NSString*)string {
+    if(!self.searchResultList){
+        self.searchResultList = [NSMutableArray array];
+    }
+    for (SatellitesObject *item in self.sattelites_list) {
+        
+        if ([item.name rangeOfString:string options:NSCaseInsensitiveSearch].location != NSNotFound) {
+            if (![self.searchResultList containsObject:item.name]) {
+                [self.searchResultList addObject:item.name];
+            }
+        }
+    }
+    
+    [self.tableSearchResult reloadData];
+}
+
+- (void)myNotificationMethod:(NSNotification*)notification
+{
+    NSDictionary* keyboardInfo = [notification userInfo];
+    NSValue* keyboardFrameBegin = [keyboardInfo valueForKey:UIKeyboardFrameBeginUserInfoKey];
+    CGRect keyboardFrameBeginRect = [keyboardFrameBegin CGRectValue];
+    self.keyboardHeight = keyboardFrameBeginRect.size.height;
+}
+
 @end
