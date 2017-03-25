@@ -26,6 +26,15 @@
     self.buttonLocation.longitude = [NSNumber numberWithDouble:self.locationLongitude];
     self.buttonLocation.locationName = self.locationName;
     
+    self.buttondate.eventTitle = self.titleText;
+    self.buttondate.eventAddress = self.locationName;
+    self.buttondate.eventDate = self.dateText;
+    self.buttondate.eventTime = self.timeText;
+    
+    self.buttonTime.eventTitle = self.titleText;
+    self.buttonTime.eventAddress = self.locationName;
+    self.buttonTime.eventDate = self.dateText;
+    self.buttonTime.eventTime = self.timeText;
     
     if (self.imageData) {
         self.imageView.image = [UIImage imageWithData:self.imageData];
@@ -93,6 +102,11 @@
         }
         
     }
+    else if ([indexPath row] == 0) {
+        if (self.registerLink.length == 0) {
+            return 60.0f;
+        }
+    }
     return 115.0f;
 }
 
@@ -106,7 +120,6 @@
         
     }
     else {
-        
         cell = [tableView dequeueReusableCellWithIdentifier:@"registerCell"];
         
         UIButton *button1 = (UIButton*)[cell viewWithTag:1];
@@ -122,6 +135,9 @@
         
         [button3 addTarget:self action:@selector(mailAddress:) forControlEvents:UIControlEventTouchUpInside];
         
+        if (self.registerLink.length == 0) {
+            button4.hidden = YES;
+        }
         [button4 addTarget:self action:@selector(registerButtonTapped) forControlEvents:UIControlEventTouchUpInside];
     }
     return cell;

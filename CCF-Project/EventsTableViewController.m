@@ -38,7 +38,7 @@
     
     [self callGETAPI:kEVENTS_LINK withParameters:nil completionNotification:kOBS_EVENTS_NOTIFICATION];
     
-    [self showLoadingAnimation:self.view];
+//    [self showLoadingAnimation:self.view];
     
     
 }
@@ -48,6 +48,15 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+- (void)reloadTables {
+    [super reloadTables];
+    
+    self.events_link = nil;
+    
+    [self callGETAPI:kEVENTS_LINK withParameters:nil completionNotification:kOBS_EVENTS_NOTIFICATION];
+//    [self showLoadingAnimation:self.view];
+}
 
 - (void)appendEventsList:(NSNotification*)notification {
 //    NSLog(@"### result:%@",notification.object);
@@ -64,7 +73,7 @@
     
     NSArray *data = result[@"data"];
     
-    [self showLoadingAnimation:self.view];
+    [self showLoadingAnimation:self.view withTotalCount:data.count];
     
     
     
@@ -90,6 +99,9 @@
             
             
             [self.events_link addObject:events];
+        
+        [self progressValue:((float)self.events_link.count/(float)data.count)];
+        
 //            dispatch_sync(dispatch_get_main_queue(), ^{
                 [self.tableView reloadData];
 //            });
@@ -125,7 +137,7 @@
     
     CustomButton *buttonDate = [[CustomButton alloc] initWithText:[events.date capitalizedString] image:[UIImage imageNamed:@"calendar-icon-small"] frame:CGRectMake(buttonWidth, 0.0f, buttonWidth, 30.0f)];
     
-    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[events.date capitalizedString] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 0.0f, buttonWidth, 30.0f)];
+    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[events.time uppercaseString] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 0.0f, buttonWidth, 30.0f)];
     
     CGFloat height = 30.0f;
     for (CustomButton *button in @[buttonVenue,buttonDate,buttonTime]) {
@@ -154,7 +166,7 @@
 //    
 //    [venue replaceOccurrencesOfString:@"," withString:@",\n" options:NSCaseInsensitiveSearch range:NSMakeRange(0, venue.length)];
 //    [cell.eventsVenue setTitle:[NSString stringWithFormat:@"  %@",venue] forState:UIControlStateNormal];
-//    
+
     
     while ([[cell.viewControls subviews] count] > 0) {
         [[[cell.viewControls subviews] lastObject] removeFromSuperview];
@@ -213,7 +225,7 @@
     
     [cell.viewControls addSubview:buttonDate];
     
-    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[events.date capitalizedString] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 0.0f, buttonWidth, 30.0f)];
+    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[events.time uppercaseString] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 0.0f, buttonWidth, 30.0f)];
     buttonTime.labelText.textColor = TEAL_COLOR;
     [buttonTime.button addTarget:self action:@selector(saveDateCalendar:) forControlEvents:UIControlEventTouchUpInside];
     buttonTime.button.eventTitle = events.title;
@@ -223,6 +235,20 @@
 //    buttonTime.layer.borderWidth = 1.0f;
     
     [cell.viewControls addSubview:buttonTime];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectEventAtIndexPath:)];
+    [buttonTime addGestureRecognizer:tap];
+    [buttonDate addGestureRecognizer:tap];
+    tap.numberOfTapsRequired = 1;
+
+    
+}
+
+- (void) selectEventAtIndexPath:(UIGestureRecognizer*)gestureRecognizer {
+    CustomButton *button = (CustomButton*)gestureRecognizer.view;
+//    NSLog(@"##### lol");
+    [self performSelector:@selector(saveDateCalendar:) withObject:button.button];
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

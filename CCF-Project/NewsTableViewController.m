@@ -40,7 +40,7 @@
     
     [self callGETAPI:kNEWS_LINK withParameters:nil completionNotification:kOBS_NEWS_NOTIFICATION];
     
-    [self showLoadingAnimation:self.view];
+//    [self showLoadingAnimation:self.view];
     
 }
 
@@ -49,10 +49,19 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)reloadTables {
+    [super reloadTables];
+    
+    self.news_list = nil;
+    
+    [self callGETAPI:kNEWS_LINK withParameters:nil completionNotification:kOBS_NEWS_NOTIFICATION];
+//    [self showLoadingAnimation:self.view];
+}
+
 - (void)appendNewsList:(NSNotification*)notification {
 //    NSLog(@"### result:%@",notification.object);
     
-    [self removeLoadingAnimation];
+//    [self removeLoadingAnimation];
     
     if(!self.news_list){
         self.news_list = [NSMutableArray array];
@@ -64,7 +73,8 @@
     
     NSArray *data = result[@"data"];
     
-    [self showLoadingAnimation:self.view];
+    [self showLoadingAnimation:self.view withTotalCount:data.count];
+    
     for (NSDictionary *item in data) {
         
 //        NSManagedObjectContext *context = MANAGE_CONTEXT;
@@ -114,7 +124,8 @@
             
             
             [self.news_list addObject:newsItem];
-            
+        
+        [self progressValue:((float)self.news_list.count/(float)data.count)];
 //            dispatch_sync(dispatch_get_main_queue(), ^{
         
                 [self.tableView reloadData];

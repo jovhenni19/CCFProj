@@ -25,7 +25,7 @@
 
 - (instancetype)initWithText:(NSString*)text image:(UIImage*)image frame:(CGRect)viewFrame {
     
-    UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(28.0f, 0.0f, viewFrame.size.width - 10.0f, viewFrame.size.height)];
+    UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(28.0f, 0.0f, viewFrame.size.width - 20.0f, viewFrame.size.height)];
     tv.text = text;
     tv.font = [UIFont fontWithName:@"OpenSans" size:13.0f];
     CGSize contentSize = [tv contentSize];

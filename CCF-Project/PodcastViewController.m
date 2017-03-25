@@ -44,7 +44,7 @@
     
     [self callGETAPI:kPODCAST_LINK withParameters:nil completionNotification:kOBS_PODCAST_NOTIFICATION];
     
-    [self showLoadingAnimation:self.view];
+//    [self showLoadingAnimation:self.view];
     
     
 //    self.podcastList = [NSMutableArray array];
@@ -123,6 +123,15 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)reloadTables {
+    [super reloadTables];
+    
+    self.podcastList = nil;
+    self.categories = nil;
+    self.categorizedPodcast = nil;
+    [self callGETAPI:kPODCAST_LINK withParameters:nil completionNotification:kOBS_PODCAST_NOTIFICATION];
+//    [self showLoadingAnimation:self.view];
+}
 
 - (void)appendPodcastsList:(NSNotification*)notification {
 //    NSLog(@"### result:%@",notification.object);
@@ -152,7 +161,7 @@
     
 //    NSManagedObjectContext *context = MANAGE_CONTEXT;
     
-    [self showLoadingAnimation:self.view];
+    [self showLoadingAnimation:self.view withTotalCount:data.count];
     for (NSDictionary *item in data) {
         
         
@@ -179,11 +188,12 @@
             }
             
             NSMutableArray *subArray = [self.categorizedPodcast objectForKey:key];
-            [subArray addObject:item];
+            [subArray addObject:podcastsItem];
             
             [self.categorizedPodcast setObject:subArray forKey:key];
             
-            
+        
+        [self progressValue:((float)self.podcastList.count/(float)data.count)];
 //            dispatch_sync(dispatch_get_main_queue(), ^{
         
                 [self.mainTableView reloadData];
@@ -218,7 +228,7 @@
 
 - (IBAction)changeView:(id)sender {
     
-    [self showLoadingAnimation:self.view];
+//    [self showLoadingAnimation:self.view withTotalCount:self.podcastList.count];
     if ([self.segmentedControl selectedSegmentIndex] == 1) {
         self.isCategoriesShown = YES;
     }
@@ -227,7 +237,7 @@
     }
     
     [self.mainTableView reloadData];
-    [self removeLoadingAnimation];
+//    [self removeLoadingAnimation];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -283,14 +293,13 @@
                 NSString *urlPath = [self.categories[section] objectForKey:@"kImage"];
                 
                 [imageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/image/%@",kAPI_LINK,urlPath]] placeholderImage:[UIImage imageNamed:@"placeholder"] options:SDWebImageProgressiveDownload completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                    NSMutableDictionary *updated = [[NSMutableDictionary alloc] initWithDictionary:self.categories[section]];
                     
                     imageData = UIImageJPEGRepresentation(image, 100.0f);
-                    
-                    [updated setObject:imageData forKey:@"kImageData"];
-                    
-                    
-                    [self.categories replaceObjectAtIndex:section withObject:updated];
+                    if (imageData) {
+                        NSMutableDictionary *updated = [[NSMutableDictionary alloc] initWithDictionary:self.categories[section]];
+                        [updated setObject:imageData forKey:@"kImageData"];                        
+                        [self.categories replaceObjectAtIndex:section withObject:updated];
+                    }
                     
                 }];
                 
@@ -352,7 +361,7 @@
         item = [self.podcastList objectAtIndex:[indexPath row]];
     }
     
-    NSString *identifier = ([item.image_url length])?@"podcastCellImage":@"podcastCell";
+    NSString *identifier = @"podcastCellImage";//([item.image_url length])?@"podcastCellImage":@"podcastCell";
     
     PodcastTableViewCell *cell = (PodcastTableViewCell*)[tableView dequeueReusableCellWithIdentifier:identifier];
     

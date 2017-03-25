@@ -25,6 +25,9 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 @property (strong, nonatomic) TWTRLogInButton *twitterLoginButton;
 //@property (strong, nonatomic) UIImageView *loading;
 @property (assign, nonatomic) BOOL isLoadingContent;
+
+@property (assign, nonatomic) CGFloat progressValue;
+
 @end
 
 @implementation BaseViewController
@@ -52,14 +55,14 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 
 - (void)reloadTables {
     
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Success" message:@"YOUTH GATHERING saved in calendar" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *close = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        
-    }];
-    [ac addAction:close];
-    [self presentViewController:ac animated:YES completion:^{
-        
-    }];
+//    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Success" message:@"YOUTH GATHERING saved in calendar" preferredStyle:UIAlertControllerStyleAlert];
+//    UIAlertAction *close = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//        
+//    }];
+//    [ac addAction:close];
+//    [self presentViewController:ac animated:YES completion:^{
+//        
+//    }];
 }
 
 - (IBAction)viewMapButton:(id)sender {
@@ -96,7 +99,7 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 - (IBAction)saveDateCalendar:(id)sender {
     
     UIButton *button = (UIButton*)sender;
-    
+//    NSLog(@"SAVE EVENT:%@",button);
     [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
         // handle access here
         //            [self updateAuthorizationStatusToAccessEventStore];
@@ -451,6 +454,11 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 }
 
 - (void) showWebViewWithURL:(NSString*)urlString {
+    
+    if ([urlString rangeOfString:@"http://"].location == NSNotFound) {
+        return;
+    }
+    
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
     self.backgroundView = [[UIView alloc] initWithFrame:window.bounds];
     
@@ -520,21 +528,21 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 }
 
 - (IBAction)callNumber:(id)sender {
-    NSString *urlString = ((UIButton*)sender).titleLabel.text;
+    NSString *urlString = [((UIButton*)sender).titleLabel.text stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
     if ([self canOpenURL:urlString]) {
         [self openURL:[NSString stringWithFormat:@"tel://%@", [urlString stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]]]];
     }
 }
 
 - (IBAction)mailAddress:(id)sender {
-    NSString *urlString = ((UIButton*)sender).titleLabel.text;
+    NSString *urlString = [((UIButton*)sender).titleLabel.text stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
     if ([self canOpenURL:urlString]){
         [self openURL:[NSString stringWithFormat:@"mailto://%@",[urlString stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]]]];
     }
 }
 
 - (BOOL) canOpenURL:(NSString*)urlString {
-    return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:urlString]];
+    return [urlString length]>0 && [urlString isEqualToString:@"---"]==NO;//[[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:urlString]];
 }
 
 - (void) openURL:(NSString*)urlString {
@@ -760,7 +768,7 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     
 }
 
-- (void) showLoadingAnimation:(UIView*)view {
+- (void) showLoadingAnimation:(UIView*)view withTotalCount:(NSInteger)count{
     
 //    UIImageView *loading = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"loading-logo"]];
 //    [loading setFrame:CGRectMake(0.0f, 0.0f, 160.0f, 160.0f)];
@@ -775,12 +783,33 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     
     self.isLoadingContent = YES;
     self.loadingProgressView.hidden = NO;
+    self.loadingProgressView.progress = 0.3f;
     [self animateLoading:view];
     
 }
 
 - (void) removeLoadingAnimation {
     self.isLoadingContent = NO;
+//    self.loadingProgressView.hidden = YES;
+}
+
+- (void) progressValue:(CGFloat)value {
+    
+//    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+//        
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//    NSLog(@"progressvalue:%f",value);
+    self.isLoadingContent = YES;
+            self.loadingProgressView.hidden = NO;
+            self.progressValue = value;
+//            if (!self.isLoadingContent || self.loadingProgressView.progress == 1.0f) {
+//                self.loadingProgressView.hidden = YES;
+//            }
+//        });
+//        
+//    }];
+//    
+//    [timer fire];
 }
 
 - (void) animateLoading:(UIView*)loadingView {
@@ -801,30 +830,50 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 //        }];
 //    }];
     
-    
+    /*
     NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
         
         
         
         dispatch_async(dispatch_get_main_queue(), ^{
             
-            self.loadingProgressView.progress += 0.2f;
+//            self.loadingProgressView.progress = self.progressValue;
             
-            if (self.loadingProgressView.progress == 1.0f) {
-                self.loadingProgressView.progress = 0.0f;
-            }
+//            if (self.loadingProgressView.progress == 1.0f) {
+//                self.loadingProgressView.progress = 0.0f;
+//            }
             
+//            NSLog(@"##[%f]progress:%f",self.progressValue,self.loadingProgressView.progress);
             
-            if (!self.isLoadingContent) {
-                self.loadingProgressView.hidden = YES;
-                [timer invalidate];
-            }
             
         });
         
     }];
     
     [timer fire];
+    */
+    
+    CGRect frame = self.loadingProgressView.frame;
+    frame.origin.x = 0.0f;
+    self.loadingProgressView.frame = frame;
+    
+    
+    if (!self.isLoadingContent /*&& self.loadingProgressView.progress == 1.0f*/) {
+        self.loadingProgressView.hidden = YES;
+    }
+    else {
+        
+        [UIView animateWithDuration:1.0 animations:^{
+            
+            CGRect frame = self.loadingProgressView.frame;
+            frame.origin.x = self.loadingProgressView.frame.size.width;
+            self.loadingProgressView.frame = frame;
+            
+        } completion:^(BOOL finished) {
+            [self animateLoading:loadingView];
+        }];
+    }
+    
     
 }
 

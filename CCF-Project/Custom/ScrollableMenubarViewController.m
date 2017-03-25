@@ -428,6 +428,7 @@
     }
     [self loadViewControllerWithContentView:cell.contentView index:[indexPath row]];
     
+    
 }
 
 
@@ -436,15 +437,7 @@
     self.selectedIndex = index;
     
     BaseViewController *vc = [self.viewControllers objectAtIndex:self.selectedIndex];
-    
-    if (self.selectedIndex == 6 /*settings index*/) {
-        
-    }
-    else {
-        
-        vc.loadingProgressView = self.progressView;
-                
-    }
+   
     
     
     while ([[contentView subviews] count] > 0) {
@@ -452,13 +445,21 @@
     }
 
     
-    vc.view.frame = self.containerViewForTable.bounds;
+    vc.view.frame = CGRectMake(0.0f, 0.0f, self.containerViewForTable.frame.size.width, self.containerViewForTable.frame.size.height);
     
     [contentView addSubview:vc.view];
     [self addChildViewController:vc];
     [vc didMoveToParentViewController:self];
-
     
+    if (self.selectedIndex == 6 /*settings index*/) {
+        
+    }
+    else {
+        
+        vc.loadingProgressView = self.progressView;
+        
+        [vc reloadTables];
+    }
     
 }
 

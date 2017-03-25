@@ -81,7 +81,7 @@
     [self callGETAPI:kSATTELITES_LINK withParameters:nil completionNotification:kOBS_SATTELITES_NOTIFICATION];
     
     
-    [self showLoadingAnimation:self.view];
+//    [self showLoadingAnimation:self.view];
     
     self.yourTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollTap:)];
     [self.tableView addGestureRecognizer:self.yourTap];
@@ -186,6 +186,16 @@
 }
 
 
+- (void)reloadTables {
+    [super reloadTables];
+    
+    self.sattelites_list = nil;
+    self.allLocations = nil;
+    
+    [self callGETAPI:kSATTELITES_LINK withParameters:nil completionNotification:kOBS_SATTELITES_NOTIFICATION];
+//    [self showLoadingAnimation:self.view];
+}
+
 - (void)appendSattelitesList:(NSNotification*)notification {
 //    NSLog(@"### result:%@",notification.object);
     
@@ -206,7 +216,7 @@
     
     NSArray *data = result[@"data"];
     
-    [self showLoadingAnimation:self.view];
+    [self showLoadingAnimation:self.view withTotalCount:data.count];
     for (NSDictionary *item in data) {
         
 //        NSDictionary *sattelite = @{@"kLocationName":item[@"name"],@"kLatitude":item[@"latitude"],@"kLongitude":item[@"longitude"],@"kAddress":item[@"address_full"],@"kCreatedTime":item[@"created_at"]};
@@ -220,8 +230,9 @@
             sattelite.created_date = item[@"created_at"];
             
             [self.sattelites_list addObject:sattelite];
-            
-            
+        
+        [self progressValue:((float)self.sattelites_list.count/(float)data.count)];
+        
             
             NSString *letter_key = [sattelite.name substringWithRange:NSMakeRange(0, 1)];
             if (![[self.allLocations allKeys] containsObject:letter_key]) {
@@ -261,7 +272,7 @@
     [self.locationManager startUpdatingLocation];
     
     
-    [self showLoadingAnimation:self.view];
+//    [self showLoadingAnimation:self.view];
     
     
 }
@@ -405,6 +416,21 @@
     }
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, tableView.frame.size.width, 30.0f)];
+    view.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.7f];
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, tableView.frame.size.width, 30.0f)];
+    label.text = [self tableView:tableView titleForHeaderInSection:section];
+    label.font = [UIFont fontWithName:@"OpenSans-Bold" size:18.0f];
+    label.backgroundColor = [UIColor colorWithRed:17.0f/255.0f green:179.0f/255.0f blue:196/255.0f alpha:0.7f];
+    label.textColor = [UIColor whiteColor];
+    
+    [view addSubview:label];
+    
+    return view;
+}
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     
     if ([tableView isEqual:self.tableSearchResult]) {
@@ -454,7 +480,7 @@
 */
 - (IBAction)segmentedControlChange:(id)sender {
     [self.searchTextfield resignFirstResponder];
-    [self showLoadingAnimation:self.view];
+//    [self showLoadingAnimation:self.view];
     if ([self.segmentedControl selectedSegmentIndex] == 1) {
         self.isAllLocationSelected = YES;
         self.currentLocationList = self.allLocations;
@@ -490,6 +516,9 @@
 //    NSLog(@"locations:%@",self.allLocations);
     
     [self removeLoadingAnimation];
+    NETWORK_INDICATOR(YES)
+    [self showLoadingAnimation:self.view withTotalCount:self.sattelites_list.count];
+    
     CLGeocoder *geocoder = [[CLGeocoder alloc] init] ;
     [geocoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray *placemarks, NSError *error)
      {
@@ -508,6 +537,7 @@
              
              NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
 
+             NSInteger index = 0;
              for (NSString *keys in self.alphabetSections) {
                  for (SatellitesObject *location in [self.allLocations objectForKey:keys]) {
                      
@@ -516,7 +546,11 @@
                      
                      CLLocation *restaurantLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
                      CLLocationDistance meters = [restaurantLocation distanceFromLocation:currentLocation];
-//                     NSLog(@"[%@]meters: %f",[location objectForKey:@"kLocationName"],meters);
+//                     NSLog(@"[%@]meters: %f",location.name,meters);
+                     
+                     index++;
+                     
+                     [self progressValue:(float)index/(float)self.sattelites_list.count];
                      
                      if (meters <= 10000) {
                          [self insertLocation:location withKey:@"1" inDictionary:dictionary];
@@ -545,6 +579,7 @@
          else
          {
              
+             [self removeLoadingAnimation];
              UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"GPS Failed" message:@"Please enable Locations or go outside for better GPS Signal." preferredStyle:UIAlertControllerStyleAlert];
              UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
                  [alert dismissViewControllerAnimated:YES completion:nil];
@@ -556,6 +591,8 @@
              }];
              
          }
+         
+         NETWORK_INDICATOR(NO)
          /*---- For more results
           placemark.region);
           placemark.country);
@@ -573,6 +610,7 @@
 }
 
 - (void) locationUpdateFinished:(NSNotification*)notification {
+    NETWORK_INDICATOR(YES)
     self.nearbyLocations = nil;
     self.nearbySections = nil;
     self.nearbyLocations = [NSDictionary dictionaryWithDictionary:[notification object]];
@@ -586,6 +624,8 @@
     NETWORK_INDICATOR(NO)
     
     [self.tableView reloadData];
+    
+    [self removeLoadingAnimation];
 }
 
 - (void) insertLocation:(SatellitesObject*)location withKey:(NSString*)key inDictionary:(NSMutableDictionary*)dictionary {

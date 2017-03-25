@@ -24,63 +24,24 @@
     
     [self.youtubePlayerView loadWithVideoId:@"qzMQza8xZCc"];
     
-    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) {
-        
-        NSDateFormatter *dF = [[NSDateFormatter alloc] init];
-        [dF setDateFormat:@"yyyy-dd-MM  HH:mm:ss"];
-        NSDate *streamDate = [dF dateFromString:@"2017-06-02  19:34:00"];
-        
-        //wrong time!
-        
-        NSCalendar *c = [NSCalendar currentCalendar];
-        NSDate *d1 = [NSDate date];
-        NSDateComponents *components = [c components:NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute fromDate:d1 toDate:streamDate options:0];
-        
-        NSInteger days = components.day;
-        NSInteger hours = components.hour;
-        NSInteger minutes = components.minute;
-        
-        NSString *text = (days>0)?[NSString stringWithFormat:@"%li DAYS",(long)days]:@"";
-        if (hours > 0) {
-            text = [NSString stringWithFormat:@"%@%@%li HOURS",text,(days==0)?@"":(minutes==0)?@" AND ":@", ",(long)hours];
-        }
-        
-        if (minutes > 0) {
-            text = [NSString stringWithFormat:@"%@ AND %li MINUTES",text,(long)minutes];
-        }
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.labelTimer.text = [NSString stringWithFormat:@"%@",text];
-            if (self.labelTimer.text.length == 0) {
-                self.labelTimer.text = @"STAY TUNED FOR OUR NEXT LIVE STREAM";
-            }
-            
-        });
-        
-    }];
+//    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+//        
+//        
+//    }];
+
+    
+    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerAction) userInfo:nil repeats:YES];
     
     [timer fire];
     
 }
 
-
-//- (void)viewDidAppear:(BOOL)animated {
-//    [super viewDidAppear:animated];
-//    
-//    NSLog(@"view:%@ scroll:%@",NSStringFromCGSize(self.viewMain.frame.size),NSStringFromCGSize(self.mainScrollView.frame.size));
-//}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (void) timerCalled:(id)timer {
+- (void) timerAction {
     
     NSDateFormatter *dF = [[NSDateFormatter alloc] init];
     [dF setDateFormat:@"yyyy-dd-MM  HH:mm:ss"];
-    NSDate *streamDate = [dF dateFromString:@"2017-03-02  19:34:00"];
-
+    NSDate *streamDate = [dF dateFromString:@"2017-06-02  19:34:00"];
+    
     //wrong time!
     
     NSCalendar *c = [NSCalendar currentCalendar];
@@ -90,13 +51,6 @@
     NSInteger days = components.day;
     NSInteger hours = components.hour;
     NSInteger minutes = components.minute;
-    
-    
-    [self updateLabeltimer:days :hours :minutes];
-}
-
-
-- (void) updateLabeltimer:(NSInteger)days :(NSInteger)hours :(NSInteger)minutes {
     
     NSString *text = (days>0)?[NSString stringWithFormat:@"%li DAYS",(long)days]:@"";
     if (hours > 0) {
@@ -108,11 +62,63 @@
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
-//        NSLog(@"[%li,%li,%li]TEXT:%@",(long)days,(long)hours,(long)minutes,text);
         self.labelTimer.text = [NSString stringWithFormat:@"%@",text];
+        if (self.labelTimer.text.length == 0) {
+            self.labelTimer.text = @"STAY TUNED FOR OUR NEXT LIVE STREAM";
+        }
         
     });
 }
+
+//- (void)viewDidAppear:(BOOL)animated {
+//    [super viewDidAppear:animated];
+//
+//    NSLog(@"view:%@ scroll:%@",NSStringFromCGSize(self.viewMain.frame.size),NSStringFromCGSize(self.mainScrollView.frame.size));
+//}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+//- (void) timerCalled:(id)timer {
+//    
+//    NSDateFormatter *dF = [[NSDateFormatter alloc] init];
+//    [dF setDateFormat:@"yyyy-dd-MM  HH:mm:ss"];
+//    NSDate *streamDate = [dF dateFromString:@"2017-03-02  19:34:00"];
+//
+//    //wrong time!
+//    
+//    NSCalendar *c = [NSCalendar currentCalendar];
+//    NSDate *d1 = [NSDate date];
+//    NSDateComponents *components = [c components:NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute fromDate:d1 toDate:streamDate options:0];
+//    
+//    NSInteger days = components.day;
+//    NSInteger hours = components.hour;
+//    NSInteger minutes = components.minute;
+//    
+//    
+//    [self updateLabeltimer:days :hours :minutes];
+//}
+//
+//
+//- (void) updateLabeltimer:(NSInteger)days :(NSInteger)hours :(NSInteger)minutes {
+//    
+//    NSString *text = (days>0)?[NSString stringWithFormat:@"%li DAYS",(long)days]:@"";
+//    if (hours > 0) {
+//        text = [NSString stringWithFormat:@"%@%@%li HOURS",text,(days==0)?@"":(minutes==0)?@" AND ":@", ",(long)hours];
+//    }
+//    
+//    if (minutes > 0) {
+//        text = [NSString stringWithFormat:@"%@ AND %li MINUTES",text,(long)minutes];
+//    }
+//    
+//    dispatch_async(dispatch_get_main_queue(), ^{
+////        NSLog(@"[%li,%li,%li]TEXT:%@",(long)days,(long)hours,(long)minutes,text);
+//        self.labelTimer.text = [NSString stringWithFormat:@"%@",text];
+//        
+//    });
+//}
 
 
 /*

@@ -84,7 +84,9 @@ extern NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION;
 
 - (void)getImageFromURL:(NSString*)urlPath  completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler andProgress:(void (^)(NSInteger expectedBytesToReceive, NSInteger receivedBytes))progress;
 
-- (void) showLoadingAnimation:(UIView*)view;
+- (void) showLoadingAnimation:(UIView*)view withTotalCount:(NSInteger)count;
+
+- (void) progressValue:(CGFloat)value;
 
 - (void) removeLoadingAnimation;
 
