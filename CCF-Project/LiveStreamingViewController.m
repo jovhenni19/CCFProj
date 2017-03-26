@@ -14,6 +14,8 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *mainScrollView;
 @property (weak, nonatomic) IBOutlet UIView *viewMain;
 
+@property (assign, nonatomic) NSInteger shownPerPage;
+
 @end
 
 @implementation LiveStreamingViewController
@@ -22,7 +24,17 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self.youtubePlayerView loadWithVideoId:@"qzMQza8xZCc"];
+    
+    self.shownPerPage = 0;
+    
+    NETWORK_INDICATOR(YES)
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callLiveStreamData:) name:kOBS_LIVESTREAM_NOTIFICATION object:nil];
+    
+    [self callGETAPI:kLIVESTREAM_LINK withParameters:nil completionNotification:kOBS_LIVESTREAM_NOTIFICATION];
+    
+    
+//    [self.youtubePlayerView loadWithVideoId:@"qzMQza8xZCc"];
     
 //    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) {
 //        
@@ -34,6 +46,18 @@
     
     [timer fire];
     
+}
+
+
+- (void)callLiveStreamData:(NSNotification*)notification {
+//    NSLog(@"## result:%@",notification.object);
+    
+    NSDictionary *result = (NSDictionary*)notification.object;
+    
+    NSString *latest_videoID = result[@"latest"][@"id"][@"videoId"];
+    
+    
+    [self.youtubePlayerView loadWithVideoId:latest_videoID];
 }
 
 - (void) timerAction {

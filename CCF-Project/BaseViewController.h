@@ -51,12 +51,16 @@ extern NSString * const kNEWS_LINK;
 extern NSString * const kPODCAST_LINK;
 extern NSString * const kEVENTS_LINK;
 extern NSString * const kSATTELITES_LINK;
+extern NSString * const kLIVESTREAM_LINK;
+extern NSString * const kGROUPS_LINK;
 
 //observers
 extern NSString * const kOBS_NEWS_NOTIFICATION;
 extern NSString * const kOBS_PODCAST_NOTIFICATION;
 extern NSString * const kOBS_EVENTS_NOTIFICATION;
 extern NSString * const kOBS_SATTELITES_NOTIFICATION;
+extern NSString * const kOBS_LIVESTREAM_NOTIFICATION;
+extern NSString * const kOBS_GROUPS_NOTIFICATION;
 extern NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION;
 
 @interface BaseViewController : UIViewController <UIWebViewDelegate, FBSDKSharingDelegate, SFSafariViewControllerDelegate>

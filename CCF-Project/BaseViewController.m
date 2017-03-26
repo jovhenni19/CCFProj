@@ -16,7 +16,11 @@ NSString * const kOBS_PODCAST_NOTIFICATION = @"kOBS_PODCAST_NOTIFICATION";
 NSString * const kEVENTS_LINK = @"/api/events/";
 NSString * const kOBS_EVENTS_NOTIFICATION = @"kOBS_EVENTS_NOTIFICATION";
 NSString * const kSATTELITES_LINK = @"/api/satellites/";
+NSString * const kLIVESTREAM_LINK = @"/api/live/";
+NSString * const kGROUPS_LINK = @"/api/groups/";
 NSString * const kOBS_SATTELITES_NOTIFICATION = @"kOBS_SATTELITES_NOTIFICATION";
+NSString * const kOBS_LIVESTREAM_NOTIFICATION = @"kOBS_LIVESTREAM_NOTIFICATION";
+NSString * const kOBS_GROUPS_NOTIFICATION = @"kOBS_GROUPS_NOTIFICATION";
 NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NOTIFICATION";
 
 @interface BaseViewController ()
@@ -262,6 +266,21 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     
 }
 
+- (IBAction)follow_facebookButton:(id)sender {
+        UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Follow Facebook?" message:@"Would you like to follow our Facebook Page?" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }];
+        UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self showWebViewWithURL:@"https://www.facebook.com/TheCCFCenter"];
+        }];
+    
+        [ac addAction:cancel];
+        [ac addAction:ok];
+    
+        [self presentViewController:ac animated:YES completion:nil];
+}
+
 - (IBAction)facebookButton:(id)sender {
 //    UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Follow Facebook?" message:@"Would you like to follow our Facebook Page?" preferredStyle:UIAlertControllerStyleAlert];
 //    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -328,6 +347,21 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 }
 
 
+- (IBAction)follow_twitterButton:(id)sender {
+        UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Follow Twitter?" message:@"Would you like to follow our Twitter?" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }];
+        UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self showWebViewWithURL:@"https://twitter.com/CCFmain"];
+        }];
+    
+        [ac addAction:cancel];
+        [ac addAction:ok];
+    
+       [self presentViewController:ac animated:YES completion:nil];
+   
+}
 
 - (IBAction)twitterButton:(id)sender {
 //    UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Follow Twitter?" message:@"Would you like to follow our Twitter?" preferredStyle:UIAlertControllerStyleAlert];
@@ -402,6 +436,21 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     }];
 }
 
+- (IBAction)follow_googleplusButton:(id)sender {
+        UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Follow Google+?" message:@"Would you like to follow our Google+?" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }];
+        UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self showWebViewWithURL:@"https://plus.google.com/110122766101184546528"];
+        }];
+    
+        [ac addAction:cancel];
+        [ac addAction:ok];
+    
+        [self presentViewController:ac animated:YES completion:nil];
+    
+}
 
 - (IBAction)googleplusButton:(id)sender {
 //    UIAlertController *ac  = [UIAlertController alertControllerWithTitle:@"Follow Google+?" message:@"Would you like to follow our Google+?" preferredStyle:UIAlertControllerStyleAlert];

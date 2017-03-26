@@ -82,7 +82,7 @@
         case 1:{
             UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 280.0f, 80.0f)];
             tv.text = self.podcastDescription;
-            tv.font = [UIFont systemFontOfSize:14.0f];
+            tv.font = [UIFont fontWithName:@"OpenSans" size:14.0f];
             CGSize contentSize = [tv contentSize];
             
             if (contentSize.height > 80.0f) {

@@ -148,20 +148,23 @@
     return self.news_list.count;
 }
 
+
+
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    if ([indexPath isEqual:self.indexPath_expanded]) {
-//        
-//        UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.tableView.bounds.size.width, 40.0f)];
-//        tv.text = @"Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
-//        tv.font = [UIFont systemFontOfSize:14.0f];
-//        CGSize contentSize = [tv contentSize];
-//        
-//        if (contentSize.height > 40.0f) {
-//            return 165 + (contentSize.height - 40.0f);
-//        }
-//        
-//    }
-    return 165.0f;
+    
+    NewsObject *newsItem = (NewsObject*)[self.news_list objectAtIndex:[indexPath row]];
+    
+    UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, tableView.frame.size.width - 20.0f, 120.0f)];
+    tv.text = newsItem.description_detail;
+    tv.font = [UIFont fontWithName:@"OpenSans" size:14.0f];
+    CGSize contentSize = [tv contentSize];
+    
+    if (contentSize.height > 120.0f) {
+        return 100.0f + (contentSize.height - 120.0f);
+    }
+    
+    return 120.0f;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
