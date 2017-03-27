@@ -62,6 +62,9 @@
                                                      repeats:YES];
         
         [self.audioPlayer playAudio];
+        
+        [self.delegate audioIsPlaying];
+        
         self.isPaused = YES;
         
     } else {

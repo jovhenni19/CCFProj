@@ -32,8 +32,48 @@
 
     [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
     [GMSServices provideAPIKey:@"AIzaSyBjpDT8YgLXGHppqo0gviH9LmvNIQvUR5E"];
+    
+    [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge|UIUserNotificationTypeSound|UIUserNotificationTypeAlert categories:nil]];
+    [[UIApplication sharedApplication] registerForRemoteNotifications];
+    
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
         
     return YES;
+}
+
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    
+    char * tokenChars = (char*)[deviceToken bytes];
+    NSMutableString * tokenString = [NSMutableString new];
+    
+    for (NSInteger i = 0; i < deviceToken.length; i++) {
+        [tokenString appendFormat:@"%02.2hhx", tokenChars[i]];
+    }
+    
+    NSLog(@"## token:%@",tokenString);
+    self.deviceToken = tokenString;
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    
+    //        NSLog(@"received notification:%@",userInfo);
+//    [self saveNotificationData:userInfo[@"aps"][@"alert"]];
+    [UIApplication sharedApplication].applicationIconBadgeNumber += [[[userInfo objectForKey:@"aps"] objectForKey: @"badge"] intValue];
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    
+    //    NSLog(@"completion received notification:%@",userInfo);
+//    [self saveNotificationData:userInfo[@"aps"][@"alert"]];
+    
+    completionHandler(UIBackgroundFetchResultNewData);
+    
+    
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+    //    NSLog(@"error:%@",error.description);
 }
 
 

@@ -14,6 +14,7 @@
 @interface NewsTableViewController () <NewsCellDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
+@property (strong, nonatomic) NSMutableArray *groupList;
 @property (strong, nonatomic) NSMutableArray *news_list;
 @property (assign, nonatomic) NSInteger shownPerPage;
 
@@ -36,9 +37,13 @@
     
     self.shownPerPage = 0;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendNewsList:) name:kOBS_NEWS_NOTIFICATION object:nil];
     
-    [self callGETAPI:kNEWS_LINK withParameters:nil completionNotification:kOBS_NEWS_NOTIFICATION];
+    NETWORK_INDICATOR(YES)
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callGroupsData:) name:kOBS_GROUPS_NOTIFICATION object:nil];
+    
+    [self callGETAPI:kGROUPS_LINK withParameters:nil completionNotification:kOBS_GROUPS_NOTIFICATION];
+    
     
 //    [self showLoadingAnimation:self.view];
     
@@ -51,17 +56,49 @@
 
 - (void)reloadTables {
     [super reloadTables];
-    
-    self.news_list = nil;
-    
-    [self callGETAPI:kNEWS_LINK withParameters:nil completionNotification:kOBS_NEWS_NOTIFICATION];
+        
+    if(self.news_list){
+        self.news_list = nil;
+        
+        [self callGETAPI:kNEWS_LINK withParameters:nil completionNotification:kOBS_NEWS_NOTIFICATION];
+    }
 //    [self showLoadingAnimation:self.view];
 }
 
+- (void)callGroupsData:(NSNotification*)notification {
+    //    NSLog(@"## result:%@",notification.object);
+    
+    
+    NETWORK_INDICATOR(NO)
+    
+    if(!self.groupList){
+        self.groupList = [NSMutableArray array];
+    }
+    
+    
+    NSDictionary *result = [NSDictionary dictionaryWithDictionary:notification.object];
+    
+    NSArray *data = result[@"data"];
+    
+    for (NSDictionary *item in data) {
+        [self.groupList addObject:item];
+    }
+    
+    
+    NETWORK_INDICATOR(YES)
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendNewsList:) name:kOBS_NEWS_NOTIFICATION object:nil];
+    
+    [self callGETAPI:kNEWS_LINK withParameters:nil completionNotification:kOBS_NEWS_NOTIFICATION];
+}
+
+
 - (void)appendNewsList:(NSNotification*)notification {
-//    NSLog(@"### result:%@",notification.object);
+//    NSLog(@"##%s## result:%@",__FUNCTION__,notification.object);
     
 //    [self removeLoadingAnimation];
+    
+    NETWORK_INDICATOR(NO)
     
     if(!self.news_list){
         self.news_list = [NSMutableArray array];
@@ -73,9 +110,35 @@
     
     NSArray *data = result[@"data"];
     
-    [self showLoadingAnimation:self.view withTotalCount:data.count];
     
     for (NSDictionary *item in data) {
+        
+        
+        BOOL hasGroupSelection = NO;
+        
+        for (NSDictionary *groupItem in self.groupList) {
+            
+            NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
+            
+            BOOL switchValue = [[NSUserDefaults standardUserDefaults] boolForKey:valueKey];
+            
+            if ([item[@"groups"] isKindOfClass:[NSArray class]]) {
+                if ([item[@"groups"] count]) {
+                    for (NSDictionary *groups in item[@"groups"]) {
+                        if ([groupItem[@"id"] integerValue] == [groups[@"id"] integerValue] && switchValue) {
+                            hasGroupSelection = YES;
+                            break;
+                        }
+                    }
+                }
+            }
+            else if ([item[@"groups"] isEqualToString:@"all"]){
+                hasGroupSelection = YES;
+                break;
+            }
+            
+            
+        }
         
 //        NSManagedObjectContext *context = MANAGE_CONTEXT;
 //        
@@ -105,6 +168,8 @@
         
         
 //        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        if (hasGroupSelection) {
             NewsObject *newsItem = [[NewsObject alloc] init];
             newsItem.id_num = isNIL(item[@"id"]);
             newsItem.title = isNIL(item[@"title"]);
@@ -122,19 +187,12 @@
             }
             
             
-            
             [self.news_list addObject:newsItem];
-        
-        [self progressValue:((float)self.news_list.count/(float)data.count)];
-//            dispatch_sync(dispatch_get_main_queue(), ^{
-        
-                [self.tableView reloadData];
-//            });
-//        });
+            
+        }
+        [self.tableView reloadData];
     }
     
-    
-    [self removeLoadingAnimation];
     
 }
 
@@ -164,7 +222,7 @@
         return 100.0f + (contentSize.height - 120.0f);
     }
     
-    return 120.0f;
+    return 130.0f;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

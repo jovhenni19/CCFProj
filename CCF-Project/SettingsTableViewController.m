@@ -55,7 +55,7 @@
     
     [self showLoadingAnimation:self.view withTotalCount:data.count];
     for (NSDictionary *item in data) {
-        [self.groupList addObject:item[@"name"]];
+        [self.groupList addObject:item];
     }
     
     [self.mainTableView reloadData];
@@ -79,18 +79,32 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cellSetting"];
     
-    NSString *item = self.groupList[[indexPath row]];
+    NSDictionary *item = self.groupList[[indexPath row]];
     
     // Configure the cell...
     
     UILabel *label = [cell.contentView viewWithTag:1];
+    UISwitch *switchControl = [cell.contentView viewWithTag:2];
     
     if ([indexPath section] == 0) {
         label.text = @"Push Notification";
+        
+        BOOL pushNotification_ON = [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
+        
+        [switchControl setOn:pushNotification_ON];
     }
-    
-    label.text = item;
-    
+    else {
+        label.text = item[@"name"];
+        switchControl.tag = [indexPath row];
+        [switchControl addTarget:self action:@selector(changeSwitchValue:) forControlEvents:UIControlEventValueChanged];
+        
+        NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
+        
+        BOOL switchValue = [[NSUserDefaults standardUserDefaults] boolForKey:valueKey];
+        
+        [switchControl setOn:switchValue];
+        
+    }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
@@ -103,6 +117,18 @@
     }
     return nil;
 }
+
+
+- (void) changeSwitchValue:(UISwitch*)sender {
+    
+    NSDictionary *item = self.groupList[[sender tag]];
+    
+    NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
+    
+    [[NSUserDefaults standardUserDefaults] setBool:![sender isOn] forKey:valueKey];
+    
+}
+
 
 /*
 // Override to support conditional editing of the table view.

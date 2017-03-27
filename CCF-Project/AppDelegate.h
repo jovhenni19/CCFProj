@@ -19,6 +19,9 @@
 
 @property (readonly, strong) NSPersistentContainer *persistentContainer;
 
+@property (strong, nonatomic) NSString *deviceToken;
+@property (strong, nonatomic) NSDictionary *notificationUserInfo;
+
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 

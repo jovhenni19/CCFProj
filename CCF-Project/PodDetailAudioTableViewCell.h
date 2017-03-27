@@ -9,7 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "YMCAudioPlayer.h"
 
+@protocol AudioCellDelegate <NSObject>
+
+- (void) audioIsPlaying;
+
+@end
+
 @interface PodDetailAudioTableViewCell : UITableViewCell
 @property (strong ,nonatomic) NSString *urlForAudio;
 @property (strong, nonatomic) YMCAudioPlayer *audioPlayer;
+@property (strong, nonatomic) id<AudioCellDelegate> delegate;
 @end

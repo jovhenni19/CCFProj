@@ -8,7 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "BaseViewController.h"
+#import "PodcastDetailsTableViewController.h"
 
-@interface PodcastViewController : BaseViewController <UITableViewDelegate, UITableViewDataSource>
+@interface PodcastViewController : BaseViewController <UITableViewDelegate, UITableViewDataSource, PodcastsDetailDelegate>
+
+@property (strong, nonatomic) YMCAudioPlayer *audioPlayerPauser;
+
+@property (strong, nonatomic) YTPlayerView *youtubePlayerPauser;
 
 @end

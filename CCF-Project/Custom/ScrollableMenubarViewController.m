@@ -14,7 +14,8 @@
 #import "LiveStreamingViewController.h"
 #import "PodcastViewController.h"
 #import "SettingsTableViewController.h"
-#import "PodcastDetailsTableViewController.h"
+#import "SRScreenRecorder.h"
+
 
 @interface ScrollableMenubarViewController ()
 
@@ -25,11 +26,14 @@
 @property (weak, nonatomic) IBOutlet UIView *containerViewForTable;
 @property (weak, nonatomic) IBOutlet UITableView *horizontalTableview;
 @property (weak, nonatomic) IBOutlet UIProgressView *progressView;
+@property (weak, nonatomic) IBOutlet UIImageView *imageLogoTop;
 
 @property (assign, nonatomic) BOOL fromViewLoad;
 @property (assign, nonatomic) BOOL settingView;
 
 @property (assign, nonatomic) CGFloat preOffsetX;
+
+@property (strong, nonatomic) SRScreenRecorder *screen_recorder;
 
 @end
 
@@ -161,10 +165,17 @@
     self.fromViewLoad = YES;
     self.settingView = NO;
     
+    UILongPressGestureRecognizer *holdGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(recorderGesture:)];
+    holdGesture.numberOfTouchesRequired = 1;
+    holdGesture.minimumPressDuration = 10;
+    
+    [self.imageLogoTop addGestureRecognizer:holdGesture];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    
     [super viewWillAppear:animated];
+    
     
 //    if (self.fromViewLoad) {
 //        self.fromViewLoad = NO;
@@ -175,7 +186,12 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    
+    
     [super viewDidAppear:animated];
+
+//    [self rearrangeLayout];
+    
     
     CGRect frame = self.horizontalTableview.frame;
     frame.size.width = self.containerViewForTable.frame.size.height;
@@ -183,16 +199,14 @@
     self.horizontalTableview.frame = frame;
     
     self.horizontalTableview.transform=CGAffineTransformMakeRotation(-M_PI_2);
-    
-    
     frame = self.horizontalTableview.frame;
     frame.origin = CGPointZero;
     self.horizontalTableview.frame = frame;
     
     if(self.fromViewLoad){
         self.fromViewLoad = NO;
-        self.selectedIndex = 0;
-        
+//        self.selectedIndex = 0;
+//        
     }
     
     
@@ -201,8 +215,43 @@
     
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+//    [self rearrangeLayout];
+}
 
 
+- (BOOL)shouldAutorotate {
+    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+        return NO;
+    }
+    
+    
+    return NO;
+}
+
+- (void) rearrangeLayout {
+    
+    self.containerViewForTable.layer.borderColor = [UIColor redColor].CGColor;
+    self.containerViewForTable.layer.borderWidth = 1.0f;
+    self.horizontalTableview.layer.borderWidth = 1.0f;
+    
+    CGRect frame = self.horizontalTableview.frame;
+    frame.size.width = self.containerViewForTable.frame.size.height;
+    frame.size.height = self.containerViewForTable.frame.size.width;
+    self.horizontalTableview.frame = frame;
+    
+    if (self.fromViewLoad) {
+        self.horizontalTableview.transform=CGAffineTransformMakeRotation(-M_PI_2);
+        frame = self.horizontalTableview.frame;
+        frame.origin = CGPointZero;
+        self.horizontalTableview.frame = frame;
+    }
+    
+    
+    
+    
+    [self.horizontalTableview reloadData];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -306,6 +355,7 @@
 }
 
 - (IBAction)showNotifications:(id)sender {
+    [self.horizontalTableview scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -391,7 +441,8 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return self.containerViewForTable.bounds.size.width;
+    
+    return self.view.bounds.size.width;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -420,12 +471,13 @@
 //        [vc.searchTextfield resignFirstResponder];
 //    }
     
-    if (self.selectedIndex == 1) {
-        PodcastDetailsTableViewController *vc = [self.viewControllers objectAtIndex:self.selectedIndex];
-        if ([vc respondsToSelector:@selector(audioPlayer)]) {
-            [vc.audioPlayer pauseAudio];
-        }
-    }
+    
+//    if (self.selectedIndex == 1) {
+//        PodcastDetailsTableViewController *vc = [self.viewControllers objectAtIndex:1];
+//        if ([vc respondsToSelector:@selector(audioPlayer)]) {
+//            [vc.audioPlayer pauseAudio];
+//        }
+//    }
     [self loadViewControllerWithContentView:cell.contentView index:[indexPath row]];
     
     
@@ -437,13 +489,29 @@
     self.selectedIndex = index;
     
     BaseViewController *vc = [self.viewControllers objectAtIndex:self.selectedIndex];
-   
-    
+       
+    if (![vc respondsToSelector:@selector(audioPlayerPauser)] || ![vc respondsToSelector:@selector(youtubePlayerPauser)]) {
+        PodcastViewController *vc1 = [self.viewControllers objectAtIndex:1];
+        
+        if ([vc1 respondsToSelector:@selector(audioPlayerPauser)]) {
+            [vc1.audioPlayerPauser pauseAudio];
+            [vc1.audioPlayerPauser stopAudio];
+            vc1.audioPlayerPauser = nil;
+        }
+        
+        if ([vc1 respondsToSelector:@selector(youtubePlayerPauser)]) {
+            [vc1.youtubePlayerPauser pauseVideo];
+            [vc1.youtubePlayerPauser stopVideo];
+            vc1.youtubePlayerPauser = nil;
+        }
+    }
     
     while ([[contentView subviews] count] > 0) {
         [[[contentView subviews] lastObject] removeFromSuperview];
     }
 
+//    [self.view setNeedsLayout];
+    
     
     vc.view.frame = CGRectMake(0.0f, 0.0f, self.containerViewForTable.frame.size.width, self.containerViewForTable.frame.size.height);
     
@@ -458,7 +526,10 @@
         
         vc.loadingProgressView = self.progressView;
         
-        [vc reloadTables];
+        if (self.fromViewLoad) {
+            
+            [vc reloadTables];
+        }
     }
     
 }
@@ -479,6 +550,45 @@
 
 - (void) removeProgressView {
     self.progressView.hidden = YES;
+}
+
+- (void)recorderGesture:(UIGestureRecognizer *)recognizer
+{
+    if (!self.screen_recorder) {
+        NSString *message = [NSString stringWithFormat:@"Start ScreenRecording ?"];
+        UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Secret Feature" message:message preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *close = [UIAlertAction actionWithTitle:@"NO" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self dismissViewControllerAnimated:ac completion:nil];
+        }];
+        UIAlertAction *yes = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//            [self startRecording];
+        }];
+        [ac addAction:close];
+        [ac addAction:yes];
+        [self presentViewController:ac animated:YES completion:^{
+            
+        }];
+    }
+    else {
+//        [self.screen_recorder stopRecording];
+//        self.screen_recorder = nil;
+    }
+}
+
+- (void) startRecording{
+    self.screen_recorder = nil;
+    self.screen_recorder = [SRScreenRecorder sharedInstance];
+    self.screen_recorder.frameInterval = 1; // 60 FPS
+//    self.screen_recorder.autosaveDuration = 1800; // 30 minutes
+    self.screen_recorder.showsTouchPointer = YES; // hidden touch pointer
+    self.screen_recorder.filenameBlock = ^(void) {
+        NSDateFormatter *df = [[NSDateFormatter alloc] init];
+        [df setDateFormat:@"yyyyMMdd_HHmmss"];
+        NSString *date = [df stringFromDate:[NSDate date]];
+        return [NSString stringWithFormat:@"screencast-%@.mov",date];
+    }; // change filename
+    
+    [self.screen_recorder startRecording];
 }
 
 @end

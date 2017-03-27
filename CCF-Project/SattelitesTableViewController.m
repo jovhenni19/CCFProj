@@ -66,7 +66,7 @@
     self.isAllLocationSelected = NO;
     self.isLocationFinished = NO;
     
-    self.viewSearchBox.layer.borderColor = [UIColor blackColor].CGColor;
+    self.viewSearchBox.layer.borderColor = [UIColor grayColor].CGColor;
     self.viewSearchBox.layer.borderWidth = 1.0f;
     self.viewSearchBox.layer.cornerRadius = 5.0f;
     self.viewSearchBox.clipsToBounds = YES;
@@ -329,12 +329,15 @@
         
         if (self.searchResultList.count) {
             cell.textLabel.text = [location.name capitalizedString];
+            cell.textLabel.textColor = [UIColor blackColor];
             cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         }
         else {
             cell.textLabel.text = @"No Result Found";
+            cell.textLabel.textColor = [UIColor grayColor];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
         }
+        
         
         
         return cell;

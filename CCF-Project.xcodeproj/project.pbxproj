@@ -63,6 +63,8 @@
 		336F6DE31E83BB53008FB120 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 336F6DD21E83BB53008FB120 /* UIImageView+WebCache.m */; };
 		336F6DE41E83BB53008FB120 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 336F6DD41E83BB53008FB120 /* UIView+WebCacheOperation.m */; };
 		336F6DE81E83BB9F008FB120 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 336F6DE61E83BB9F008FB120 /* Info.plist */; };
+		33792F811E8950A9009C7BC0 /* SRScreenRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 33792F7D1E8950A9009C7BC0 /* SRScreenRecorder.m */; };
+		33792F821E8950A9009C7BC0 /* KTouchPointerWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 33792F801E8950A9009C7BC0 /* KTouchPointerWindow.m */; };
 		337F35B61E813D290009D6CD /* PodcastsObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 337F35B51E813D290009D6CD /* PodcastsObject.m */; };
 		337F35B91E813E230009D6CD /* EventsObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 337F35B81E813E230009D6CD /* EventsObject.m */; };
 		337F35BC1E813F820009D6CD /* SatellitesObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 337F35BB1E813F820009D6CD /* SatellitesObject.m */; };
@@ -234,6 +236,11 @@
 		336F6DD41E83BB53008FB120 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
 		336F6DE61E83BB9F008FB120 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		336F6DE71E83BB9F008FB120 /* WebImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebImage.h; sourceTree = "<group>"; };
+		33792F7C1E8950A9009C7BC0 /* SRScreenRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRScreenRecorder.h; sourceTree = "<group>"; };
+		33792F7D1E8950A9009C7BC0 /* SRScreenRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRScreenRecorder.m; sourceTree = "<group>"; };
+		33792F7F1E8950A9009C7BC0 /* KTouchPointerWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KTouchPointerWindow.h; sourceTree = "<group>"; };
+		33792F801E8950A9009C7BC0 /* KTouchPointerWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KTouchPointerWindow.m; sourceTree = "<group>"; };
+		33792F831E89527A009C7BC0 /* CCF-Project.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "CCF-Project.entitlements"; sourceTree = "<group>"; };
 		337F35B41E813D290009D6CD /* PodcastsObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PodcastsObject.h; sourceTree = "<group>"; };
 		337F35B51E813D290009D6CD /* PodcastsObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PodcastsObject.m; sourceTree = "<group>"; };
 		337F35B71E813E230009D6CD /* EventsObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsObject.h; sourceTree = "<group>"; };
@@ -399,6 +406,8 @@
 		333724BE1E360D6D001DBE50 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				33792F7B1E8950A9009C7BC0 /* ScreenRecorder */,
+				33792F7E1E8950A9009C7BC0 /* Vendor */,
 				336F6DE51E83BB9F008FB120 /* WebImage */,
 				336F6DB31E83BB53008FB120 /* SDWebImage */,
 				33ACB7391E795F1F005ACBBB /* AFNetworking */,
@@ -494,6 +503,7 @@
 		335EA7051E31D5E800416E67 /* CCF-Project */ = {
 			isa = PBXGroup;
 			children = (
+				33792F831E89527A009C7BC0 /* CCF-Project.entitlements */,
 				333724BE1E360D6D001DBE50 /* Resources */,
 				333724B61E360D22001DBE50 /* Frameworks */,
 				335EA73C1E31E51F00416E67 /* Customs */,
@@ -635,6 +645,24 @@
 				336F6DE71E83BB9F008FB120 /* WebImage.h */,
 			);
 			path = WebImage;
+			sourceTree = "<group>";
+		};
+		33792F7B1E8950A9009C7BC0 /* ScreenRecorder */ = {
+			isa = PBXGroup;
+			children = (
+				33792F7C1E8950A9009C7BC0 /* SRScreenRecorder.h */,
+				33792F7D1E8950A9009C7BC0 /* SRScreenRecorder.m */,
+			);
+			path = ScreenRecorder;
+			sourceTree = "<group>";
+		};
+		33792F7E1E8950A9009C7BC0 /* Vendor */ = {
+			isa = PBXGroup;
+			children = (
+				33792F7F1E8950A9009C7BC0 /* KTouchPointerWindow.h */,
+				33792F801E8950A9009C7BC0 /* KTouchPointerWindow.m */,
+			);
+			path = Vendor;
 			sourceTree = "<group>";
 		};
 		33A9DB801E7249F300C8D4A4 /* FacebookSDK */ = {
@@ -800,6 +828,14 @@
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = YSNGH6HTET;
 						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					335EA71E1E31D5E800416E67 = {
 						CreatedOnToolsVersion = 8.0;
@@ -899,6 +935,7 @@
 				33AC57341E38AA5800F71699 /* EventsTableViewController.m in Sources */,
 				336F6DE01E83BB53008FB120 /* UIImage+MultiFormat.m in Sources */,
 				33ACB7691E795F1F005ACBBB /* UIRefreshControl+AFNetworking.m in Sources */,
+				33792F811E8950A9009C7BC0 /* SRScreenRecorder.m in Sources */,
 				33C2601B1E456FD000C251C0 /* PodcastDetailsTableViewController.m in Sources */,
 				337F35BC1E813F820009D6CD /* SatellitesObject.m in Sources */,
 				33ACB7631E795F1F005ACBBB /* AFImageDownloader.m in Sources */,
@@ -930,6 +967,7 @@
 				336F6DD81E83BB53008FB120 /* SDWebImageCompat.m in Sources */,
 				336F6DD51E83BB53008FB120 /* MKAnnotationView+WebCache.m in Sources */,
 				33D721771E3F5FC30071FC2D /* YTPlayerView.m in Sources */,
+				33792F821E8950A9009C7BC0 /* KTouchPointerWindow.m in Sources */,
 				3361BD111E827F9D00EA6440 /* CustomButton.m in Sources */,
 				33EFBC4E1E3CBC9B00A72040 /* SattelitesTableViewCell.m in Sources */,
 				33ACB76A1E795F1F005ACBBB /* UIWebView+AFNetworking.m in Sources */,
@@ -1112,6 +1150,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "CCF-Project/CCF-Project.entitlements";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = YSNGH6HTET;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1136,6 +1175,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "CCF-Project/CCF-Project.entitlements";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEVELOPMENT_TEAM = YSNGH6HTET;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1149,8 +1189,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ph.bilinear.ccf;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "b41f1826-0562-424a-ad2d-438273bca8a6";
-				PROVISIONING_PROFILE_SPECIFIER = "CCF AppStore";
+				PROVISIONING_PROFILE = "b92e4e81-88d8-4879-8dbd-ea4b330caac9";
+				PROVISIONING_PROFILE_SPECIFIER = "CCF AppStore2";
 				SEPARATE_STRIP = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

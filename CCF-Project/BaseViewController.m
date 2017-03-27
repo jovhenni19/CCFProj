@@ -121,7 +121,7 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
             event.title = [button.eventTitle capitalizedString];
             
             NSDateFormatter *dateFormmatter = [[NSDateFormatter alloc] init];
-            [dateFormmatter setDateFormat:@"MM/dd/yyyy HH:mm a"];
+            [dateFormmatter setDateFormat:@"MM/dd/yyyy hh:mm a"];
             
             NSString *fullDate = [NSString stringWithFormat:@"%@ %@",button.eventDate,button.eventTime];
             
@@ -675,14 +675,18 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 - (void)callPostSessionManager:(AFHTTPSessionManager*)manager :(NSString*)method :(NSDictionary*)parameters :(NSString*)notificationName {
     
     NETWORK_INDICATOR(YES)
-    
+    self.loadingProgressView.hidden = NO;
     //    NSLog(@"parameters:%@",parameters);
     [manager POST:method parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
         
-        //        NSLog(@"progress:%f",[uploadProgress fractionCompleted]);
+                NSLog(@"#POST# progress:%f",[uploadProgress fractionCompleted]);
+        
+        self.loadingProgressView.progress = [uploadProgress fractionCompleted];
+        
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         NETWORK_INDICATOR(NO)
+        self.loadingProgressView.hidden = YES;
         //        NSLog(@"response:%@",responseObject);
         if ([responseObject isKindOfClass:[NSError class]] || ([responseObject isKindOfClass:[NSDictionary class]] && [[responseObject allKeys] containsObject:@"error"])) {
             if ([responseObject isKindOfClass:[NSError class]]) {
@@ -718,6 +722,7 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         //        NSLog(@"task:%@\n\n[%@]%@",task,[error description],[error localizedDescription]);
         NETWORK_INDICATOR(NO)
+        self.loadingProgressView.hidden = YES;
         //        [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:error];
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Error %li",(long)[error code]] message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -733,14 +738,23 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 
 - (void)callGetSessionManager:(AFHTTPSessionManager*)manager :(NSString*)method :(NSDictionary*)parameters :(NSString*)notificationName {
     
+    
     NETWORK_INDICATOR(YES)
     
-    //    NSLog(@"[123]method:%@",method);
-    [manager GET:method parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
+    self.loadingProgressView.hidden = NO;
+    
+    
+    
+    
+    [manager GET:method parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
         
-        //        NSLog(@"progress:%f",[uploadProgress fractionCompleted]);
+        NSLog(@"#GET# progress:%f",[downloadProgress fractionCompleted]);
+        
+        self.loadingProgressView.progress = [downloadProgress fractionCompleted];
+        
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NETWORK_INDICATOR(NO)
+        self.loadingProgressView.hidden = YES;
         if ([responseObject isKindOfClass:[NSError class]] || ([responseObject isKindOfClass:[NSDictionary class]] && [[responseObject allKeys] containsObject:@"error"])) {
             if ([responseObject isKindOfClass:[NSError class]]) {
                 
@@ -760,22 +774,21 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
             }
             else {
                 
-//                [self resolveErrorResponse:responseObject withNotification:notificationName];
+                ;
             }
-            //            if([responseObject[@"error"] integerValue] == 404 && [notificationName isEqualToString:@"socialLoginObserver"]){
-            //                [self resolveErrorResponse:responseObject withNotification:notificationName];
-            //            }
+            
         }
         else if ([responseObject isKindOfClass:[NSArray class]] || [responseObject isKindOfClass:[NSDictionary class]]) {
             [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:responseObject];
         }
         else {
-//            [self resolveErrorResponse:responseObject withNotification:notificationName];
+            
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        //        NSLog(@"task:%@\n\n[%@]%@",task,[error description],[error localizedDescription]);
+        
         NETWORK_INDICATOR(NO)
-        //        [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:error];
+        self.loadingProgressView.hidden = YES;
+        
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Error %li",(long)[error code]] message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
             [alert dismissViewControllerAnimated:YES completion:nil];
@@ -786,6 +799,70 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
             
         }];
     }];
+    
+    
+    
+    
+//    
+//    NETWORK_INDICATOR(YES)
+//    
+//    self.loadingProgressView.hidden = NO;
+//    //    NSLog(@"[123]method:%@",method);
+//    [manager GET:method parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
+//        
+//                NSLog(@"#GET# progress:%f",[uploadProgress fractionCompleted]);
+//        
+//        self.loadingProgressView.progress = [uploadProgress fractionCompleted];
+//        
+//    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//        NETWORK_INDICATOR(NO)
+//        self.loadingProgressView.hidden = YES;
+//        if ([responseObject isKindOfClass:[NSError class]] || ([responseObject isKindOfClass:[NSDictionary class]] && [[responseObject allKeys] containsObject:@"error"])) {
+//            if ([responseObject isKindOfClass:[NSError class]]) {
+//                
+//                NSError *error = (NSError*)responseObject;
+//                
+//                
+//                UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Error %li",(long)error.code] message:error.description preferredStyle:UIAlertControllerStyleAlert];
+//                UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//                    [alert dismissViewControllerAnimated:YES completion:^{
+//                    }];
+//                }];
+//                [alert addAction:actionOK];
+//                
+//                [self presentViewController:alert animated:YES completion:^{
+//                    
+//                }];
+//            }
+//            else {
+//                
+////                [self resolveErrorResponse:responseObject withNotification:notificationName];
+//            }
+//            //            if([responseObject[@"error"] integerValue] == 404 && [notificationName isEqualToString:@"socialLoginObserver"]){
+//            //                [self resolveErrorResponse:responseObject withNotification:notificationName];
+//            //            }
+//        }
+//        else if ([responseObject isKindOfClass:[NSArray class]] || [responseObject isKindOfClass:[NSDictionary class]]) {
+//            [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:responseObject];
+//        }
+//        else {
+////            [self resolveErrorResponse:responseObject withNotification:notificationName];
+//        }
+//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//        //        NSLog(@"task:%@\n\n[%@]%@",task,[error description],[error localizedDescription]);
+//        NETWORK_INDICATOR(NO)
+//        self.loadingProgressView.hidden = YES;
+//        //        [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:error];
+//        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Error %li",(long)[error code]] message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+//        UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//            [alert dismissViewControllerAnimated:YES completion:nil];
+//        }];
+//        [alert addAction:actionOK];
+//        
+//        [self presentViewController:alert animated:YES completion:^{
+//            
+//        }];
+//    }];
 }
 
 - (void)getImageFromURL:(NSString*)urlPath  completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler andProgress:(void (^)(NSInteger expectedBytesToReceive, NSInteger receivedBytes))progress{
@@ -830,15 +907,15 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 //    frame.origin.y = 150.0f;
 //    loading.frame = frame;
     
-    self.isLoadingContent = YES;
-    self.loadingProgressView.hidden = NO;
-    self.loadingProgressView.progress = 0.3f;
-    [self animateLoading:view];
+//    self.isLoadingContent = YES;
+//    self.loadingProgressView.hidden = NO;
+//    self.loadingProgressView.progress = 0.3f;
+//    [self animateLoading:view];
     
 }
 
 - (void) removeLoadingAnimation {
-    self.isLoadingContent = NO;
+//    self.isLoadingContent = NO;
 //    self.loadingProgressView.hidden = YES;
 }
 
@@ -848,9 +925,9 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 //        
 //        dispatch_async(dispatch_get_main_queue(), ^{
 //    NSLog(@"progressvalue:%f",value);
-    self.isLoadingContent = YES;
-            self.loadingProgressView.hidden = NO;
-            self.progressValue = value;
+//    self.isLoadingContent = YES;
+//            self.loadingProgressView.hidden = NO;
+//            self.progressValue = value;
 //            if (!self.isLoadingContent || self.loadingProgressView.progress == 1.0f) {
 //                self.loadingProgressView.hidden = YES;
 //            }
@@ -902,26 +979,26 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     [timer fire];
     */
     
-    CGRect frame = self.loadingProgressView.frame;
-    frame.origin.x = 0.0f;
-    self.loadingProgressView.frame = frame;
-    
-    
-    if (!self.isLoadingContent /*&& self.loadingProgressView.progress == 1.0f*/) {
-        self.loadingProgressView.hidden = YES;
-    }
-    else {
-        
-        [UIView animateWithDuration:1.0 animations:^{
-            
-            CGRect frame = self.loadingProgressView.frame;
-            frame.origin.x = self.loadingProgressView.frame.size.width;
-            self.loadingProgressView.frame = frame;
-            
-        } completion:^(BOOL finished) {
-            [self animateLoading:loadingView];
-        }];
-    }
+//    CGRect frame = self.loadingProgressView.frame;
+//    frame.origin.x = 0.0f;
+//    self.loadingProgressView.frame = frame;
+//    
+//    
+//    if (!self.isLoadingContent /*&& self.loadingProgressView.progress == 1.0f*/) {
+//        self.loadingProgressView.hidden = YES;
+//    }
+//    else {
+//        
+//        [UIView animateWithDuration:1.0 animations:^{
+//            
+//            CGRect frame = self.loadingProgressView.frame;
+//            frame.origin.x = self.loadingProgressView.frame.size.width;
+//            self.loadingProgressView.frame = frame;
+//            
+//        } completion:^(BOOL finished) {
+//            [self animateLoading:loadingView];
+//        }];
+//    }
     
     
 }

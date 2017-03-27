@@ -18,6 +18,7 @@
 #import "UIButton+LocationValues.h"
 #import "AFNetworking.h"
 #import "YMCAudioPlayer.h"
+#import "YTPlayerView.h"
 #import "CustomButton.h"
 
 #import "NewsItem+CoreDataClass.h"
@@ -69,8 +70,7 @@ extern NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION;
 @property (nonatomic) BOOL isAccessToEventStoreGranted;
 @property (strong, nonatomic) EKCalendar *calendar;
 
-@property (strong, nonatomic) UIProgressView *loadingProgressView;
-@property (strong, nonatomic) YMCAudioPlayer *audioPlayerPauser1;
+@property (strong, nonatomic) __block UIProgressView *loadingProgressView;
 @property (strong, nonatomic) UITextField *textField1;
 
 - (void) showWebViewWithURL:(NSString*)urlString;

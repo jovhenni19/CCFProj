@@ -8,7 +8,6 @@
 
 #import "PodcastViewController.h"
 #import "PodcastTableViewCell.h"
-#import "PodcastDetailsTableViewController.h"
 #import "PodcastListViewController.h"
 
 @interface PodcastViewController ()
@@ -24,6 +23,7 @@
 @property (assign, nonatomic) NSInteger sectionExpanded;
 
 @property (assign, nonatomic) NSInteger shownPerPage;
+
 
 @end
 
@@ -126,10 +126,13 @@
 - (void)reloadTables {
     [super reloadTables];
     
-    self.podcastList = nil;
-    self.categories = nil;
-    self.categorizedPodcast = nil;
-    [self callGETAPI:kPODCAST_LINK withParameters:nil completionNotification:kOBS_PODCAST_NOTIFICATION];
+    if (self.podcastList) {
+        self.podcastList = nil;
+        self.categories = nil;
+        self.categorizedPodcast = nil;
+        [self callGETAPI:kPODCAST_LINK withParameters:nil completionNotification:kOBS_PODCAST_NOTIFICATION];
+        
+    }
 //    [self showLoadingAnimation:self.view];
 }
 
@@ -412,7 +415,7 @@
     }
     
     PodcastDetailsTableViewController *details = [self.storyboard instantiateViewControllerWithIdentifier:@"podcastDetailsView"];
-    
+    details.delegate = self;
     details.podcastTitle = [NSString stringWithFormat:@"%@",item.title];
     details.podcastDescription = item.description_detail;
     details.otherText = [item.category_name capitalizedString];
@@ -544,6 +547,14 @@
     } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
         
     }];
+}
+
+- (void)activeAudioPlayer:(YMCAudioPlayer *)player {
+    self.audioPlayerPauser = player;
+}
+
+- (void)activeYoutubePlayer:(YTPlayerView *)youtubePlayer {
+    self.youtubePlayerPauser = youtubePlayer;
 }
 
 @end

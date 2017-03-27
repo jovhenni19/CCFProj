@@ -7,11 +7,9 @@
 //
 
 #import "PodcastDetailsTableViewController.h"
-#import "PodDetailAudioTableViewCell.h"
 #import "PodDetailImageTableViewCell.h"
 #import "PodDetailDescriptionTableViewCell.h"
-#import "PodDetailVideoTableViewCell.h"
-#import "YMCAudioPlayer.h"
+
 
 #define isNil(x) (x==nil)?@"":x
 
@@ -47,6 +45,10 @@
     [self.audioPlayer pauseAudio];
     [self.audioPlayer stopAudio];
     self.audioPlayer = nil;
+    
+    [self.youtubePlayer pauseVideo];
+    [self.youtubePlayer stopVideo];
+    self.youtubePlayer = nil;
     
 }
 
@@ -148,7 +150,9 @@
             if (self.urlForAudio) {
                 PodDetailAudioTableViewCell *custom = (PodDetailAudioTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"audioCell" forIndexPath:indexPath];
                 custom.urlForAudio = self.urlForAudio;
+                custom.delegate = self;
                 self.audioPlayer = custom.audioPlayer;
+                
                 cell = custom;
             }
             else {
@@ -161,6 +165,8 @@
         case 3:{
             PodDetailVideoTableViewCell *custom = (PodDetailVideoTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"videoCell" forIndexPath:indexPath];
             custom.youtubeID = self.youtubeID;
+            custom.delegate = self;
+            self.youtubePlayer = custom.youtubePlayerView;
             cell = custom;
         }
             break;
@@ -456,6 +462,7 @@
 
 - (void)removeFromParentViewController {
     [self.audioPlayer pauseAudio];
+    [self.youtubePlayer pauseVideo];
 }
 
 
@@ -474,6 +481,14 @@
     } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
         
     }];
+}
+
+- (void)audioIsPlaying {
+    [self.delegate activeAudioPlayer:self.audioPlayer];
+}
+
+- (void)youtubeIsPlaying {
+    [self.delegate activeYoutubePlayer:self.youtubePlayer];
 }
 
 @end
