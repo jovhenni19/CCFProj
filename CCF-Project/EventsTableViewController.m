@@ -52,9 +52,12 @@
 - (void)reloadTables {
     [super reloadTables];
     
-    self.events_link = nil;
-    
-    [self callGETAPI:kEVENTS_LINK withParameters:nil completionNotification:kOBS_EVENTS_NOTIFICATION];
+    if (self.events_link) {
+        [self.events_link removeAllObjects];
+        self.events_link = nil;
+        
+        [self callGETAPI:kEVENTS_LINK withParameters:nil completionNotification:kOBS_EVENTS_NOTIFICATION];
+    }
 //    [self showLoadingAnimation:self.view];
 }
 
@@ -75,8 +78,7 @@
     
     [self showLoadingAnimation:self.view withTotalCount:data.count];
     
-    
-    
+    NSMutableArray *eventsList = [NSMutableArray array];
     
     for (NSDictionary *item in data) {
         
@@ -97,17 +99,41 @@
             events.venue = isNIL(item[@"venue"]);
             events.created_date = isNIL(item[@"created_at"]);
             
-            
-            [self.events_link addObject:events];
+        [eventsList addObject:events];
+        
+//            [self.events_link addObject:events];
         
         [self progressValue:((float)self.events_link.count/(float)data.count)];
         
 //            dispatch_sync(dispatch_get_main_queue(), ^{
-                [self.tableView reloadData];
+//                [self.tableView reloadData];
 //            });
 //        });
         
     }
+    
+    
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date_raw" ascending:NO];
+    NSArray *orderedArray = [eventsList sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+    
+//    NSArray* orderedArray = [eventsList sortedArrayUsingComparator: ^NSComparisonResult(EventsObject *e1, EventsObject *e2)
+//                             {
+//                                 NSDateFormatter *df = [[NSDateFormatter alloc] init];
+//                                 [df setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+//                                 NSDate *d1 = [df dateFromString:e1.date_raw];
+//                                 NSDate *d2 = [df dateFromString:e2.date_raw];
+//                                 
+//                                 return [d1 compare:d2];
+//                             }];
+    
+    for (EventsObject *item in orderedArray) {
+        [self.events_link addObject:item];
+        [self.tableView reloadData];
+    }
+    
+    
+    
     
     
     [self removeLoadingAnimation];

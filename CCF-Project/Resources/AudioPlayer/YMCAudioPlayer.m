@@ -13,11 +13,24 @@
 /*
  * Init the Player with Filename and FileExtension
  */
+
+- (void)initPlayerFromURL:(NSString*)urlString {
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSError *error;
+    self.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:&error];
+    if (error) {
+        NSLog(@"## %@ error:%@",urlString,[error description]);
+    }
+}
+
 - (void)initPlayer:(NSString*) audioFile fileExtension:(NSString*)fileExtension
 {
     NSURL *audioFileLocationURL = [[NSBundle mainBundle] URLForResource:audioFile withExtension:fileExtension];
     NSError *error;
     self.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:audioFileLocationURL error:&error];
+    if (error) {
+        NSLog(@"## error:%@",[error description]);
+    }
 }
 
 /*

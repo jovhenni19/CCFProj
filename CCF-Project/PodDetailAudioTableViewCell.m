@@ -34,11 +34,15 @@
 
 - (void)setupAudioPlayer:(NSString*)fileName
 {
-    //insert Filename & FileExtension
-    NSString *fileExtension = @"mp3";
+//    //insert Filename & FileExtension
+//    NSString *fileExtension = @"mp3";
+//    
+//    //init the Player to get file properties to set the time labels
+//    [self.audioPlayer initPlayer:fileName fileExtension:fileExtension];
     
-    //init the Player to get file properties to set the time labels
-    [self.audioPlayer initPlayer:fileName fileExtension:fileExtension];
+    [self.audioPlayer initPlayerFromURL:self.urlForAudio];
+    
+    
     self.currentTimeSlider.maximumValue = [self.audioPlayer getAudioDuration];
     
     self.duration.text = [NSString stringWithFormat:@"0:00 / %@",

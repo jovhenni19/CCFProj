@@ -127,6 +127,9 @@
     [super reloadTables];
     
     if (self.podcastList) {
+        [self.podcastList removeAllObjects];
+        [self.categories removeAllObjects];
+        
         self.podcastList = nil;
         self.categories = nil;
         self.categorizedPodcast = nil;
@@ -177,8 +180,9 @@
             podcastsItem.description_detail = isNIL(item[@"description"]);
             podcastsItem.category_name = isNIL(item[@"series"][0][@"name"]);
             podcastsItem.created_date = isNIL(item[@"created_at"]);
-            
-            
+        podcastsItem.audioURL = isNIL(item[@"audiofile"]);
+        podcastsItem.youtubeURL = isNIL(item[@"youtubeID"]);
+        
             [self.podcastList addObject:podcastsItem];
             
             NSString *key = podcastsItem.category_name;
@@ -422,8 +426,8 @@
     details.podcastSpeaker = @"Speaker 1";
     
     details.imageURL = item.image_url;
-    details.youtubeID = @"Xd_6MSWz2J4";
-    details.urlForAudio = @"audiofile";
+    details.youtubeID = [item.youtubeURL length]?[item.youtubeURL substringWithRange:NSMakeRange(32, 11)]:@"";
+    details.urlForAudio = [item.audioURL length]?[NSString stringWithFormat:@"%@%@{%@}/audio/%@",kAPI_LINK,kPODCAST_LINK,item.id_num,item.audioURL]:@"";
     
     
     CATransition *transition = [CATransition animation];

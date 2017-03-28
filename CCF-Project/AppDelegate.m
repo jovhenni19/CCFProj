@@ -19,6 +19,8 @@
 
 @interface AppDelegate ()
 
+//@property (strong, nonatomic) PTPusher *pusherClient;
+
 @end
 
 @implementation AppDelegate
@@ -51,7 +53,7 @@
         [tokenString appendFormat:@"%02.2hhx", tokenChars[i]];
     }
     
-    NSLog(@"## token:%@",tokenString);
+//    NSLog(@"## token:%@",tokenString);
     self.deviceToken = tokenString;
 }
 
@@ -98,6 +100,14 @@
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
     [FBSDKAppEvents activateApp];
+//    self.pusherClient = [PTPusher pusherWithKey:@"6b3550ae7aa57f259d34" delegate:self];
+//    [self.pusherClient connect];
+//    
+//    PTPusherChannel *channel = [self.pusherClient subscribeToChannelNamed:@"news"];
+//    [channel bindToEventNamed:@"Singles" handleWithBlock:^(PTPusherEvent *channelEvent) {
+//        // channelEvent.data is a NSDictionary of the JSON object received
+//        NSLog(@"data:%@",channelEvent.data);
+//    }];
 }
 
 

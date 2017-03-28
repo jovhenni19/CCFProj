@@ -263,7 +263,7 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     
     [self removeFromParentViewController];
     
-    
+//    [((ScrollableMenubarViewController*)self.parentViewController).horizontalTableview reloadData];
 }
 
 - (IBAction)follow_facebookButton:(id)sender {

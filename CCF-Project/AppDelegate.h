@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 #import <GoogleSignIn/GoogleSignIn.h>
+//#import "Pusher.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, GIDSignInDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, GIDSignInDelegate/*, PTPusherDelegate, PTEventListener*/>
 
 @property (strong, nonatomic) UIWindow *window;
 

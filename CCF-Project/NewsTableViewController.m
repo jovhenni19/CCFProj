@@ -58,6 +58,8 @@
     [super reloadTables];
         
     if(self.news_list){
+        [self.news_list removeAllObjects];
+        
         self.news_list = nil;
         
         [self callGETAPI:kNEWS_LINK withParameters:nil completionNotification:kOBS_NEWS_NOTIFICATION];
@@ -218,11 +220,11 @@
     tv.font = [UIFont fontWithName:@"OpenSans" size:14.0f];
     CGSize contentSize = [tv contentSize];
     
-    if (contentSize.height > 120.0f) {
-        return 100.0f + (contentSize.height - 120.0f);
+    if (contentSize.height < 100.0f) {
+        return 130.0f;
     }
     
-    return 130.0f;
+    return 170.0f;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -189,10 +189,15 @@
 - (void)reloadTables {
     [super reloadTables];
     
-    self.sattelites_list = nil;
-    self.allLocations = nil;
-    
-    [self callGETAPI:kSATTELITES_LINK withParameters:nil completionNotification:kOBS_SATTELITES_NOTIFICATION];
+    if (self.sattelites_list) {
+        
+        [self.sattelites_list removeAllObjects];
+        [self.allLocations removeAllObjects];
+        self.sattelites_list = nil;
+        self.allLocations = nil;
+        
+        [self callGETAPI:kSATTELITES_LINK withParameters:nil completionNotification:kOBS_SATTELITES_NOTIFICATION];
+    }
 //    [self showLoadingAnimation:self.view];
 }
 

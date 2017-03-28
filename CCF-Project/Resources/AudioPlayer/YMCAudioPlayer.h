@@ -14,6 +14,7 @@
 @property (nonatomic, retain) AVAudioPlayer *audioPlayer;
 
 // Public methods
+- (void)initPlayerFromURL:(NSString*)urlString;
 - (void)initPlayer:(NSString*) audioFile fileExtension:(NSString*)fileExtension;
 - (void)playAudio;
 - (void)pauseAudio;

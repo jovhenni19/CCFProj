@@ -19,19 +19,19 @@
     // Do any additional setup after loading the view.
     
     CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(self.latitude, self.longitude);
-    
+    self.mapView.delegate = self;
     [self.mapView setCenterCoordinate:coordinate animated:YES];
     MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(coordinate, 500, 500);
     MKCoordinateRegion adjustedRegion = [self.mapView regionThatFits:viewRegion];
     [self.mapView setRegion:adjustedRegion animated:YES];
-    [self.mapView setShowsUserLocation:YES];
+//    [self.mapView setShowsUserLocation:YES];
     
     
     // Add an annotation
     MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
     point.coordinate = coordinate;
     point.title = self.titleName;
-    point.subtitle = self.snippet;
+//    point.subtitle = self.snippet;
     
     [self.mapView addAnnotation:point];
     
@@ -65,20 +65,52 @@
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
-    MKPinAnnotationView *view = nil;
+    MKAnnotationView *view = nil;
     static NSString *reuseIdentifier = @"MapAnnotation";
     
     // Return a MKPinAnnotationView with a simple accessory button
-    view = (MKPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:reuseIdentifier];
+    view = (MKAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:reuseIdentifier];
     if(!view) {
-        view = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
-        view.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+        
+        view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
+
+        view.image = [UIImage imageNamed:@"default_marker"];
         view.canShowCallout = YES;
-        view.animatesDrop = YES;
+//        view.animatesDrop = YES;
+        
+        
     }
+    
+    
+    //Adding multiline subtitle code
+    
+    UILabel *subTitlelbl = [[UILabel alloc]init];
+    subTitlelbl.text = self.snippet;
+    subTitlelbl.font = [UIFont fontWithName:@"OpenSans-Light" size:14.0f];
+    
+    view.detailCalloutAccessoryView = subTitlelbl;
+    
+    NSLayoutConstraint *width = [NSLayoutConstraint constraintWithItem:subTitlelbl attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationLessThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:150];
+    
+    NSLayoutConstraint *height = [NSLayoutConstraint constraintWithItem:subTitlelbl attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:0];
+    [subTitlelbl setNumberOfLines:0];
+    [subTitlelbl addConstraint:width];
+    [subTitlelbl addConstraint:height];
+    
+    
+    
+
     
     return view;
 }
+
+- (void)mapViewDidFinishLoadingMap:(MKMapView *)mapView {
+    for (id<MKAnnotation> currentAnnotation in mapView.annotations) {
+        [mapView selectAnnotation:currentAnnotation animated:YES];
+    }
+}
+
+
 /*
 #pragma mark - Navigation
 

@@ -14,7 +14,7 @@
 #import "LiveStreamingViewController.h"
 #import "PodcastViewController.h"
 #import "SettingsTableViewController.h"
-#import "SRScreenRecorder.h"
+//#import "SRScreenRecorder.h"
 
 
 @interface ScrollableMenubarViewController ()
@@ -24,7 +24,6 @@
 @property (weak, nonatomic) IBOutlet UIImageView *leftarrow;
 @property (weak, nonatomic) IBOutlet UIImageView *rightarrow;
 @property (weak, nonatomic) IBOutlet UIView *containerViewForTable;
-@property (weak, nonatomic) IBOutlet UITableView *horizontalTableview;
 @property (weak, nonatomic) IBOutlet UIProgressView *progressView;
 @property (weak, nonatomic) IBOutlet UIImageView *imageLogoTop;
 
@@ -33,7 +32,7 @@
 
 @property (assign, nonatomic) CGFloat preOffsetX;
 
-@property (strong, nonatomic) SRScreenRecorder *screen_recorder;
+//@property (strong, nonatomic) SRScreenRecorder *screen_recorder;
 
 @end
 
@@ -165,11 +164,11 @@
     self.fromViewLoad = YES;
     self.settingView = NO;
     
-    UILongPressGestureRecognizer *holdGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(recorderGesture:)];
-    holdGesture.numberOfTouchesRequired = 1;
-    holdGesture.minimumPressDuration = 10;
-    
-    [self.imageLogoTop addGestureRecognizer:holdGesture];
+//    UILongPressGestureRecognizer *holdGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(recorderGesture:)];
+//    holdGesture.numberOfTouchesRequired = 1;
+//    holdGesture.minimumPressDuration = 10;
+//    
+//    [self.imageLogoTop addGestureRecognizer:holdGesture];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -187,7 +186,6 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     
-    
     [super viewDidAppear:animated];
 
 //    [self rearrangeLayout];
@@ -203,13 +201,13 @@
     frame.origin = CGPointZero;
     self.horizontalTableview.frame = frame;
     
+    
+    [self.horizontalTableview reloadData];
+    
     if(self.fromViewLoad){
         self.fromViewLoad = NO;
-//        self.selectedIndex = 0;
-//        
+//        [self.horizontalTableview scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
-    
-    
 //    self.horizontalTableview.layer.borderWidth = 3.0f;
 //    self.horizontalTableview.layer.borderColor = [UIColor redColor].CGColor;
     
@@ -510,7 +508,7 @@
         [[[contentView subviews] lastObject] removeFromSuperview];
     }
 
-//    [self.view setNeedsLayout];
+    [self.view setNeedsLayout];
     
     
     vc.view.frame = CGRectMake(0.0f, 0.0f, self.containerViewForTable.frame.size.width, self.containerViewForTable.frame.size.height);
@@ -552,43 +550,43 @@
     self.progressView.hidden = YES;
 }
 
-- (void)recorderGesture:(UIGestureRecognizer *)recognizer
-{
-    if (!self.screen_recorder) {
-        NSString *message = [NSString stringWithFormat:@"Start ScreenRecording ?"];
-        UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Secret Feature" message:message preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *close = [UIAlertAction actionWithTitle:@"NO" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self dismissViewControllerAnimated:ac completion:nil];
-        }];
-        UIAlertAction *yes = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-//            [self startRecording];
-        }];
-        [ac addAction:close];
-        [ac addAction:yes];
-        [self presentViewController:ac animated:YES completion:^{
-            
-        }];
-    }
-    else {
-//        [self.screen_recorder stopRecording];
-//        self.screen_recorder = nil;
-    }
-}
-
-- (void) startRecording{
-    self.screen_recorder = nil;
-    self.screen_recorder = [SRScreenRecorder sharedInstance];
-    self.screen_recorder.frameInterval = 1; // 60 FPS
-//    self.screen_recorder.autosaveDuration = 1800; // 30 minutes
-    self.screen_recorder.showsTouchPointer = YES; // hidden touch pointer
-    self.screen_recorder.filenameBlock = ^(void) {
-        NSDateFormatter *df = [[NSDateFormatter alloc] init];
-        [df setDateFormat:@"yyyyMMdd_HHmmss"];
-        NSString *date = [df stringFromDate:[NSDate date]];
-        return [NSString stringWithFormat:@"screencast-%@.mov",date];
-    }; // change filename
-    
-    [self.screen_recorder startRecording];
-}
+//- (void)recorderGesture:(UIGestureRecognizer *)recognizer
+//{
+//    if (!self.screen_recorder) {
+//        NSString *message = [NSString stringWithFormat:@"Start ScreenRecording ?"];
+//        UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Secret Feature" message:message preferredStyle:UIAlertControllerStyleAlert];
+//        UIAlertAction *close = [UIAlertAction actionWithTitle:@"NO" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//            [self dismissViewControllerAnimated:ac completion:nil];
+//        }];
+//        UIAlertAction *yes = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+////            [self startRecording];
+//        }];
+//        [ac addAction:close];
+//        [ac addAction:yes];
+//        [self presentViewController:ac animated:YES completion:^{
+//            
+//        }];
+//    }
+//    else {
+////        [self.screen_recorder stopRecording];
+////        self.screen_recorder = nil;
+//    }
+//}
+//
+//- (void) startRecording{
+//    self.screen_recorder = nil;
+//    self.screen_recorder = [SRScreenRecorder sharedInstance];
+//    self.screen_recorder.frameInterval = 1; // 60 FPS
+////    self.screen_recorder.autosaveDuration = 1800; // 30 minutes
+//    self.screen_recorder.showsTouchPointer = YES; // hidden touch pointer
+//    self.screen_recorder.filenameBlock = ^(void) {
+//        NSDateFormatter *df = [[NSDateFormatter alloc] init];
+//        [df setDateFormat:@"yyyyMMdd_HHmmss"];
+//        NSString *date = [df stringFromDate:[NSDate date]];
+//        return [NSString stringWithFormat:@"screencast-%@.mov",date];
+//    }; // change filename
+//    
+//    [self.screen_recorder startRecording];
+//}
 
 @end
