@@ -37,6 +37,7 @@
 		334DC3BB1E7AA6D2002E4EA8 /* PodcastsItem+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 334DC3B11E7AA6D0002E4EA8 /* PodcastsItem+CoreDataProperties.m */; };
 		334DC3BC1E7AA6D2002E4EA8 /* EventsItem+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 334DC3B31E7AA6D0002E4EA8 /* EventsItem+CoreDataClass.m */; };
 		334DC3BD1E7AA6D2002E4EA8 /* EventsItem+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 334DC3B51E7AA6D0002E4EA8 /* EventsItem+CoreDataProperties.m */; };
+		3353E31A1E8D16D80064E211 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 3353E3191E8D16D80064E211 /* Podfile */; };
 		335EA7081E31D5E800416E67 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 335EA7071E31D5E800416E67 /* main.m */; };
 		335EA70B1E31D5E800416E67 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 335EA70A1E31D5E800416E67 /* AppDelegate.m */; };
 		335EA7111E31D5E800416E67 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 335EA70F1E31D5E800416E67 /* Main.storyboard */; };
@@ -182,6 +183,7 @@
 		334DC3B31E7AA6D0002E4EA8 /* EventsItem+CoreDataClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "EventsItem+CoreDataClass.m"; path = "Custom/EventsItem+CoreDataClass.m"; sourceTree = "<group>"; };
 		334DC3B41E7AA6D0002E4EA8 /* EventsItem+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "EventsItem+CoreDataProperties.h"; path = "Custom/EventsItem+CoreDataProperties.h"; sourceTree = "<group>"; };
 		334DC3B51E7AA6D0002E4EA8 /* EventsItem+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "EventsItem+CoreDataProperties.m"; path = "Custom/EventsItem+CoreDataProperties.m"; sourceTree = "<group>"; };
+		3353E3191E8D16D80064E211 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		335EA7031E31D5E800416E67 /* CCF-Project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CCF-Project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		335EA7071E31D5E800416E67 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		335EA7091E31D5E800416E67 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -418,6 +420,7 @@
 				335EA70F1E31D5E800416E67 /* Main.storyboard */,
 				335EA7151E31D5E800416E67 /* Assets.xcassets */,
 				335EA7171E31D5E800416E67 /* LaunchScreen.storyboard */,
+				3353E3191E8D16D80064E211 /* Podfile */,
 				33CD19F21E6B981F0019C279 /* OpenSans-Bold.ttf */,
 				33CD19F31E6B981F0019C279 /* OpenSans-Light.ttf */,
 				33CD19F41E6B981F0019C279 /* OpenSans-Regular.ttf */,
@@ -860,6 +863,7 @@
 				3391BE271E728F84005BC164 /* GoogleService-Info.plist in Resources */,
 				33CD19F71E6B981F0019C279 /* OpenSans-Regular.ttf in Resources */,
 				333724C01E360DAD001DBE50 /* GoogleMaps.bundle in Resources */,
+				3353E31A1E8D16D80064E211 /* Podfile in Resources */,
 				336F6DE81E83BB9F008FB120 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1139,7 +1143,7 @@
 				PROVISIONING_PROFILE = "445d2b71-5534-48a1-a1dd-f615998ddee9";
 				PROVISIONING_PROFILE_SPECIFIER = "Josh-Dev2";
 				SEPARATE_STRIP = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -1164,7 +1168,7 @@
 				PROVISIONING_PROFILE = "b92e4e81-88d8-4879-8dbd-ea4b330caac9";
 				PROVISIONING_PROFILE_SPECIFIER = "CCF AppStore2";
 				SEPARATE_STRIP = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

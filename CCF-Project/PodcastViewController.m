@@ -175,10 +175,10 @@
             PodcastsObject *podcastsItem = [[PodcastsObject alloc] init];
             
             podcastsItem.id_num = isNIL(item[@"id"]);
-            podcastsItem.title = isNIL(item[@"title"]);
+            podcastsItem.title = [isNIL(item[@"title"]) uppercaseString];
             podcastsItem.image_url = isNIL(item[@"image"]);
             podcastsItem.description_detail = isNIL(item[@"description"]);
-            podcastsItem.category_name = isNIL(item[@"series"][0][@"name"]);
+            podcastsItem.category_name = [isNIL(item[@"series"][0][@"name"]) uppercaseString];
             podcastsItem.created_date = isNIL(item[@"created_at"]);
         podcastsItem.audioURL = isNIL(item[@"audiofile"]);
         podcastsItem.youtubeURL = isNIL(item[@"youtubeID"]);
@@ -190,7 +190,7 @@
                 NSMutableArray *array = [NSMutableArray array];
                 [self.categorizedPodcast setObject:[array mutableCopy] forKey:key];
                 
-                NSDictionary *category = @{@"kTitle":key,@"kImage":podcastsItem.image_url,@"kImageData":isNIL(podcastsItem.image_data)};
+                NSDictionary *category = @{@"kTitle":[key uppercaseString],@"kImage":podcastsItem.image_url,@"kImageData":isNIL(podcastsItem.image_data)};
                 [self.categories addObject:category];
             }
             
@@ -280,7 +280,7 @@
     if (self.isCategoriesShown && [indexPath section] != self.sectionExpanded) {
         return 0.0f;
     }
-    return 120.0f;
+    return 140.0f;
 }
 
 
@@ -374,13 +374,13 @@
     
     cell.podcastTitle.text = [NSString stringWithFormat:@"%@",item.title];
     cell.podcastDescription.text = item.description_detail;
-    [cell.podcastSpeaker setTitle:@"  Speaker 1" forState:UIControlStateNormal];
     [cell.podcastDate setTitle:[NSString stringWithFormat:@"  %@",item.created_date] forState:UIControlStateNormal];
-    [cell.podcastLocation setTitle:@"  CCF CENTER" forState:UIControlStateNormal];
-    cell.podcastLocation.latitude = [NSNumber numberWithDouble:14.589221];
-    cell.podcastLocation.longitude = [NSNumber numberWithDouble:121.078906];
-    cell.podcastLocation.locationName = @"CCF CENTER";
-    [cell.podcastLocation addTarget:self action:@selector(viewMapButton:) forControlEvents:UIControlEventTouchUpInside];
+//    [cell.podcastSpeaker setTitle:@"  Speaker 1" forState:UIControlStateNormal];
+//    [cell.podcastLocation setTitle:@"  CCF CENTER" forState:UIControlStateNormal];
+//    cell.podcastLocation.latitude = [NSNumber numberWithDouble:14.589221];
+//    cell.podcastLocation.longitude = [NSNumber numberWithDouble:121.078906];
+//    cell.podcastLocation.locationName = @"CCF CENTER";
+//    [cell.podcastLocation addTarget:self action:@selector(viewMapButton:) forControlEvents:UIControlEventTouchUpInside];
     
     if (item.image_data) {
         cell.podcastImage.image = [UIImage imageWithData:item.image_data];
@@ -398,12 +398,53 @@
         }
     }
     
+    [cell.podcastTitle sizeToFit];
+    
+    
+    while ([[cell.viewForControls subviews] count] > 0) {
+        [[[cell.viewForControls subviews] lastObject] removeFromSuperview];
+    }
+    
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
 }
 
+    
+- (void)tableView:(UITableView *)tableView willDisplayCell:(PodcastTableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    PodcastsObject *item = nil;
+    if (self.isCategoriesShown) {
+        NSString *key = [[self.categories objectAtIndex:[indexPath section]] objectForKey:@"kTitle"];
+        item = [[self.categorizedPodcast objectForKey:key] objectAtIndex:[indexPath row]];
+        
+    }
+    else {
+        item = [self.podcastList objectAtIndex:[indexPath row]];
+    }
+    
+    // add controls
+    
+    CGFloat buttonWidth = (cell.contentView.bounds.size.width - 150.0f)/2; //divide per control
+    
+    CustomButton *buttonSpeaker = [[CustomButton alloc] initWithText:[item.category_name uppercaseString] image:[UIImage imageNamed:@"group-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 22.0f) locked:YES];
+    buttonSpeaker.labelText.textColor = [UIColor grayColor];
+    buttonSpeaker.userInteractionEnabled = NO;
+    [cell.viewForControls addSubview:buttonSpeaker];
+    
+    
+    CustomButton *buttonVenue = [[CustomButton alloc] initWithText:[@"ccf center" uppercaseString] image:[UIImage imageNamed:@"pin-icon-small"] frame:CGRectMake(buttonWidth, 0.0f, buttonWidth, 22.0f) locked:YES];
+    buttonVenue.labelText.textColor = TEAL_COLOR;
+    buttonVenue.userInteractionEnabled = YES;
+    buttonVenue.button.latitude = [NSNumber numberWithDouble:14.589221];
+    buttonVenue.button.longitude = [NSNumber numberWithDouble:121.078906];
+    buttonVenue.button.locationName = @"CCF CENTER";
+    [buttonVenue.button addTarget:self action:@selector(viewMapButton:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.viewForControls addSubview:buttonVenue];
+    
+    
+}
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
@@ -422,12 +463,12 @@
     details.delegate = self;
     details.podcastTitle = [NSString stringWithFormat:@"%@",item.title];
     details.podcastDescription = item.description_detail;
-    details.otherText = [item.category_name capitalizedString];
+    details.otherText = [item.category_name uppercaseString];
     details.podcastSpeaker = @"Speaker 1";
     
     details.imageURL = item.image_url;
     details.youtubeID = [item.youtubeURL length]?[item.youtubeURL substringWithRange:NSMakeRange(32, 11)]:@"";
-    details.urlForAudio = [item.audioURL length]?[NSString stringWithFormat:@"%@%@{%@}/audio/%@",kAPI_LINK,kPODCAST_LINK,item.id_num,item.audioURL]:@"";
+    details.urlForAudio = [item.audioURL length]?[NSString stringWithFormat:@"%@%@{%@}/audio/{%@}",kAPI_LINK,kPODCAST_LINK,item.id_num,item.audioURL]:@"";
     
     
     CATransition *transition = [CATransition animation];
@@ -439,9 +480,9 @@
     
     
     details.view.frame = self.view.bounds;
-    [[self.view superview] addSubview:details.view];
-    [[self parentViewController] addChildViewController:details];
-    [details didMoveToParentViewController:[self parentViewController]];
+    [self.view addSubview:details.view];
+    [self addChildViewController:details];
+    [details didMoveToParentViewController:self];
     
     
 }
@@ -481,7 +522,7 @@
     podcastListVC.categoryImageURL = [self.categories[sender.tag] objectForKey:@"kImage"];
     podcastListVC.categoryImageData = [self.categories[sender.tag] objectForKey:@"kImageData"];
     podcastListVC.podcastList = [self.categorizedPodcast objectForKey:key];
-    podcastListVC.podcastCategoryTitle = [key capitalizedString];
+    podcastListVC.podcastCategoryTitle = [key uppercaseString];
     
     
     CATransition *transition = [CATransition animation];
@@ -491,11 +532,12 @@
     transition.subtype = kCATransitionFromRight;
     [podcastListVC.view.layer addAnimation:transition forKey:nil];
     
+    ScrollableMenubarViewController *scrollerParent = (ScrollableMenubarViewController*)self.parentViewController;
     
-    podcastListVC.view.frame = self.view.bounds;
-    [[self.view superview] addSubview:podcastListVC.view];
-    [[self parentViewController] addChildViewController:podcastListVC];
-    [podcastListVC didMoveToParentViewController:[self parentViewController]];
+    podcastListVC.view.frame = CGRectMake(0.0f, 0.0f, scrollerParent.containerViewForTable.frame.size.width, scrollerParent.containerViewForTable.frame.size.height);//self.view.bounds;
+    [self.view addSubview:podcastListVC.view];
+    [self addChildViewController:podcastListVC];
+    [podcastListVC didMoveToParentViewController:self];
     
     
 }

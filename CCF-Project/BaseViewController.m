@@ -118,7 +118,7 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
         else {
             self.isAccessToEventStoreGranted = YES;
             EKEvent *event = [EKEvent eventWithEventStore:self.eventStore];
-            event.title = [button.eventTitle capitalizedString];
+            event.title = [button.eventTitle uppercaseString];
             
             NSDateFormatter *dateFormmatter = [[NSDateFormatter alloc] init];
             [dateFormmatter setDateFormat:@"MM/dd/yyyy hh:mm a"];
@@ -128,7 +128,7 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
             event.startDate = [dateFormmatter dateFromString:fullDate];
             event.endDate = [event.startDate dateByAddingTimeInterval:60*60];  //set 1 hour meeting
             event.calendar = [self.eventStore defaultCalendarForNewEvents];
-            event.notes = [NSString stringWithFormat:@"Event Details:\nVenue:%@\n",[button.eventAddress capitalizedString]];
+            event.notes = [NSString stringWithFormat:@"Event Details:\nVenue:%@\n",[button.eventAddress uppercaseString]];
             NSTimeInterval aInterval = -1 * 60 * 60;
             EKAlarm *alaram = [EKAlarm alarmWithRelativeOffset:aInterval];
             [event addAlarm:alaram];
@@ -241,16 +241,31 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 - (IBAction)backButton:(id)sender {
     
     
-    NSInteger index = [((ScrollableMenubarViewController*)self.parentViewController) selectedIndex];
+//    NSInteger index = [((ScrollableMenubarViewController*)self.parentViewController) selectedIndex];
+//
+//    
+//    UIView *viewShown = [[[(self.parentViewController.view) viewWithTag:1990 + index] subviews] lastObject];
+////    NSLog(@"[%li]subviews:%@",(long)index,[viewShown subviews]);
+//    if (viewShown == nil) {
+//        NSLog(@"ERROR !!");
+//        
+//        return;
+//    }
+//    
+//    CATransition *transition = [CATransition animation];
+//    transition.duration = 0.3;
+//    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+//    transition.type = kCATransitionPush;
+//    transition.subtype = kCATransitionFromLeft;
+//    [self.parentViewController.view.layer addAnimation:transition forKey:nil];
+//    
+//    [viewShown removeFromSuperview];
+//    
+//    [self removeFromParentViewController];
     
+//    [((ScrollableMenubarViewController*)self.parentViewController).horizontalTableview reloadData];
     
-    UIView *viewShown = [[[(self.parentViewController.view) viewWithTag:1990 + index] subviews] lastObject];
-//    NSLog(@"[%li]subviews:%@",(long)index,[viewShown subviews]);
-    if (viewShown == nil) {
-        NSLog(@"ERROR !!");
-        
-        return;
-    }
+    UIView *viewShown = [((NSArray*)self.parentViewController.view.subviews) lastObject];
     
     CATransition *transition = [CATransition animation];
     transition.duration = 0.3;
@@ -262,8 +277,6 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     [viewShown removeFromSuperview];
     
     [self removeFromParentViewController];
-    
-//    [((ScrollableMenubarViewController*)self.parentViewController).horizontalTableview reloadData];
 }
 
 - (IBAction)follow_facebookButton:(id)sender {

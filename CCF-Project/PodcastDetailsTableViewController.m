@@ -108,7 +108,7 @@
             break;
             
         default:
-            height = 140.0f;
+            height = 200.0f;
             break;
     }
     return height;
@@ -252,10 +252,11 @@
         view.backgroundColor = [UIColor whiteColor];
         
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 24.0f, 24.0f)];
-        imageView.image = [UIImage imageNamed:@"person"];
+        imageView.image = [UIImage imageNamed:@"group-icon-small"];
         
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 150.0f, 24.0f)];
         label.text = (self.otherText.length>0)?self.otherText:@"JESUS UNBOXED";
+        label.text = [label.text uppercaseString];
         label.textColor = [UIColor colorWithRed:36.0f/255.0f green:179.0f/255.0f blue:196/255.0f alpha:1.0f];
         label.font = [UIFont fontWithName:@"OpenSans" size:14.0f];
         

@@ -133,10 +133,10 @@
                         }
                     }
                 }
-            }
-            else if ([item[@"groups"] isEqualToString:@"all"]){
-                hasGroupSelection = YES;
-                break;
+                else {
+                    hasGroupSelection = YES;
+                    break;
+                }
             }
             
             
@@ -177,16 +177,20 @@
             newsItem.title = isNIL(item[@"title"]);
             newsItem.image_url = isNIL(item[@"image"]);
             newsItem.description_detail = isNIL(item[@"description"]);
+            newsItem.description_excerpt = isNIL(item[@"excerpt"]);
             newsItem.created_date = isNIL(item[@"created_at"]);
             
             if ([item[@"groups"] isKindOfClass:[NSArray class]]) {
                 if ([item[@"groups"] count]) {
                     newsItem.group_name = isNIL(item[@"groups"][0][@"name"]);
                 }
+                else {
+                    newsItem.group_name = @"";
+                }
             }
-            else {
-                newsItem.group_name = isNIL(item[@"groups"]);
-            }
+//            else {
+//                newsItem.group_name = isNIL(item[@"groups"]);
+//            }
             
             
             [self.news_list addObject:newsItem];
@@ -216,15 +220,15 @@
     NewsObject *newsItem = (NewsObject*)[self.news_list objectAtIndex:[indexPath row]];
     
     UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, tableView.frame.size.width - 20.0f, 120.0f)];
-    tv.text = newsItem.description_detail;
+    tv.text = newsItem.description_excerpt;
     tv.font = [UIFont fontWithName:@"OpenSans" size:14.0f];
     CGSize contentSize = [tv contentSize];
     
     if (contentSize.height < 100.0f) {
-        return 130.0f;
+        return 100.0f + (contentSize.height);
     }
     
-    return 170.0f;
+    return 140.0f;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -234,9 +238,9 @@
 //    NewsItem *newsItem = (NewsItem*)[self.news_list objectAtIndex:[indexPath row]];
     NewsObject *newsItem = (NewsObject*)[self.news_list objectAtIndex:[indexPath row]];
     
-    cell.labelNewsTitle.text = newsItem.title;
+    cell.labelNewsTitle.text = [newsItem.title uppercaseString];
     cell.labelTimeCreated.text = [self getTimepassedTextFrom:newsItem.created_date];
-    cell.textNewsDetails.text = newsItem.description_detail;
+    cell.textNewsDetails.text = newsItem.description_excerpt;
     [cell.textNewsDetails scrollsToTop];
     
 //    [cell.buttonGroupName setTitle:[NSString stringWithFormat:@"  %@",[newsItem.group_name capitalizedString]] forState:UIControlStateNormal];
@@ -252,13 +256,14 @@
     }
     
     // add controls
-    
-    CGFloat buttonWidth = cell.contentView.frame.size.width; //divide per control
-    
-    CustomButton *buttonGroup = [[CustomButton alloc] initWithText:[newsItem.group_name capitalizedString] image:[UIImage imageNamed:@"group-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 25.0f)];
-    buttonGroup.labelText.textColor = [UIColor grayColor];
-    
-    [cell.viewControls addSubview:buttonGroup];
+    if ([newsItem.group_name length]) {
+        CGFloat buttonWidth = cell.contentView.frame.size.width; //divide per control
+        
+        CustomButton *buttonGroup = [[CustomButton alloc] initWithText:[newsItem.group_name uppercaseString] image:[UIImage imageNamed:@"group-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 25.0f)];
+        buttonGroup.labelText.textColor = [UIColor grayColor];
+        
+        [cell.viewControls addSubview:buttonGroup];
+    }
     
     
     
@@ -276,6 +281,7 @@
     
     EventsDetailViewController *detailsVC = [self.storyboard instantiateViewControllerWithIdentifier:@"eventsDetail"];
     detailsVC.showRegisterCell = NO;
+    detailsVC.showVenueDateTime = NO;
     
 //    NewsItem *newsItem = (NewsItem*)[self.news_list objectAtIndex:[indexPath row]];
     NewsObject *newsItem = (NewsObject*)[self.news_list objectAtIndex:[indexPath row]];
@@ -294,11 +300,12 @@
     transition.subtype = kCATransitionFromRight;
     [detailsVC.view.layer addAnimation:transition forKey:nil];
     
+//    NSLog(@"## view:%@",[[self.view superview] subviews]);
     
     detailsVC.view.frame = self.view.bounds;
-    [[self.view superview] addSubview:detailsVC.view];
-    [[self parentViewController] addChildViewController:detailsVC];
-    [detailsVC didMoveToParentViewController:[self parentViewController]];
+    [self.view addSubview:detailsVC.view];
+    [self addChildViewController:detailsVC];
+    [detailsVC didMoveToParentViewController:self];
     
     
     

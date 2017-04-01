@@ -66,10 +66,9 @@
     return self.podcastList.count;
 }
 
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return 120.0f;
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 140.0f;
 }
 
 
@@ -79,7 +78,7 @@
     
     PodcastsObject *item = [self.podcastList objectAtIndex:[indexPath row]];
         
-    NSString *identifier = ([item.image_url length])?@"podcastCellImage":@"podcastCell";
+    NSString *identifier = @"podcastCellImage";
     
     PodcastTableViewCell *cell = (PodcastTableViewCell*)[tableView dequeueReusableCellWithIdentifier:identifier];
     
@@ -112,12 +111,61 @@
         }
     }
     
+    while ([[cell.viewForControls subviews] count] > 0) {
+        [[[cell.viewForControls subviews] lastObject] removeFromSuperview];
+    }
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
 }
 
+    
+- (void)tableView:(UITableView *)tableView willDisplayCell:(PodcastTableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    
+    PodcastsObject *item  = [self.podcastList objectAtIndex:[indexPath row]];
+    
+    // add controls
+    
+    [cell.podcastTitle sizeToFit];
+    [cell.podcastDescription sizeToFit];
+    CGFloat buttonWidth = (cell.contentView.bounds.size.width - 150.0f)/2; //divide per control
+    
+    CustomButton *buttonSpeaker = [[CustomButton alloc] initWithText:[item.category_name uppercaseString] image:[UIImage imageNamed:@"group-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 22.0f) locked:YES];
+    buttonSpeaker.labelText.textColor = [UIColor grayColor];
+    buttonSpeaker.userInteractionEnabled = NO;
+    [cell.viewForControls addSubview:buttonSpeaker];
+    
+    
+    CustomButton *buttonVenue = [[CustomButton alloc] initWithText:[@"ccf center" uppercaseString] image:[UIImage imageNamed:@"pin-icon-small"] frame:CGRectMake(buttonWidth, 0.0f, buttonWidth, 22.0f) locked:YES];
+    buttonVenue.labelText.textColor = TEAL_COLOR;
+    buttonVenue.userInteractionEnabled = YES;
+    buttonVenue.button.latitude = [NSNumber numberWithDouble:14.589221];
+    buttonVenue.button.longitude = [NSNumber numberWithDouble:121.078906];
+    buttonVenue.button.locationName = @"CCF CENTER";
+    [buttonVenue.button addTarget:self action:@selector(viewMapButton:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.viewForControls addSubview:buttonVenue];
+    
+//    //layout
+//    
+//    UILayoutGuide *marginLayout = cell.contentView.layoutMarginsGuide;
+//    
+//    
+//    [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonSpeaker attribute:NSLayoutAttributeTopMargin relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeBottomMargin multiplier:1.0 constant:-(buttonSpeaker.frame.size.height)]];
+//    
+//    [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonVenue attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:buttonSpeaker attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0f]];
+//    
+//    [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonSpeaker attribute:NSLayoutAttributeTrailingMargin relatedBy:NSLayoutRelationEqual toItem:cell.podcastDescription attribute:NSLayoutAttributeLeadingMargin multiplier:1.0 constant:-10.0f]];
+//    
+//    [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonVenue attribute:NSLayoutAttributeTrailingMargin relatedBy:NSLayoutRelationEqual toItem:buttonSpeaker attribute:NSLayoutAttributeLeadingMargin multiplier:1.0 constant:buttonSpeaker.frame.size.width - 8.0f]];
+//    
+//    
+//    buttonSpeaker.translatesAutoresizingMaskIntoConstraints = NO;
+//    buttonVenue.translatesAutoresizingMaskIntoConstraints = NO;
+    
+}
+    
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
@@ -126,15 +174,15 @@
     
     
     PodcastDetailsTableViewController *details = [self.storyboard instantiateViewControllerWithIdentifier:@"podcastDetailsView"];
-    
+    details.delegate = self;
     details.podcastTitle = [NSString stringWithFormat:@"%@",item.title];
     details.podcastDescription = item.description_detail;
-    details.otherText = [item.category_name capitalizedString];
+    details.otherText = [item.category_name uppercaseString];
     details.podcastSpeaker = @"Speaker 1";
     
     details.imageURL = item.image_url;
-    details.youtubeID = @"Xd_6MSWz2J4";
-    details.urlForAudio = @"audiofile";
+    details.youtubeID = [item.youtubeURL length]?[item.youtubeURL substringWithRange:NSMakeRange(32, 11)]:@"";
+    details.urlForAudio = [item.audioURL length]?[NSString stringWithFormat:@"%@%@{%@}/audio/{%@}",kAPI_LINK,kPODCAST_LINK,item.id_num,item.audioURL]:@"";
     
     
     CATransition *transition = [CATransition animation];
@@ -146,9 +194,9 @@
     
     
     details.view.frame = self.view.bounds;
-    [[self.view superview] addSubview:details.view];
-    [[self parentViewController] addChildViewController:details];
-    [details didMoveToParentViewController:[self parentViewController]];
+    [self.view addSubview:details.view];
+    [self addChildViewController:details];
+    [details didMoveToParentViewController:self];
     
     
 }
@@ -206,5 +254,13 @@
     }];
 }
 
+
+- (void)activeAudioPlayer:(YMCAudioPlayer *)player {
+    self.audioPlayerPauser = player;
+}
+
+- (void)activeYoutubePlayer:(YTPlayerView *)youtubePlayer {
+    self.youtubePlayerPauser = youtubePlayer;
+}
 
 @end

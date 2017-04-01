@@ -90,9 +90,9 @@
             events.title = isNIL(item[@"title"]);
             events.image_url = isNIL(item[@"image"]);
             events.description_detail = isNIL(item[@"description"]);
-            events.date = isNIL(item[@"date"]);
-            events.time = isNIL(item[@"time"]);
-            events.date_raw = isNIL(item[@"dateRaw"][@"date"]);
+            events.date = isNIL(item[@"date_start"][@"date"]);
+            events.time = isNIL(item[@"date_start"][@"time"]);
+            events.date_raw = isNIL(item[@"date_start"][@"dateRaw"][@"date"]);
             events.registration_link = isNIL(item[@"registration_link"]);
             events.speakers = isNIL(item[@"speakers"]);
             events.contact_info = isNIL(item[@"contact_info"]);
@@ -158,12 +158,12 @@
     
     CGFloat buttonWidth = (tableView.frame.size.width-25.0f)/3; //divide per control
     
-    CustomButton *buttonVenue = [[CustomButton alloc] initWithText:[events.venue capitalizedString] image:[UIImage imageNamed:@"pin-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 30.0f)];
+    CustomButton *buttonVenue = [[CustomButton alloc] initWithText:[events.venue uppercaseString] image:[UIImage imageNamed:@"pin-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 30.0f) locked:NO];
     
     
-    CustomButton *buttonDate = [[CustomButton alloc] initWithText:[events.date capitalizedString] image:[UIImage imageNamed:@"calendar-icon-small"] frame:CGRectMake(buttonWidth, 0.0f, buttonWidth, 30.0f)];
+    CustomButton *buttonDate = [[CustomButton alloc] initWithText:[events.date uppercaseString] image:[UIImage imageNamed:@"calendar-icon-small"] frame:CGRectMake(buttonWidth, 0.0f, buttonWidth, 30.0f) locked:NO];
     
-    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[events.time uppercaseString] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 0.0f, buttonWidth, 30.0f)];
+    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[events.time uppercaseString] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 0.0f, buttonWidth, 30.0f) locked:NO];
     
     CGFloat height = 30.0f;
     for (CustomButton *button in @[buttonVenue,buttonDate,buttonTime]) {
@@ -173,7 +173,7 @@
     }
     
     
-    return height + 145.0f;
+    return height + 170.0f;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -227,7 +227,7 @@
     
     CGFloat buttonWidth = (cell.contentView.frame.size.width-25.0f)/3; //divide per control
     
-    CustomButton *buttonVenue = [[CustomButton alloc] initWithText:[events.venue capitalizedString] image:[UIImage imageNamed:@"pin-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 30.0f)];
+    CustomButton *buttonVenue = [[CustomButton alloc] initWithText:[events.venue uppercaseString] image:[UIImage imageNamed:@"pin-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 30.0f) locked:NO];
     buttonVenue.labelText.textColor = TEAL_COLOR;
     buttonVenue.button.latitude = [NSNumber numberWithDouble:14.589221];
     buttonVenue.button.longitude = [NSNumber numberWithDouble:121.078906];
@@ -240,7 +240,7 @@
     [cell.viewControls addSubview:buttonVenue];
     
     
-    CustomButton *buttonDate = [[CustomButton alloc] initWithText:[events.date capitalizedString] image:[UIImage imageNamed:@"calendar-icon-small"] frame:CGRectMake(buttonWidth, 0.0f, buttonWidth, 30.0f)];
+    CustomButton *buttonDate = [[CustomButton alloc] initWithText:[events.date uppercaseString] image:[UIImage imageNamed:@"calendar-icon-small"] frame:CGRectMake(buttonWidth, 0.0f, buttonWidth, 30.0f) locked:NO];
     buttonDate.labelText.textColor = TEAL_COLOR;
     [buttonDate.button addTarget:self action:@selector(saveDateCalendar:) forControlEvents:UIControlEventTouchUpInside];
     buttonDate.button.eventTitle = events.title;
@@ -251,7 +251,7 @@
     
     [cell.viewControls addSubview:buttonDate];
     
-    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[events.time uppercaseString] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 0.0f, buttonWidth, 30.0f)];
+    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[events.time uppercaseString] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 0.0f, buttonWidth, 30.0f) locked:NO];
     buttonTime.labelText.textColor = TEAL_COLOR;
     [buttonTime.button addTarget:self action:@selector(saveDateCalendar:) forControlEvents:UIControlEventTouchUpInside];
     buttonTime.button.eventTitle = events.title;
@@ -262,11 +262,32 @@
     
     [cell.viewControls addSubview:buttonTime];
     
+    
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectEventAtIndexPath:)];
     [buttonTime addGestureRecognizer:tap];
     [buttonDate addGestureRecognizer:tap];
     tap.numberOfTapsRequired = 1;
-
+    
+    //layout
+    
+    UILayoutGuide *marginLayout = cell.contentView.layoutMarginsGuide;
+    
+    
+    [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonDate attribute:NSLayoutAttributeCenterXWithinMargins relatedBy:NSLayoutRelationEqual toItem:marginLayout attribute:NSLayoutAttributeCenterXWithinMargins multiplier:1.0 constant:-(buttonDate.frame.size.width/2)]];
+    
+    [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonDate attribute:NSLayoutAttributeTrailingMargin relatedBy:NSLayoutRelationEqual toItem:buttonVenue attribute:NSLayoutAttributeLeadingMargin multiplier:1.0 constant:buttonVenue.frame.size.width]];
+    
+    [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonTime attribute:NSLayoutAttributeTrailingMargin relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeLeadingMargin multiplier:1.0 constant:buttonDate.frame.size.width]];
+    
+    [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonDate attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:cell.eventsImageView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:5.0f]];
+    
+    [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonVenue attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0f]];
+    
+    [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonTime attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0f]];
+    
+    buttonDate.translatesAutoresizingMaskIntoConstraints = NO;
+    buttonVenue.translatesAutoresizingMaskIntoConstraints = NO;
+    buttonTime.translatesAutoresizingMaskIntoConstraints = NO;
     
 }
 
@@ -282,6 +303,7 @@
     
     EventsDetailViewController *eventsDetailVC = [self.storyboard instantiateViewControllerWithIdentifier:@"eventsDetail"];
     eventsDetailVC.showRegisterCell = YES;
+    eventsDetailVC.showVenueDateTime = YES;
     
     EventsObject *events = (EventsObject*)[self.events_link objectAtIndex:[indexPath row]];
     
@@ -306,9 +328,9 @@
     
     
     eventsDetailVC.view.frame = self.view.bounds;
-    [[self.view superview] addSubview:eventsDetailVC.view];
-    [[self parentViewController] addChildViewController:eventsDetailVC];
-    [eventsDetailVC didMoveToParentViewController:[self parentViewController]];
+    [self.view addSubview:eventsDetailVC.view];
+    [self addChildViewController:eventsDetailVC];
+    [eventsDetailVC didMoveToParentViewController:self];
 }
 
 /*

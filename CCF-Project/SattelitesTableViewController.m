@@ -56,6 +56,8 @@
 //    self.viewSearchBox.layer.zPosition = 3.0f;
 //    self.containerViewSearchResult.layer.zPosition = 2.0f;
     self.tableView.tableHeaderView.layer.zPosition = 2.0f;
+    self.tableView.sectionIndexBackgroundColor = [UIColor clearColor];
+    self.tableView.sectionIndexTrackingBackgroundColor = [UIColor clearColor];
     self.textField1 = self.searchTextfield;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -431,7 +433,7 @@
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, tableView.frame.size.width, 30.0f)];
     label.text = [self tableView:tableView titleForHeaderInSection:section];
     label.font = [UIFont fontWithName:@"OpenSans-Bold" size:18.0f];
-    label.backgroundColor = [UIColor colorWithRed:17.0f/255.0f green:179.0f/255.0f blue:196/255.0f alpha:0.7f];
+    label.backgroundColor = [UIColor darkGrayColor];
     label.textColor = [UIColor whiteColor];
     
     [view addSubview:label];
@@ -468,6 +470,12 @@
 
 - (NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView {
     if (self.isAllLocationSelected) {
+//        NSMutableArray *sections = [NSMutableArray array];
+//        for (NSString *key in self.alphabetSections) {
+//            [sections addObject:[NSString stringWithFormat:@"%@     \n",key]];
+//        }
+//        
+        
         return self.alphabetSections;
     }
     return nil;

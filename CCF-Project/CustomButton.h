@@ -17,5 +17,6 @@
 
 
 - (instancetype)initWithText:(NSString*)text image:(UIImage*)image frame:(CGRect)viewFrame;
+- (instancetype)initWithText:(NSString*)text image:(UIImage*)image frame:(CGRect)viewFrame locked:(BOOL)locked;
 
 @end

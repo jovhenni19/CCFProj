@@ -15,7 +15,9 @@
 @property (weak, nonatomic) IBOutlet UIButton *buttonLocation;
 @property (weak, nonatomic) IBOutlet UIButton *buttondate;
 @property (weak, nonatomic) IBOutlet UIButton *buttonTime;
-@property (assign, nonatomic) BOOL showRegisterCell;
+    @property (assign, nonatomic) BOOL showRegisterCell;
+    @property (assign, nonatomic) BOOL showVenueDateTime;
+    @property (weak, nonatomic) IBOutlet UIView *viewForControls;
 
 @property (strong, nonatomic) NSString *titleText;
 @property (strong, nonatomic) NSString *locationName;

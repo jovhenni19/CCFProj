@@ -7,8 +7,13 @@
 //
 
 #import "BaseViewController.h"
+#import "PodcastDetailsTableViewController.h"
 
-@interface PodcastListViewController : BaseViewController
+@interface PodcastListViewController : BaseViewController <PodcastsDetailDelegate>
+
+@property (strong, nonatomic) YMCAudioPlayer *audioPlayerPauser;
+
+@property (strong, nonatomic) YTPlayerView *youtubePlayerPauser;
 
 @property (strong, nonatomic) NSString *podcastCategoryTitle;
 @property (strong, nonatomic) NSArray *podcastList;

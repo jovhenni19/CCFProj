@@ -28,6 +28,7 @@
 
 @property (strong, nonatomic) UITextField *textField;
 @property (weak, nonatomic) IBOutlet UITableView *horizontalTableview;
+@property (weak, nonatomic) IBOutlet UIView *containerViewForTable;
 
 - (void) showProgressView;
 - (void) addValueToProgressView;

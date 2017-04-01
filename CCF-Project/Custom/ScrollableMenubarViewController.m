@@ -23,7 +23,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *labelNotificationBadge;
 @property (weak, nonatomic) IBOutlet UIImageView *leftarrow;
 @property (weak, nonatomic) IBOutlet UIImageView *rightarrow;
-@property (weak, nonatomic) IBOutlet UIView *containerViewForTable;
 @property (weak, nonatomic) IBOutlet UIProgressView *progressView;
 @property (weak, nonatomic) IBOutlet UIImageView *imageLogoTop;
 
@@ -188,21 +187,21 @@
     
     [super viewDidAppear:animated];
 
-//    [self rearrangeLayout];
     
+    [self rearrangeLayout];
     
-    CGRect frame = self.horizontalTableview.frame;
-    frame.size.width = self.containerViewForTable.frame.size.height;
-    frame.size.height = self.containerViewForTable.frame.size.width;
-    self.horizontalTableview.frame = frame;
-    
-    self.horizontalTableview.transform=CGAffineTransformMakeRotation(-M_PI_2);
-    frame = self.horizontalTableview.frame;
-    frame.origin = CGPointZero;
-    self.horizontalTableview.frame = frame;
-    
-    
-    [self.horizontalTableview reloadData];
+//    CGRect frame = self.horizontalTableview.frame;
+//    frame.size.width = self.containerViewForTable.frame.size.height;
+//    frame.size.height = self.containerViewForTable.frame.size.width;
+//    self.horizontalTableview.frame = frame;
+//    
+//    self.horizontalTableview.transform=CGAffineTransformMakeRotation(-M_PI_2);
+//    frame = self.horizontalTableview.frame;
+//    frame.origin = CGPointZero;
+//    self.horizontalTableview.frame = frame;
+//    
+//    
+//    [self.horizontalTableview reloadData];
     
     if(self.fromViewLoad){
         self.fromViewLoad = NO;
@@ -214,7 +213,8 @@
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-//    [self rearrangeLayout];
+//    [self.horizontalTableview layoutSubviews];
+//    [self.horizontalTableview reloadData];
 }
 
 
@@ -229,23 +229,19 @@
 
 - (void) rearrangeLayout {
     
-    self.containerViewForTable.layer.borderColor = [UIColor redColor].CGColor;
-    self.containerViewForTable.layer.borderWidth = 1.0f;
-    self.horizontalTableview.layer.borderWidth = 1.0f;
+//    self.containerViewForTable.layer.borderColor = [UIColor redColor].CGColor;
+//    self.containerViewForTable.layer.borderWidth = 1.0f;
+//    self.horizontalTableview.layer.borderWidth = 1.0f;
     
     CGRect frame = self.horizontalTableview.frame;
     frame.size.width = self.containerViewForTable.frame.size.height;
     frame.size.height = self.containerViewForTable.frame.size.width;
     self.horizontalTableview.frame = frame;
     
-    if (self.fromViewLoad) {
-        self.horizontalTableview.transform=CGAffineTransformMakeRotation(-M_PI_2);
-        frame = self.horizontalTableview.frame;
-        frame.origin = CGPointZero;
-        self.horizontalTableview.frame = frame;
-    }
-    
-    
+    self.horizontalTableview.transform=CGAffineTransformMakeRotation(-M_PI_2);
+    frame = self.horizontalTableview.frame;
+    frame.origin = CGPointZero;
+    self.horizontalTableview.frame = frame;
     
     
     [self.horizontalTableview reloadData];
@@ -263,6 +259,8 @@
     
     self.indicatorView.frame = CGRectMake(sender.frame.origin.x + 10.0f, 32.0f, sender.frame.size.width - 20.0f, 2.0f);
     
+    BaseViewController *vc = [self.viewControllers objectAtIndex:sender.tag];
+    [vc reloadTables];
 }
 
 //- (void) setCurrentViewController:(NSInteger)index {
