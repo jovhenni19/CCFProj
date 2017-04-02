@@ -9,9 +9,9 @@
 #import "PTPusherMockConnection.h"
 #import "PTJSON.h"
 #import "PTPusherEvent.h"
-#import "SRWebSocket.h"
+//#import "SRWebSocket.h"
 
-@interface PTPusherConnection () <SRWebSocketDelegate>
+@interface PTPusherConnection () /*<SRWebSocketDelegate>*/
 @end
 
 @implementation PTPusherMockConnection {
@@ -30,7 +30,7 @@
 
 - (void)connect
 {
-  [self webSocketDidOpen:nil];
+//  [self webSocketDidOpen:nil];
   
   NSInteger socketID = (NSInteger)[NSDate timeIntervalSinceReferenceDate];
 
@@ -40,7 +40,7 @@
 
 - (void)disconnect
 {
-  [self webSocket:nil didCloseWithCode:self.disconnectionCode reason:nil wasClean:YES];
+//  [self webSocket:nil didCloseWithCode:self.disconnectionCode reason:nil wasClean:YES];
 }
 
 - (void)send:(id)object
@@ -71,12 +71,12 @@
   
   NSString *message = [[PTJSON JSONParser] JSONStringFromObject:event];
   
-  [self webSocket:nil didReceiveMessage:message];
+//  [self webSocket:nil didReceiveMessage:message];
 }
 
 - (void)simulateUnexpectedDisconnection
 {
-  [self webSocket:nil didCloseWithCode:kPTPusherSimulatedDisconnectionErrorCode reason:nil wasClean:NO];
+//  [self webSocket:nil didCloseWithCode:kPTPusherSimulatedDisconnectionErrorCode reason:nil wasClean:NO];
 }
 
 #pragma mark - Client event handling

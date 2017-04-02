@@ -16,7 +16,7 @@
 #import "PTPusherErrors.h"
 #import "PTPusherChannelServerBasedAuthorization.h"
 #import "PTPusherChannel_Private.h"
-#import "SRWebSocket.h"
+//#import "SRWebSocket.h"
 
 #define kPUSHER_HOST @"ws.pusherapp.com"
 
@@ -67,6 +67,7 @@ NSURL *PTPusherConnectionURL(NSString *host, NSString *key, NSString *clientID, 
 
 @synthesize connection = _connection;
 @synthesize delegate;
+
 
 - (id)initWithConnection:(PTPusherConnection *)connection
 {
@@ -377,38 +378,39 @@ NSURL *PTPusherConnectionURL(NSString *host, NSString *key, NSString *clientID, 
 - (void)pusherConnection:(PTPusherConnection *)connection didDisconnectWithCode:(NSInteger)errorCode reason:(NSString *)reason wasClean:(BOOL)wasClean
 {
   NSError *error = nil;
-
-  if (errorCode > 0 && errorCode != SRStatusCodeNormal && errorCode != SRStatusCodeGoingAway) {
-    if (reason == nil) {
-        reason = @"Unknown error"; // not sure what could cause this to be nil, but just playing it safe
-    }
-
-    NSString *errorDomain = PTPusherErrorDomain;
-
-    if (errorCode >= 400 && errorCode <= 4099) {
-      errorDomain = PTPusherFatalErrorDomain;
-    }
-
-    // check for error codes based on the Pusher Websocket protocol see http://pusher.com/docs/pusher_protocol
-    error = [NSError errorWithDomain:errorDomain code:errorCode userInfo:@{@"reason": reason}];
-
-    // 4000-4099 -> The connection SHOULD NOT be re-established unchanged.
-    if (errorCode >= 4000 && errorCode <= 4099) {
-      [self handleDisconnection:connection error:error reconnectMode:PTPusherAutoReconnectModeNoReconnect];
-    } else
-    // 4200-4299 -> The connection SHOULD be re-established immediately.
-    if(errorCode >= 4200 && errorCode <= 4299) {
-      [self handleDisconnection:connection error:error reconnectMode:PTPusherAutoReconnectModeReconnectImmediately];
-    }
-
-    else {
-      // i.e. 4100-4199 -> The connection SHOULD be re-established after backing off.
-      [self handleDisconnection:connection error:error reconnectMode:PTPusherAutoReconnectModeReconnectWithBackoffDelay];
-    }
-  }
-  else {
+    
     [self handleDisconnection:connection error:error reconnectMode:self.autoReconnectMode];
-  }
+//  if (errorCode > 0 && errorCode != SRStatusCodeNormal && errorCode != SRStatusCodeGoingAway) {
+//    if (reason == nil) {
+//        reason = @"Unknown error"; // not sure what could cause this to be nil, but just playing it safe
+//    }
+//
+//    NSString *errorDomain = PTPusherErrorDomain;
+//
+//    if (errorCode >= 400 && errorCode <= 4099) {
+//      errorDomain = PTPusherFatalErrorDomain;
+//    }
+//
+//    // check for error codes based on the Pusher Websocket protocol see http://pusher.com/docs/pusher_protocol
+//    error = [NSError errorWithDomain:errorDomain code:errorCode userInfo:@{@"reason": reason}];
+//
+//    // 4000-4099 -> The connection SHOULD NOT be re-established unchanged.
+//    if (errorCode >= 4000 && errorCode <= 4099) {
+//      [self handleDisconnection:connection error:error reconnectMode:PTPusherAutoReconnectModeNoReconnect];
+//    } else
+//    // 4200-4299 -> The connection SHOULD be re-established immediately.
+//    if(errorCode >= 4200 && errorCode <= 4299) {
+//      [self handleDisconnection:connection error:error reconnectMode:PTPusherAutoReconnectModeReconnectImmediately];
+//    }
+//
+//    else {
+//      // i.e. 4100-4199 -> The connection SHOULD be re-established after backing off.
+//      [self handleDisconnection:connection error:error reconnectMode:PTPusherAutoReconnectModeReconnectWithBackoffDelay];
+//    }
+//  }
+//  else {
+//    [self handleDisconnection:connection error:error reconnectMode:self.autoReconnectMode];
+//  }
 }
 
 - (void)pusherConnection:(PTPusherConnection *)connection didFailWithError:(NSError *)error wasConnected:(BOOL)wasConnected

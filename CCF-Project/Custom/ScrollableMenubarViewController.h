@@ -8,12 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "YMCAudioPlayer.h"
+#import "YTPlayerView.h"
+#import "Pusher.h"
 
 @protocol ScrollableMenubarViewControllerDelegate <NSObject>
 @optional
 
 @end
-@interface ScrollableMenubarViewController : UIViewController <UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource>
+@interface ScrollableMenubarViewController : UIViewController <UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout> //UITableViewDelegate, UITableViewDataSource>
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollViewBar;
 @property (strong, nonatomic) IBOutlet UIView *menuBarView;
 @property (strong, nonatomic) IBOutlet UIView *containerView;
@@ -27,9 +29,11 @@
 @property (strong, nonatomic) UIColor *foreColor;
 
 @property (strong, nonatomic) UITextField *textField;
-@property (weak, nonatomic) IBOutlet UITableView *horizontalTableview;
+//@property (weak, nonatomic) IBOutlet UITableView *horizontalTableview;
 @property (weak, nonatomic) IBOutlet UIView *containerViewForTable;
+@property (weak, nonatomic) IBOutlet UIView *viewForProgressLoading;
 
+@property (weak, nonatomic) IBOutlet UICollectionView *horizontalTableview;
 - (void) showProgressView;
 - (void) addValueToProgressView;
 - (void) removeProgressView;

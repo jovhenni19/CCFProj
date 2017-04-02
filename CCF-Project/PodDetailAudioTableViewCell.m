@@ -27,6 +27,7 @@
     [super awakeFromNib];
     // Initialization code
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(podcastPaused2:) name:@"obs_podcast_pause2" object:nil];
     self.isRepeatEnabled = NO;
     self.audioPlayer = [[YMCAudioPlayer alloc] init];
     [self setupAudioPlayer:self.urlForAudio];
@@ -134,6 +135,11 @@
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+}
+
+
+- (void)podcastPaused2:(NSNotification*)notification{
+    [self.audioPlayer pauseAudio];
 }
 
 

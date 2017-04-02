@@ -76,11 +76,60 @@
     
     self.shownPerPage = 0;
     
-    NETWORK_INDICATOR(YES)
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendSattelitesList:) name:kOBS_SATTELITES_NOTIFICATION object:nil];
     
-    [self callGETAPI:kSATTELITES_LINK withParameters:nil completionNotification:kOBS_SATTELITES_NOTIFICATION];
+    
+//    if([[AFNetworkReachabilityManager sharedManager] networkReachabilityStatus] > 0){
+//        //get offline data
+//        
+//        NSManagedObjectContext *context = ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext;
+//        
+//        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"OfflineData"];
+//        
+//        NSError *error = nil;
+//        
+//        NSManagedObject *offlineData = [[context executeFetchRequest:request error:&error] lastObject];
+//        
+//        NSArray *newslist = [NSKeyedUnarchiver unarchiveObjectWithData:[offlineData valueForKey:@"satellites_list"]];
+//        
+//        [self.sattelites_list removeAllObjects];
+//        [self.allLocations removeAllObjects];
+//        self.sattelites_list = nil;
+//        self.allLocations = nil;
+//        
+//        self.sattelites_list = [NSMutableArray arrayWithArray:newslist];
+//        
+//        for (SatellitesObject *sattelite in self.sattelites_list) {
+//            NSString *letter_key = [sattelite.name substringWithRange:NSMakeRange(0, 1)];
+//            if (![[self.allLocations allKeys] containsObject:letter_key]) {
+//                NSMutableArray *array = [NSMutableArray array];
+//                [self.allLocations setObject:[array mutableCopy] forKey:letter_key];
+//                
+//            }
+//            
+//            NSMutableArray *subArray = [self.allLocations objectForKey:letter_key];
+//            [subArray addObject:sattelite];
+//            
+//            
+//            
+//            [self.allLocations setObject:subArray forKey:letter_key];
+//        }
+//        
+//        
+//        [self.tableView reloadData];
+//    }
+//    else {
+        
+        
+        NETWORK_INDICATOR(YES)
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendSattelitesList:) name:kOBS_SATTELITES_NOTIFICATION object:nil];
+        
+        [self callGETAPI:kSATTELITES_LINK withParameters:nil completionNotification:kOBS_SATTELITES_NOTIFICATION];
+        
+        
+//    }
+    
     
     
 //    [self showLoadingAnimation:self.view];
@@ -179,6 +228,8 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+
 - (void)scrollTap:(UIGestureRecognizer*)gestureRecognizer {
     
     //make keyboard disappear , you can use resignFirstResponder too, it's depend.
@@ -233,7 +284,13 @@
             sattelite.name = item[@"name"];
             sattelite.latitude = item[@"latitude"];
             sattelite.longitude = item[@"longitude"];
+        
+        if ([item[@"address_full"] rangeOfString:@"-,   " options:NSLiteralSearch range:NSMakeRange(0, 5)].location != NSNotFound) {
+            sattelite.address_full = [item[@"address_full"] substringFromIndex:5];
+        }
+        else {
             sattelite.address_full = item[@"address_full"];
+        }
             sattelite.created_date = item[@"created_at"];
             
             [self.sattelites_list addObject:sattelite];
@@ -250,10 +307,15 @@
             
             NSMutableArray *subArray = [self.allLocations objectForKey:letter_key];
             [subArray addObject:sattelite];
-            
+        
+        
+        
             [self.allLocations setObject:subArray forKey:letter_key];
             
-            
+        
+        CGFloat value = ((float)([data indexOfObject:item] + 1) / (float)data.count);
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
 //        });
     }
     
@@ -264,6 +326,9 @@
 //    NSLog(@"locations:%@\n\n\nsections:%@",self.allLocations,self.alphabetSections);
     
     [self removeLoadingAnimation];
+    
+    
+    [self saveOfflineData:self.sattelites_list forKey:@"satellites_list"];
     
     NETWORK_INDICATOR(YES)
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationUpdateFinished:) name:kOBS_LOCATIONFINISHED_NOTIFICATION object:nil];
@@ -314,6 +379,15 @@
         
     }
 }
+
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    
+//    CGFloat height = 235.0f;
+//    if (![tableView isEqual:self.tableSearchResult]) {
+//        
+//    }
+//    return height;
+//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     

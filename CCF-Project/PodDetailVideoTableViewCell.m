@@ -13,6 +13,8 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(podcastPaused1:) name:@"obs_podcast_pause1" object:nil];
 }
 
 - (void)layoutSubviews {
@@ -31,6 +33,11 @@
 
 - (void)playerView:(YTPlayerView *)playerView didPlayTime:(float)playTime {
     [self.delegate youtubeIsPlaying];
+}
+
+
+- (void)podcastPaused1:(NSNotification*)notification{
+    [self.youtubePlayerView pauseVideo];
 }
 
 @end

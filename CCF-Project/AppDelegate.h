@@ -9,9 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 #import <GoogleSignIn/GoogleSignIn.h>
-//#import "Pusher.h"
+#import "Pusher.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, GIDSignInDelegate/*, PTPusherDelegate, PTEventListener*/>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, GIDSignInDelegate, PTPusherDelegate, PTEventListener>
 
 @property (strong, nonatomic) UIWindow *window;
 
@@ -22,6 +22,8 @@
 
 @property (strong, nonatomic) NSString *deviceToken;
 @property (strong, nonatomic) NSDictionary *notificationUserInfo;
+
+@property (strong, nonatomic) PTPusher *pusherClient;
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;

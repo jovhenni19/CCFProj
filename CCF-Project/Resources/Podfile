@@ -1,5 +1,0 @@
-project '/Users/joshuajosepecson/Projects/CCF/CCFProj/CCF-Project.xcodeproj'
-target 'CCF-Project' do
-pod 'libPusher', '~> 1.6.3'
-pod 'libPusher/ReactiveExtensions', '~> 1.6.3'
-end

@@ -19,12 +19,11 @@
 
 @interface AppDelegate ()
 
-//@property (strong, nonatomic) PTPusher *pusherClient;
 
 @end
 
 @implementation AppDelegate
-
+@synthesize pusherClient = _pusherClient;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
@@ -100,14 +99,9 @@
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
     [FBSDKAppEvents activateApp];
-//    self.pusherClient = [PTPusher pusherWithKey:@"6b3550ae7aa57f259d34" delegate:self];
-//    [self.pusherClient connect];
-//    
-//    PTPusherChannel *channel = [self.pusherClient subscribeToChannelNamed:@"news"];
-//    [channel bindToEventNamed:@"Singles" handleWithBlock:^(PTPusherEvent *channelEvent) {
-//        // channelEvent.data is a NSDictionary of the JSON object received
-//        NSLog(@"data:%@",channelEvent.data);
-//    }];
+    
+//    NSLog(@"**## __%s__",__FUNCTION__);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"becameActive" object:nil];
 }
 
 
@@ -261,5 +255,16 @@ didDisconnectWithUser:(GIDGoogleUser *)user
         abort();
     }
 }
+
+
+- (PTPusher*) pusherClient {
+    if (!_pusherClient) {
+        _pusherClient = [PTPusher pusherWithKey:@"6b3550ae7aa57f259d34" delegate:self];
+        [_pusherClient connect];
+    }
+    
+    return _pusherClient;
+}
+
 
 @end

@@ -86,10 +86,14 @@
     CGFloat height = 0.0f;
     switch ([indexPath section]) {
         case 1:{
-            UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 280.0f, 80.0f)];
-            tv.text = self.podcastDescription;
-            tv.font = [UIFont fontWithName:@"OpenSans" size:14.0f];
-            CGSize contentSize = [tv contentSize];
+            
+            CGSize maximumLabelSize = CGSizeMake(self.view.frame.size.width, CGFLOAT_MAX);
+            CGRect textRect = [self.podcastDescription boundingRectWithSize:maximumLabelSize
+                                                                   options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+                                                                attributes:@{NSFontAttributeName: [UIFont fontWithName:@"OpenSans" size:14.0f]}
+                                                                   context:nil];
+            
+            CGSize contentSize = textRect.size;
             
             if (contentSize.height > 80.0f) {
                 return 80.0f + (contentSize.height - 80.0f);
@@ -489,11 +493,18 @@
 }
 
 - (void)audioIsPlaying {
-    [self.delegate activeAudioPlayer:self.audioPlayer];
+//    [self.delegate activeAudioPlayer:self.audioPlayer];
 }
 
 - (void)youtubeIsPlaying {
-    [self.delegate activeYoutubePlayer:self.youtubePlayer];
+//    [self.delegate activeYoutubePlayer:self.youtubePlayer];
 }
 
+
+//- (void)podcastPaused:(NSNotification*)notification {
+//    
+//    [self.audioPlayer pauseAudio];
+//    
+//    [self.youtubePlayer pauseVideo];
+//}
 @end

@@ -23,6 +23,12 @@
     // Do any additional setup after loading the view.
     
     self.labelTitle.text = [self.titleText uppercaseString];
+    self.labelTitle.adjustsFontSizeToFitWidth = YES;
+    self.labelTitle.minimumScaleFactor = -0.6f;
+    self.labelTitle.numberOfLines = 0;
+    self.labelTitle.lineBreakMode = NSLineBreakByWordWrapping;
+//    self.labelTitle.layer.borderWidth = 1.0f;
+    
     [self.buttondate setTitle:[NSString stringWithFormat:@"  %@",[self.dateText uppercaseString]] forState:UIControlStateNormal];
     [self.buttonTime setTitle:[NSString stringWithFormat:@"  %@",[self.timeText uppercaseString]] forState:UIControlStateNormal];
     [self.buttonLocation setTitle:[NSString stringWithFormat:@"  %@",[self.locationName uppercaseString]] forState:UIControlStateNormal];
@@ -186,13 +192,14 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([indexPath row] == 0) {
         
-        UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, tableView.bounds.size.width, 20.0f)];
-        tv.text = self.detailDescription;
+        CGSize maximumLabelSize = CGSizeMake(self.view.frame.size.width, CGFLOAT_MAX);
+        CGRect textRect = [self.detailDescription boundingRectWithSize:maximumLabelSize
+                                                 options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+                                              attributes:@{NSFontAttributeName: [UIFont fontWithName:@"OpenSans" size:14.0f]}
+                                                 context:nil];
         
-        tv.font = [UIFont fontWithName:@"OpenSans" size:14.0f];
-        CGSize contentSize = [tv contentSize];
+        CGSize contentSize = textRect.size;
         
-//        NSLog(@"description:%@\n\n[%@]",tv.text,NSStringFromCGSize(contentSize));
         if (contentSize.height > 20.0f) {
             return 30 + (contentSize.height);
         }

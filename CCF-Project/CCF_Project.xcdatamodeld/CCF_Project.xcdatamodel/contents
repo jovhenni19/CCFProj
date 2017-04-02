@@ -24,6 +24,12 @@
         <attribute name="image_data" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
+    <entity name="OfflineData" syncable="YES">
+        <attribute name="events_list" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="news_list" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="podcasts_list" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="satellites_list" optional="YES" attributeType="Binary" syncable="YES"/>
+    </entity>
     <entity name="PodcastsItem" representedClassName="PodcastsItem" syncable="YES">
         <attribute name="category_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="created_date" optional="YES" attributeType="String" syncable="YES"/>
@@ -47,5 +53,6 @@
         <element name="NewsItem" positionX="-63" positionY="-18" width="128" height="150"/>
         <element name="PodcastsItem" positionX="-54" positionY="27" width="128" height="150"/>
         <element name="SatellitesItem" positionX="-18" positionY="153" width="128" height="150"/>
+        <element name="OfflineData" positionX="-36" positionY="126" width="128" height="105"/>
     </elements>
 </model>

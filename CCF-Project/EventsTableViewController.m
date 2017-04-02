@@ -34,9 +34,44 @@
     
     self.shownPerPage = 0;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendEventsList:) name:kOBS_EVENTS_NOTIFICATION object:nil];
     
-    [self callGETAPI:kEVENTS_LINK withParameters:nil completionNotification:kOBS_EVENTS_NOTIFICATION];
+    
+    
+//    if([[AFNetworkReachabilityManager sharedManager] networkReachabilityStatus] > 0){
+//        //get offline data
+//        
+//        NSManagedObjectContext *context = ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext;
+//        
+//        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"OfflineData"];
+//        
+//        NSError *error = nil;
+//        
+//        NSManagedObject *offlineData = [[context executeFetchRequest:request error:&error] lastObject];
+//        
+//        NSArray *newslist = [NSKeyedUnarchiver unarchiveObjectWithData:[offlineData valueForKey:@"events_list"]];
+//        
+//        [self.events_link removeAllObjects];
+//        
+//        self.events_link = nil;
+//        
+//        self.events_link = [NSMutableArray arrayWithArray:newslist];
+//        
+//        [self.tableView reloadData];
+//    }
+//    else {
+        
+        
+        NETWORK_INDICATOR(YES)
+        
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendEventsList:) name:kOBS_EVENTS_NOTIFICATION object:nil];
+        
+        [self callGETAPI:kEVENTS_LINK withParameters:nil completionNotification:kOBS_EVENTS_NOTIFICATION];
+        
+        
+//    }
+    
+    
     
 //    [self showLoadingAnimation:self.view];
     
@@ -62,7 +97,7 @@
 }
 
 - (void)appendEventsList:(NSNotification*)notification {
-//    NSLog(@"### result:%@",notification.object);
+    NSLog(@"### result:%@",notification.object);
     
     [self removeLoadingAnimation];
     
@@ -110,6 +145,9 @@
 //            });
 //        });
         
+        CGFloat value = ((float)([data indexOfObject:item] + 1) / (float)data.count);
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
     }
     
     
@@ -129,11 +167,13 @@
     
     for (EventsObject *item in orderedArray) {
         [self.events_link addObject:item];
+        
         [self.tableView reloadData];
     }
     
     
     
+    [self saveOfflineData:self.events_link forKey:@"events_list"];
     
     
     [self removeLoadingAnimation];
@@ -262,12 +302,15 @@
     
     [cell.viewControls addSubview:buttonTime];
     
+    cell.viewControls.clipsToBounds = YES;
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectEventAtIndexPath:)];
     [buttonTime addGestureRecognizer:tap];
-    [buttonDate addGestureRecognizer:tap];
     tap.numberOfTapsRequired = 1;
     
+    buttonDate.translatesAutoresizingMaskIntoConstraints = NO;
+    buttonVenue.translatesAutoresizingMaskIntoConstraints = NO;
+    buttonTime.translatesAutoresizingMaskIntoConstraints = NO;
     //layout
     
     UILayoutGuide *marginLayout = cell.contentView.layoutMarginsGuide;
@@ -285,15 +328,15 @@
     
     [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonTime attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0f]];
     
-    buttonDate.translatesAutoresizingMaskIntoConstraints = NO;
-    buttonVenue.translatesAutoresizingMaskIntoConstraints = NO;
-    buttonTime.translatesAutoresizingMaskIntoConstraints = NO;
     
+    buttonDate.translatesAutoresizingMaskIntoConstraints = YES;
+    buttonVenue.translatesAutoresizingMaskIntoConstraints = YES;
+    buttonTime.translatesAutoresizingMaskIntoConstraints = YES;
 }
 
 - (void) selectEventAtIndexPath:(UIGestureRecognizer*)gestureRecognizer {
     CustomButton *button = (CustomButton*)gestureRecognizer.view;
-//    NSLog(@"##### lol");
+    
     [self performSelector:@selector(saveDateCalendar:) withObject:button.button];
     
 }

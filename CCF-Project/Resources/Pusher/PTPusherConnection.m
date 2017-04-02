@@ -9,14 +9,14 @@
 #import "PTPusherConnection.h"
 #import "PTPusherEvent.h"
 #define SR_ENABLE_LOG
-#import "SRWebSocket.h"
+//#import "SRWebSocket.h"
 #import "PTJSON.h"
 
 NSString *const PTPusherConnectionEstablishedEvent = @"pusher:connection_established";
 NSString *const PTPusherConnectionPingEvent        = @"pusher:ping";
 NSString *const PTPusherConnectionPongEvent        = @"pusher:pong";
 
-@interface PTPusherConnection () <SRWebSocketDelegate>
+@interface PTPusherConnection () /*<SRWebSocketDelegate>*/
 @property (nonatomic, copy) NSString *socketID;
 @property (nonatomic, assign) PTPusherConnectionState state;
 @property (nonatomic, strong) NSTimer *pingTimer;
@@ -24,7 +24,7 @@ NSString *const PTPusherConnectionPongEvent        = @"pusher:pong";
 @end
 
 @implementation PTPusherConnection {
-  SRWebSocket *socket;
+//  SRWebSocket *socket;
   NSURLRequest *request;
 }
 
@@ -48,8 +48,8 @@ NSString *const PTPusherConnectionPongEvent        = @"pusher:pong";
 {
   [self.pingTimer invalidate];
   [self.pongTimer invalidate];
-  [socket setDelegate:nil];
-  [socket close];
+//  [socket setDelegate:nil];
+//  [socket close];
 }
 
 - (BOOL)isConnected
@@ -72,10 +72,10 @@ NSString *const PTPusherConnectionPongEvent        = @"pusher:pong";
   
   if (!shouldConnect) return;
   
-  socket = [[SRWebSocket alloc] initWithURLRequest:request];
-  socket.delegate = self;
-  
-  [socket open];
+//  socket = [[SRWebSocket alloc] initWithURLRequest:request];
+//  socket.delegate = self;
+//  
+//  [socket open];
   
   self.state = PTPusherConnectionConnecting;
 }
@@ -84,7 +84,7 @@ NSString *const PTPusherConnectionPongEvent        = @"pusher:pong";
 {
   if (self.state <= PTPusherConnectionDisconnected) return;
   
-  [socket close];
+//  [socket close];
   
   self.state = PTPusherConnectionDisconnecting;
 }
@@ -95,68 +95,68 @@ NSString *const PTPusherConnectionPongEvent        = @"pusher:pong";
 {
   if (self.isConnected == NO) return;
   
-  NSData *JSONData = [[PTJSON JSONParser] JSONDataFromObject:object];
-  NSString *message = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
-  [socket send:message];
+//  NSData *JSONData = [[PTJSON JSONParser] JSONDataFromObject:object];
+//  NSString *message = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
+//  [socket send:message];
 }
 
-#pragma mark - SRWebSocket delegate methods
-
-- (void)webSocketDidOpen:(SRWebSocket *)webSocket
-{
-  self.state = PTPusherConnectionAwaitingHandshake;
-}
-
-- (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error;
-{
-  [self.pingTimer invalidate];
-  [self.pongTimer invalidate];
-  
-  BOOL wasConnected = self.isConnected;
-  self.state = PTPusherConnectionDisconnected;
-  self.socketID = nil;
-  socket = nil;
-  
-  // we always call this last, to prevent a race condition if the delegate calls 'connect'
-  [self.delegate pusherConnection:self didFailWithError:error wasConnected:wasConnected];
-}
-
-- (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean
-{
-  [self.pingTimer invalidate];
-  [self.pongTimer invalidate];
-  
-  self.state = PTPusherConnectionDisconnected;
-  self.socketID = nil;
-  socket = nil;
-  
-  // we always call this last, to prevent a race condition if the delegate calls 'connect'
-  [self.delegate pusherConnection:self didDisconnectWithCode:(NSInteger)code reason:(NSString *)reason wasClean:wasClean];
-}
-
-- (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(NSString *)message
-{
-  [self resetPingPongTimer];
-  
-  NSDictionary *messageDictionary = [[PTJSON JSONParser] objectFromJSONString:message];
-  PTPusherEvent *event = [PTPusherEvent eventFromMessageDictionary:messageDictionary];
-  
-  if ([event.name isEqualToString:PTPusherConnectionPongEvent]) {
-#ifdef DEBUG
-    NSLog(@"[pusher] Server responded to ping (pong!)");
-#endif
-    return;
-  }
-  
-  if ([event.name isEqualToString:PTPusherConnectionEstablishedEvent]) {
-    self.socketID = (event.data)[@"socket_id"];
-    self.state = PTPusherConnectionConnected;
-    
-    [self.delegate pusherConnectionDidConnect:self];
-  }
-  
-  [self.delegate pusherConnection:self didReceiveEvent:event];
-}
+//#pragma mark - SRWebSocket delegate methods
+//
+//- (void)webSocketDidOpen:(SRWebSocket *)webSocket
+//{
+//  self.state = PTPusherConnectionAwaitingHandshake;
+//}
+//
+//- (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error;
+//{
+//  [self.pingTimer invalidate];
+//  [self.pongTimer invalidate];
+//  
+//  BOOL wasConnected = self.isConnected;
+//  self.state = PTPusherConnectionDisconnected;
+//  self.socketID = nil;
+//  socket = nil;
+//  
+//  // we always call this last, to prevent a race condition if the delegate calls 'connect'
+//  [self.delegate pusherConnection:self didFailWithError:error wasConnected:wasConnected];
+//}
+//
+//- (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean
+//{
+//  [self.pingTimer invalidate];
+//  [self.pongTimer invalidate];
+//  
+//  self.state = PTPusherConnectionDisconnected;
+//  self.socketID = nil;
+//  socket = nil;
+//  
+//  // we always call this last, to prevent a race condition if the delegate calls 'connect'
+//  [self.delegate pusherConnection:self didDisconnectWithCode:(NSInteger)code reason:(NSString *)reason wasClean:wasClean];
+//}
+//
+//- (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(NSString *)message
+//{
+//  [self resetPingPongTimer];
+//  
+//  NSDictionary *messageDictionary = [[PTJSON JSONParser] objectFromJSONString:message];
+//  PTPusherEvent *event = [PTPusherEvent eventFromMessageDictionary:messageDictionary];
+//  
+//  if ([event.name isEqualToString:PTPusherConnectionPongEvent]) {
+//#ifdef DEBUG
+//    NSLog(@"[pusher] Server responded to ping (pong!)");
+//#endif
+//    return;
+//  }
+//  
+//  if ([event.name isEqualToString:PTPusherConnectionEstablishedEvent]) {
+//    self.socketID = (event.data)[@"socket_id"];
+//    self.state = PTPusherConnectionConnected;
+//    
+//    [self.delegate pusherConnectionDidConnect:self];
+//  }
+//  
+//  [self.delegate pusherConnection:self didReceiveEvent:event];
+//}
 
 #pragma mark - Ping/Pong/Activity Timeouts
 

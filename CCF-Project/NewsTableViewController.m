@@ -38,15 +38,47 @@
     self.shownPerPage = 0;
     
     
-    NETWORK_INDICATOR(YES)
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callGroupsData:) name:kOBS_GROUPS_NOTIFICATION object:nil];
+//    if([[AFNetworkReachabilityManager sharedManager] networkReachabilityStatus] > 0){
+//        //get offline data
+//        
+//        NSManagedObjectContext *context = ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext;
+//        
+//        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"OfflineData"];
+//        
+//        NSError *error = nil;
+//        
+//        NSManagedObject *offlineData = [[context executeFetchRequest:request error:&error] lastObject];
+//        
+//        NSArray *newslist = [NSKeyedUnarchiver unarchiveObjectWithData:[offlineData valueForKey:@"news_list"]];
+//        
+//        [self.news_list removeAllObjects];
+//        
+//        self.news_list = nil;
+//        
+//        self.news_list = [NSMutableArray arrayWithArray:newslist];
+//        
+//        [self.tableView reloadData];
+//    }
+//    else {
     
-    [self callGETAPI:kGROUPS_LINK withParameters:nil completionNotification:kOBS_GROUPS_NOTIFICATION];
+        
+        NETWORK_INDICATOR(YES)
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callGroupsData:) name:kOBS_GROUPS_NOTIFICATION object:nil];
+        
+        [self callGETAPI:kGROUPS_LINK withParameters:nil completionNotification:kOBS_GROUPS_NOTIFICATION];
+        
+        
+//    }
     
+    PTPusher *pusherClient = APPDELEGATE_CLASS.pusherClient;
     
-//    [self showLoadingAnimation:self.view];
-    
+    PTPusherChannel *channel = [pusherClient subscribeToChannelNamed:@"news"];
+    [channel bindToEventNamed:@"B1G Singles" handleWithBlock:^(PTPusherEvent *channelEvent) {
+        // channelEvent.data is a NSDictionary of the JSON object received
+        NSLog(@"##data:%@",channelEvent.data);
+    }];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -84,6 +116,10 @@
     
     for (NSDictionary *item in data) {
         [self.groupList addObject:item];
+        
+        CGFloat value = ((float)([data indexOfObject:item] + 1) / (float)data.count);
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
     }
     
     
@@ -185,7 +221,7 @@
                     newsItem.group_name = isNIL(item[@"groups"][0][@"name"]);
                 }
                 else {
-                    newsItem.group_name = @"";
+                    newsItem.group_name = @"all";
                 }
             }
 //            else {
@@ -196,10 +232,17 @@
             [self.news_list addObject:newsItem];
             
         }
+        
+        
+        
+        CGFloat value = ((float)([data indexOfObject:item] + 1) / (float)data.count);
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
+        
         [self.tableView reloadData];
     }
     
-    
+    [self saveOfflineData:self.news_list forKey:@"news_list"];
 }
 
 #pragma mark - Table view data source
@@ -264,7 +307,6 @@
         
         [cell.viewControls addSubview:buttonGroup];
     }
-    
     
     
     cell.delegate = self;

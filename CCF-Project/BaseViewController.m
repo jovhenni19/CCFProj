@@ -761,7 +761,7 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     
     [manager GET:method parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
         
-        NSLog(@"#GET# progress:%f",[downloadProgress fractionCompleted]);
+//        NSLog(@"#GET# progress:%f",[downloadProgress fractionCompleted]);
         
         self.loadingProgressView.progress = [downloadProgress fractionCompleted];
         
@@ -1015,5 +1015,32 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     
     
 }
+
+- (void) saveOfflineData:(NSArray*)list forKey:(NSString*)key{
+    NSManagedObjectContext *context = ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext;
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"OfflineData"];
+    
+    NSError *error = nil;
+    
+    NSManagedObject *offlineData = [[context executeFetchRequest:request error:&error] lastObject];
+    
+    if (!offlineData) {
+        offlineData = [[NSManagedObject alloc]initWithEntity:[NSEntityDescription entityForName:@"OfflineData" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+    }
+    
+    
+    NSData *items_data = [NSKeyedArchiver archivedDataWithRootObject:list];
+    [offlineData setValue:items_data forKey:key];
+        
+    error = nil;
+    
+    BOOL success = [context save:&error];
+    if (!success) {
+        NSLog(@"error[%li] - %@",(long)[error code],[error description]);
+    }
+    
+}
+
 
 @end

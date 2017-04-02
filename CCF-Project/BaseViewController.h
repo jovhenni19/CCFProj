@@ -36,8 +36,12 @@
 
 #import "SDImageCache.h"
 #import "UIImageView+WebCache.h"
+#import "AFNetworkReachabilityManager.h"
+
 
 #define NETWORK_INDICATOR(bool)                                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:bool];
+
+#define APPDELEGATE_CLASS                                               ((AppDelegate*)[UIApplication sharedApplication].delegate)
 
 #define MANAGE_CONTEXT                                                  ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext
 
@@ -95,4 +99,6 @@ extern NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION;
 - (void) removeLoadingAnimation;
 
 - (void) reloadTables;
+
+- (void) saveOfflineData:(NSArray*)list forKey:(NSString*)key;
 @end

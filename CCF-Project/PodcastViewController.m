@@ -40,9 +40,66 @@
     
     self.shownPerPage = 0;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendPodcastsList:) name:kOBS_PODCAST_NOTIFICATION object:nil];
     
-    [self callGETAPI:kPODCAST_LINK withParameters:nil completionNotification:kOBS_PODCAST_NOTIFICATION];
+    
+    
+//    if([[AFNetworkReachabilityManager sharedManager] networkReachabilityStatus] > 0){
+//        //get offline data
+//        
+//        NSManagedObjectContext *context = ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext;
+//        
+//        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"OfflineData"];
+//        
+//        NSError *error = nil;
+//        
+//        NSManagedObject *offlineData = [[context executeFetchRequest:request error:&error] lastObject];
+//        
+//        NSArray *newslist = [NSKeyedUnarchiver unarchiveObjectWithData:[offlineData valueForKey:@"podcasts_list"]];
+//        
+//        [self.podcastList removeAllObjects];
+//        
+//        [self.categories removeAllObjects];
+//        
+//        self.podcastList = nil;
+//        self.categories = nil;
+//        self.categorizedPodcast = nil;
+//        
+//        self.podcastList = [NSMutableArray arrayWithArray:newslist];
+//        
+//        for (PodcastsObject *podcastsItem in self.podcastList) {
+//            NSString *key = podcastsItem.category_name;
+//            if (![[self.categorizedPodcast allKeys] containsObject:key]) {
+//                NSMutableArray *array = [NSMutableArray array];
+//                [self.categorizedPodcast setObject:[array mutableCopy] forKey:key];
+//                
+//                NSDictionary *category = @{@"kTitle":[key uppercaseString],@"kImage":podcastsItem.image_url,@"kImageData":isNIL(podcastsItem.image_data)};
+//                [self.categories addObject:category];
+//            }
+//            
+//            NSMutableArray *subArray = [self.categorizedPodcast objectForKey:key];
+//            [subArray addObject:podcastsItem];
+//            
+//            [self.categorizedPodcast setObject:subArray forKey:key];
+//        }
+//        
+//        
+//        [self.mainTableView reloadData];
+//    }
+//    else {
+    
+        
+        NETWORK_INDICATOR(YES)
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendPodcastsList:) name:kOBS_PODCAST_NOTIFICATION object:nil];
+        
+        [self callGETAPI:kPODCAST_LINK withParameters:nil completionNotification:kOBS_PODCAST_NOTIFICATION];
+        
+        
+//    }
+    
+    
+    
+    
     
 //    [self showLoadingAnimation:self.view];
     
@@ -198,7 +255,10 @@
             [subArray addObject:podcastsItem];
             
             [self.categorizedPodcast setObject:subArray forKey:key];
-            
+        
+        CGFloat value = ((float)([data indexOfObject:item] + 1) / (float)data.count);
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
         
         [self progressValue:((float)self.podcastList.count/(float)data.count)];
 //            dispatch_sync(dispatch_get_main_queue(), ^{
@@ -228,6 +288,7 @@
     
     
     
+    [self saveOfflineData:self.podcastList forKey:@"podcasts_list"];
     
     [self removeLoadingAnimation];
     
@@ -404,8 +465,7 @@
     while ([[cell.viewForControls subviews] count] > 0) {
         [[[cell.viewForControls subviews] lastObject] removeFromSuperview];
     }
-    
-    
+        
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
@@ -468,7 +528,7 @@
     
     details.imageURL = item.image_url;
     details.youtubeID = [item.youtubeURL length]?[item.youtubeURL substringWithRange:NSMakeRange(32, 11)]:@"";
-    details.urlForAudio = [item.audioURL length]?[NSString stringWithFormat:@"%@%@{%@}/audio/{%@}",kAPI_LINK,kPODCAST_LINK,item.id_num,item.audioURL]:@"";
+    details.urlForAudio = [item.audioURL length]?[NSString stringWithFormat:@"%@%@%@/audio/%@",kAPI_LINK,kPODCAST_LINK,item.id_num,item.audioURL]:@"";
     
     
     CATransition *transition = [CATransition animation];

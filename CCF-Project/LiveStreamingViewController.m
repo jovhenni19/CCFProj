@@ -50,7 +50,7 @@
 
 
 - (void)callLiveStreamData:(NSNotification*)notification {
-//    NSLog(@"## result:%@",notification.object);
+    NSLog(@"## result:%@",notification.object);
     
     NSDictionary *result = (NSDictionary*)notification.object;
     
