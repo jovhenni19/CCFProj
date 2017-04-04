@@ -11,6 +11,7 @@
 @interface SettingsTableViewController ()
 @property (weak, nonatomic) IBOutlet UITableView *mainTableView;
 @property (strong, nonatomic) NSMutableArray *groupList;
+@property (assign, nonatomic) BOOL allIsOn;
 @end
 
 @implementation SettingsTableViewController
@@ -25,7 +26,13 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     
-    NETWORK_INDICATOR(YES)
+//    NETWORK_INDICATOR(YES)
+    
+    
+    
+    
+    self.allIsOn = YES;
+    
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callGroupsData:) name:kOBS_GROUPS_NOTIFICATION object:nil];
     
@@ -42,7 +49,7 @@
 //    NSLog(@"## result:%@",notification.object);
     
     
-    NETWORK_INDICATOR(NO)
+//    NETWORK_INDICATOR(NO)
     
     if(!self.groupList){
         self.groupList = [NSMutableArray array];
@@ -53,50 +60,90 @@
     
     NSArray *data = result[@"data"];
     
-    [self showLoadingAnimation:self.view withTotalCount:data.count];
+//    [self showLoadingAnimation:self.view withTotalCount:data.count];
     for (NSDictionary *item in data) {
         [self.groupList addObject:item];
+        
+        
+        
+        NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
+        
+        BOOL switchValue = [[NSUserDefaults standardUserDefaults] boolForKey:valueKey];
+        
+        if (switchValue) {
+            self.allIsOn = NO;
+        }
     }
     
-    [self.mainTableView reloadData];
-    [self removeLoadingAnimation];
+//    [self.mainTableView reloadData];
+//    [self removeLoadingAnimation];
+    
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
 }
+
 
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
         return 1;
     }
+    if (section == 1) {
+        return 1;
+    }
+    
     return self.groupList.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    NSLog(@"all:%@",self.allIsOn?@"YES":@"NO");
+    if ([indexPath section] == 2) {
+        if (self.allIsOn) {
+            return 0.0f;
+        }
+    }
+    return 44.0f;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cellSetting"];
     
-    NSDictionary *item = self.groupList[[indexPath row]];
     
     // Configure the cell...
     
     UILabel *label = [cell.contentView viewWithTag:1];
     UISwitch *switchControl = [cell.contentView viewWithTag:2];
     
+    [switchControl addTarget:self action:@selector(changeSwitchValue:) forControlEvents:UIControlEventValueChanged];
+    
     if ([indexPath section] == 0) {
         label.text = @"Push Notification";
+        switchControl.tag = 9999;
         
         BOOL pushNotification_ON = [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
         
         [switchControl setOn:pushNotification_ON];
+        
+    }
+    else if ([indexPath section] == 1) {
+        
+        label.text = @"All Groups";
+        switchControl.tag = 9998;
+        
+        [switchControl setOn:self.allIsOn];
     }
     else {
+        
+        
+        NSDictionary *item = self.groupList[[indexPath row]];
         label.text = item[@"name"];
         switchControl.tag = [indexPath row];
-        [switchControl addTarget:self action:@selector(changeSwitchValue:) forControlEvents:UIControlEventValueChanged];
         
         NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
         
@@ -112,7 +159,7 @@
 
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (section == 1) {
+    if (section == 2 && !self.allIsOn) {
         return @"Groups";
     }
     return nil;
@@ -120,12 +167,35 @@
 
 
 - (void) changeSwitchValue:(UISwitch*)sender {
-    
-    NSDictionary *item = self.groupList[[sender tag]];
-    
-    NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
-    
-    [[NSUserDefaults standardUserDefaults] setBool:![sender isOn] forKey:valueKey];
+    if ([sender tag] == 9999) {
+        if ([sender isOn]) {
+            [[UIApplication sharedApplication] registerForRemoteNotifications];
+        }
+        else {
+            [[UIApplication sharedApplication] unregisterForRemoteNotifications];
+        }
+    }
+    else if ([sender tag] == 9998) {
+        if ([sender isOn]) {
+            self.allIsOn = YES;
+        }
+        else {
+            self.allIsOn = NO;
+        }
+        
+        [self.mainTableView reloadSections:[NSIndexSet indexSetWithIndex:2] withRowAnimation:UITableViewRowAnimationFade];
+    }
+    else {
+        NSDictionary *item = self.groupList[[sender tag]];
+        
+        NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
+        if ([sender isOn]) {
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:valueKey];
+        }
+        else {
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:valueKey];
+        }
+    }
     
 }
 

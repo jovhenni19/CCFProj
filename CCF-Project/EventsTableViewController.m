@@ -37,39 +37,7 @@
     
     
     
-//    if([[AFNetworkReachabilityManager sharedManager] networkReachabilityStatus] > 0){
-//        //get offline data
-//        
-//        NSManagedObjectContext *context = ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext;
-//        
-//        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"OfflineData"];
-//        
-//        NSError *error = nil;
-//        
-//        NSManagedObject *offlineData = [[context executeFetchRequest:request error:&error] lastObject];
-//        
-//        NSArray *newslist = [NSKeyedUnarchiver unarchiveObjectWithData:[offlineData valueForKey:@"events_list"]];
-//        
-//        [self.events_link removeAllObjects];
-//        
-//        self.events_link = nil;
-//        
-//        self.events_link = [NSMutableArray arrayWithArray:newslist];
-//        
-//        [self.tableView reloadData];
-//    }
-//    else {
-        
-        
-        NETWORK_INDICATOR(YES)
-        
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendEventsList:) name:kOBS_EVENTS_NOTIFICATION object:nil];
-        
-        [self callGETAPI:kEVENTS_LINK withParameters:nil completionNotification:kOBS_EVENTS_NOTIFICATION];
-        
-        
-//    }
+    [self reloadTables];
     
     
     
@@ -91,13 +59,50 @@
         [self.events_link removeAllObjects];
         self.events_link = nil;
         
-        [self callGETAPI:kEVENTS_LINK withParameters:nil completionNotification:kOBS_EVENTS_NOTIFICATION];
     }
+    
+    if([[AFNetworkReachabilityManager sharedManager] networkReachabilityStatus] == AFNetworkReachabilityStatusNotReachable){
+        //get offline data
+        
+        NSManagedObjectContext *context = ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext;
+        
+        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"OfflineData"];
+        
+        NSError *error = nil;
+        
+        NSManagedObject *offlineData = [[context executeFetchRequest:request error:&error] lastObject];
+        
+        NSArray *newslist = [NSKeyedUnarchiver unarchiveObjectWithData:[offlineData valueForKey:@"events_list"]];
+        
+        [self.events_link removeAllObjects];
+        
+        self.events_link = nil;
+        
+        self.events_link = [NSMutableArray arrayWithArray:newslist];
+        
+        [self.tableView reloadData];
+    }
+    else {
+        
+//        CGFloat value = 0.8f;
+//        
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
+//        
+//        NETWORK_INDICATOR(YES)
+        
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendEventsList:) name:kOBS_EVENTS_NOTIFICATION object:nil];
+        
+        [self callGETAPI:kEVENTS_LINK withParameters:nil completionNotification:kOBS_EVENTS_NOTIFICATION];
+        
+        
+    }
+    
 //    [self showLoadingAnimation:self.view];
 }
 
 - (void)appendEventsList:(NSNotification*)notification {
-    NSLog(@"### result:%@",notification.object);
+//    NSLog(@"### result:%@",notification.object);
     
     [self removeLoadingAnimation];
     
@@ -111,7 +116,7 @@
     
     NSArray *data = result[@"data"];
     
-    [self showLoadingAnimation:self.view withTotalCount:data.count];
+//    [self showLoadingAnimation:self.view withTotalCount:data.count];
     
     NSMutableArray *eventsList = [NSMutableArray array];
     
@@ -127,46 +132,43 @@
             events.description_detail = isNIL(item[@"description"]);
             events.date = isNIL(item[@"date_start"][@"date"]);
             events.time = isNIL(item[@"date_start"][@"time"]);
-            events.date_raw = isNIL(item[@"date_start"][@"dateRaw"][@"date"]);
+        events.date_raw_start = isNIL(item[@"date_start"][@"dateRaw"][@"date"]);
+//        events.date_raw_end = isNIL(item[@"date_end"][@"dateRaw"][@"date"]);
             events.registration_link = isNIL(item[@"registration_link"]);
             events.speakers = isNIL(item[@"speakers"]);
             events.contact_info = isNIL(item[@"contact_info"]);
             events.venue = isNIL(item[@"venue"]);
             events.created_date = isNIL(item[@"created_at"]);
-            
-        [eventsList addObject:events];
         
-//            [self.events_link addObject:events];
         
-        [self progressValue:((float)self.events_link.count/(float)data.count)];
+        BOOL alreadyAdded = NO;
+        for (EventsObject *i in self.events_link) {
+            if ([i.id_num integerValue] == [events.id_num integerValue]) {
+                alreadyAdded = YES;
+                break;
+            }
+        }
         
-//            dispatch_sync(dispatch_get_main_queue(), ^{
-//                [self.tableView reloadData];
-//            });
-//        });
+        if (!alreadyAdded) {
+            [eventsList addObject:events];
+        }
         
-        CGFloat value = ((float)([data indexOfObject:item] + 1) / (float)data.count);
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
+//        CGFloat value = ((float)([data indexOfObject:item] + 1) / (float)data.count);
+//        
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
     }
     
     
     
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date_raw" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date_raw_start" ascending:NO];
     NSArray *orderedArray = [eventsList sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
     
-//    NSArray* orderedArray = [eventsList sortedArrayUsingComparator: ^NSComparisonResult(EventsObject *e1, EventsObject *e2)
-//                             {
-//                                 NSDateFormatter *df = [[NSDateFormatter alloc] init];
-//                                 [df setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
-//                                 NSDate *d1 = [df dateFromString:e1.date_raw];
-//                                 NSDate *d2 = [df dateFromString:e2.date_raw];
-//                                 
-//                                 return [d1 compare:d2];
-//                             }];
     
     for (EventsObject *item in orderedArray) {
+        
+        
         [self.events_link addObject:item];
+        
         
         [self.tableView reloadData];
     }
@@ -175,8 +177,9 @@
     
     [self saveOfflineData:self.events_link forKey:@"events_list"];
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
     
-    [self removeLoadingAnimation];
+//    [self removeLoadingAnimation];
 }
 
 
@@ -241,28 +244,6 @@
     cell.eventsTitle.text = events.title;
     cell.eventsTitle.hidden = YES;
     
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    return cell;
-}
-
-- (void)tableView:(UITableView *)tableView willDisplayCell:(EventsTableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    EventsObject *events = (EventsObject*)[self.events_link objectAtIndex:[indexPath row]];
-    
-    if (events.image_data) {
-        cell.eventsImageView.image = [UIImage imageWithData:events.image_data];
-    }
-    else {
-        if ([events.image_url length]) {
-//            [self getImageFromURL:events.image_url onIndex:[indexPath row]];
-            [cell.eventsImageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/image/%@",kAPI_LINK,events.image_url]] placeholderImage:[UIImage imageNamed:@"placeholder"] options:SDWebImageProgressiveDownload completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                events.image_data = UIImageJPEGRepresentation(image, 100.0f);
-            }];
-        }
-        else {
-            cell.eventsImageView.image = [UIImage imageNamed:@"placeholder"];
-        }
-    }
-    
     // add controls
     
     CGFloat buttonWidth = (cell.contentView.frame.size.width-25.0f)/3; //divide per control
@@ -273,9 +254,10 @@
     buttonVenue.button.longitude = [NSNumber numberWithDouble:121.078906];
     buttonVenue.button.locationName = @"CCF CENTER";
     buttonVenue.button.locationSnippet = [events.venue capitalizedString];
+    buttonVenue.tag = 1;
     [buttonVenue.button addTarget:self action:@selector(viewMapButton:) forControlEvents:UIControlEventTouchUpInside];
     
-//    buttonVenue.layer.borderWidth = 1.0f;
+    //    buttonVenue.layer.borderWidth = 1.0f;
     
     [cell.viewControls addSubview:buttonVenue];
     
@@ -285,9 +267,10 @@
     [buttonDate.button addTarget:self action:@selector(saveDateCalendar:) forControlEvents:UIControlEventTouchUpInside];
     buttonDate.button.eventTitle = events.title;
     buttonDate.button.eventAddress = events.venue;
-    buttonDate.button.eventDate = events.date;
-    buttonDate.button.eventTime = events.time;
-//    buttonDate.layer.borderWidth = 1.0f;
+    buttonDate.button.eventDate = events.date_raw_start;
+//    buttonDate.button.eventTime = events.time;
+    buttonDate.tag = 2;
+    //    buttonDate.layer.borderWidth = 1.0f;
     
     [cell.viewControls addSubview:buttonDate];
     
@@ -296,17 +279,22 @@
     [buttonTime.button addTarget:self action:@selector(saveDateCalendar:) forControlEvents:UIControlEventTouchUpInside];
     buttonTime.button.eventTitle = events.title;
     buttonTime.button.eventAddress = events.venue;
-    buttonTime.button.eventDate = events.date;
-    buttonTime.button.eventTime = events.time;
-//    buttonTime.layer.borderWidth = 1.0f;
+    buttonTime.button.eventDate = events.date_raw_start;
+//    buttonTime.button.eventTime = events.time;
+    buttonTime.tag = 3;
+    //    buttonTime.layer.borderWidth = 1.0f;
     
     [cell.viewControls addSubview:buttonTime];
     
     cell.viewControls.clipsToBounds = YES;
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectEventAtIndexPath:)];
-    [buttonTime addGestureRecognizer:tap];
     tap.numberOfTapsRequired = 1;
+    [buttonDate addGestureRecognizer:tap];
+    
+    UITapGestureRecognizer *tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectEventAtIndexPath:)];
+    tap1.numberOfTapsRequired = 1;
+    [buttonTime addGestureRecognizer:tap1];
     
     buttonDate.translatesAutoresizingMaskIntoConstraints = NO;
     buttonVenue.translatesAutoresizingMaskIntoConstraints = NO;
@@ -329,9 +317,43 @@
     [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonTime attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0f]];
     
     
-    buttonDate.translatesAutoresizingMaskIntoConstraints = YES;
-    buttonVenue.translatesAutoresizingMaskIntoConstraints = YES;
-    buttonTime.translatesAutoresizingMaskIntoConstraints = YES;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(EventsTableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    EventsObject *events = (EventsObject*)[self.events_link objectAtIndex:[indexPath row]];
+    
+    if (events.image_data) {
+        cell.eventsImageView.image = [UIImage imageWithData:events.image_data];
+    }
+    else {
+        if ([events.image_url length]) {
+//            [self getImageFromURL:events.image_url onIndex:[indexPath row]];
+            [cell.eventsImageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/image/%@",kAPI_LINK,events.image_url]] placeholderImage:[UIImage imageNamed:@"placeholder"] options:SDWebImageProgressiveDownload completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                events.image_data = UIImageJPEGRepresentation(image, 100.0f);
+            }];
+        }
+        else {
+            cell.eventsImageView.image = [UIImage imageNamed:@"placeholder"];
+        }
+    }
+    
+   
+//    CGRect frame = cell.viewControls.frame;
+//    frame.size.width = ([cell.viewControls viewWithTag:1].frame.origin.x + [cell.viewControls viewWithTag:1].frame.size.width) + ([cell.viewControls viewWithTag:2].frame.origin.x + [cell.viewControls viewWithTag:2].frame.size.width) + ([cell.viewControls viewWithTag:3].frame.origin.x + [cell.viewControls viewWithTag:3].frame.size.width);
+//    cell.viewControls.frame = frame;
+//    
+//    frame = cell.viewControls.frame;
+//    frame.origin.x = (cell.contentView.frame.size.width/2) - (frame.size.width/2);
+//    cell.viewControls.frame = frame;
+    
+    
+    [cell.viewControls viewWithTag:1].translatesAutoresizingMaskIntoConstraints = YES;
+    [cell.viewControls viewWithTag:2].translatesAutoresizingMaskIntoConstraints = YES;
+    [cell.viewControls viewWithTag:3].translatesAutoresizingMaskIntoConstraints = YES;
+    
+    
 }
 
 - (void) selectEventAtIndexPath:(UIGestureRecognizer*)gestureRecognizer {
@@ -353,6 +375,7 @@
     eventsDetailVC.titleText = events.title;
     eventsDetailVC.locationName = events.venue;
     eventsDetailVC.dateText = events.date;
+    eventsDetailVC.date_start = events.date_raw_start;
     eventsDetailVC.timeText = events.time;
     eventsDetailVC.imageURL = events.image_url;
     eventsDetailVC.imageData = events.image_data;

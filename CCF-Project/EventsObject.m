@@ -13,7 +13,8 @@
 @synthesize contact_info;
 @synthesize created_date;
 @synthesize date;
-@synthesize date_raw;
+@synthesize date_raw_start;
+@synthesize date_raw_end;
 @synthesize description_detail;
 @synthesize id_num;
 @synthesize image_url;
@@ -36,7 +37,8 @@
         self.time = [decoder decodeObjectForKey:@"events_time"];
         self.speakers = [decoder decodeObjectForKey:@"events_speakers"];
         self.registration_link = [decoder decodeObjectForKey:@"events_registration_link"];
-        self.date_raw = [decoder decodeObjectForKey:@"events_date_raw"];
+        self.date_raw_start = [decoder decodeObjectForKey:@"events_date_raw_start"];
+        self.date_raw_end = [decoder decodeObjectForKey:@"events_date_raw_end"];
         self.date = [decoder decodeObjectForKey:@"events_date"];
         self.contact_info = [decoder decodeObjectForKey:@"events_contact_info"];
     }
@@ -54,7 +56,8 @@
     [encoder encodeObject:time forKey:@"events_time"];
     [encoder encodeObject:speakers forKey:@"events_speakers"];
     [encoder encodeObject:registration_link forKey:@"events_registration_link"];
-    [encoder encodeObject:date_raw forKey:@"events_date_raw"];
+    [encoder encodeObject:date_raw_start forKey:@"events_date_raw_start"];
+    [encoder encodeObject:date_raw_end forKey:@"events_date_raw_end"];
     [encoder encodeObject:date forKey:@"events_date"];
     [encoder encodeObject:contact_info forKey:@"events_contact_info"];
 }

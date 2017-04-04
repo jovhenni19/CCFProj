@@ -16,7 +16,8 @@
 @dynamic eventTitle;
 @dynamic eventAddress;
 @dynamic eventDate;
-@dynamic eventTime;
+//@dynamic eventTime;
+@dynamic eventEndDate;
 
 - (NSNumber*)latitude {
     return objc_getAssociatedObject(self, @selector(latitude));
@@ -46,8 +47,12 @@
     return objc_getAssociatedObject(self, @selector(eventDate));
 }
 
-- (NSString *)eventTime {
-    return objc_getAssociatedObject(self, @selector(eventTime));
+//- (NSString *)eventTime {
+//    return objc_getAssociatedObject(self, @selector(eventTime));
+//}
+
+- (NSString *)eventEndDate {
+    return objc_getAssociatedObject(self, @selector(eventEndDate));
 }
 
 - (void)setLatitude:(NSNumber*)latitude {
@@ -78,8 +83,12 @@
     objc_setAssociatedObject(self, @selector(eventDate), eventDate, OBJC_ASSOCIATION_COPY);
 }
 
-- (void)setEventTime:(NSString *)eventTime {
-    objc_setAssociatedObject(self, @selector(eventTime), eventTime, OBJC_ASSOCIATION_COPY);
+//- (void)setEventTime:(NSString *)eventTime {
+//    objc_setAssociatedObject(self, @selector(eventTime), eventTime, OBJC_ASSOCIATION_COPY);
+//}
+
+- (void)setEventEndDate:(NSString *)eventEndDate {
+    objc_setAssociatedObject(self, @selector(eventEndDate), eventEndDate, OBJC_ASSOCIATION_COPY);
 }
 
 @end

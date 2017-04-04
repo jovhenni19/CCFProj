@@ -41,6 +41,7 @@
     NSLog(@"URL-AUDIO:%@",self.urlForAudio);
     
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -199,6 +200,8 @@
         }
             break;
     }
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
 }

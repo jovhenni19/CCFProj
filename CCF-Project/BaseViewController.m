@@ -123,10 +123,11 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
             NSDateFormatter *dateFormmatter = [[NSDateFormatter alloc] init];
             [dateFormmatter setDateFormat:@"MM/dd/yyyy hh:mm a"];
             
-            NSString *fullDate = [NSString stringWithFormat:@"%@ %@",button.eventDate,button.eventTime];
+            NSString *startDate = [NSString stringWithFormat:@"%@",button.eventDate];
+            NSString *endDate = [NSString stringWithFormat:@"%@",button.eventEndDate];
             
-            event.startDate = [dateFormmatter dateFromString:fullDate];
-            event.endDate = [event.startDate dateByAddingTimeInterval:60*60];  //set 1 hour meeting
+            event.startDate = [dateFormmatter dateFromString:startDate];
+            event.endDate = (button.eventEndDate)?[dateFormmatter dateFromString:endDate]:[event.startDate dateByAddingTimeInterval:60*60];  //set 1 hour meeting
             event.calendar = [self.eventStore defaultCalendarForNewEvents];
             event.notes = [NSString stringWithFormat:@"Event Details:\nVenue:%@\n",[button.eventAddress uppercaseString]];
             NSTimeInterval aInterval = -1 * 60 * 60;
@@ -757,6 +758,7 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     self.loadingProgressView.hidden = NO;
     
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@YES];
     
     
     [manager GET:method parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
@@ -767,6 +769,8 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NETWORK_INDICATOR(NO)
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
         self.loadingProgressView.hidden = YES;
         if ([responseObject isKindOfClass:[NSError class]] || ([responseObject isKindOfClass:[NSDictionary class]] && [[responseObject allKeys] containsObject:@"error"])) {
             if ([responseObject isKindOfClass:[NSError class]]) {
@@ -802,6 +806,7 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
         NETWORK_INDICATOR(NO)
         self.loadingProgressView.hidden = YES;
         
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Error %li",(long)[error code]] message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
             [alert dismissViewControllerAnimated:YES completion:nil];
@@ -880,6 +885,8 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 
 - (void)getImageFromURL:(NSString*)urlPath  completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler andProgress:(void (^)(NSInteger expectedBytesToReceive, NSInteger receivedBytes))progress{
     NETWORK_INDICATOR(YES)
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@YES];
     NSURL *baseURL = [NSURL URLWithString:kAPI_LINK];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:baseURL];
     manager.responseSerializer = [AFImageResponseSerializer serializer];
@@ -887,12 +894,14 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     NSURLSessionDataTask *task = [manager dataTaskWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"/image/%@",urlPath] relativeToURL:baseURL]] completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
         NETWORK_INDICATOR(NO)
         
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
         NSLog(@"error:%@",[error description]);
         completionHandler(response, responseObject, error);
     }];
     
     [manager setDataTaskDidReceiveDataBlock:^(NSURLSession * _Nonnull session, NSURLSessionDataTask * _Nonnull dataTask, NSData * _Nonnull data) {
         NETWORK_INDICATOR(YES)
+        
         progress(dataTask.countOfBytesExpectedToReceive,dataTask.countOfBytesReceived);
     }];
     

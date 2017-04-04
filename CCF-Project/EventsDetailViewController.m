@@ -36,15 +36,15 @@
     self.buttonLocation.longitude = [NSNumber numberWithDouble:self.locationLongitude];
     self.buttonLocation.locationName = self.locationName;
     
-    self.buttondate.eventTitle = self.titleText;
-    self.buttondate.eventAddress = self.locationName;
-    self.buttondate.eventDate = self.dateText;
-    self.buttondate.eventTime = self.timeText;
-    
-    self.buttonTime.eventTitle = self.titleText;
-    self.buttonTime.eventAddress = self.locationName;
-    self.buttonTime.eventDate = self.dateText;
-    self.buttonTime.eventTime = self.timeText;
+//    self.buttondate.eventTitle = self.titleText;
+//    self.buttondate.eventAddress = self.locationName;
+//    self.buttondate.eventDate = self.dateText;
+//    self.buttondate.eventTime = self.timeText;
+//    
+//    self.buttonTime.eventTitle = self.titleText;
+//    self.buttonTime.eventAddress = self.locationName;
+//    self.buttonTime.eventDate = self.dateText;
+//    self.buttonTime.eventTime = self.timeText;
     
     self.buttonLocation.hidden = !self.showVenueDateTime;
     self.buttondate.hidden = !self.showVenueDateTime;
@@ -72,8 +72,8 @@
     buttonLocation.tag = 13;
     buttonDate.button.eventTitle = self.titleText;
     buttonDate.button.eventAddress = self.locationName;
-    buttonDate.button.eventDate = self.dateText;
-    buttonDate.button.eventTime = self.timeText;
+    buttonDate.button.eventDate = self.date_start;
+//    buttonDate.button.eventTime = self.timeText;
     [self.viewForControls addSubview:buttonDate];
     
     CustomButton *buttonTime = [[CustomButton alloc] initWithText:[self.timeText uppercaseString] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 5.0f, buttonWidth, 22.0f) locked:NO];
@@ -82,10 +82,13 @@
     buttonLocation.tag = 14;
     buttonTime.button.eventTitle = self.titleText;
     buttonTime.button.eventAddress = self.locationName;
-    buttonTime.button.eventDate = self.dateText;
-    buttonTime.button.eventTime = self.timeText;
+    buttonTime.button.eventDate = self.date_start;
+//    buttonTime.button.eventTime = self.timeText;
     [self.viewForControls addSubview:buttonTime];
     
+    buttonDate.translatesAutoresizingMaskIntoConstraints = NO;
+    buttonLocation.translatesAutoresizingMaskIntoConstraints = NO;
+    buttonTime.translatesAutoresizingMaskIntoConstraints = NO;
     //layout
     
     UILayoutGuide *marginLayout = self.imageHeaderView.layoutMarginsGuide;
@@ -103,9 +106,6 @@
     
     [self.imageHeaderView addConstraint:[NSLayoutConstraint constraintWithItem:buttonTime attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0f]];
     
-    buttonDate.translatesAutoresizingMaskIntoConstraints = NO;
-    buttonLocation.translatesAutoresizingMaskIntoConstraints = NO;
-    buttonTime.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.header = self.imageHeaderView;
 //    self.footer = self.shareControlFooterView;
@@ -139,6 +139,14 @@
     else {
         self.imageView.image = [UIImage imageNamed:@"placeholder"];
     }
+    
+    
+    buttonDate.translatesAutoresizingMaskIntoConstraints = YES;
+    buttonLocation.translatesAutoresizingMaskIntoConstraints = YES;
+    buttonTime.translatesAutoresizingMaskIntoConstraints = YES;
+    
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -251,6 +259,9 @@
         cell = [tableView dequeueReusableCellWithIdentifier:@"shareCell"];
         
     }
+    
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
 

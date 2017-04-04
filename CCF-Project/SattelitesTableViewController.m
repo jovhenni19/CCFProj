@@ -79,57 +79,8 @@
     
     
     
-//    if([[AFNetworkReachabilityManager sharedManager] networkReachabilityStatus] > 0){
-//        //get offline data
-//        
-//        NSManagedObjectContext *context = ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext;
-//        
-//        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"OfflineData"];
-//        
-//        NSError *error = nil;
-//        
-//        NSManagedObject *offlineData = [[context executeFetchRequest:request error:&error] lastObject];
-//        
-//        NSArray *newslist = [NSKeyedUnarchiver unarchiveObjectWithData:[offlineData valueForKey:@"satellites_list"]];
-//        
-//        [self.sattelites_list removeAllObjects];
-//        [self.allLocations removeAllObjects];
-//        self.sattelites_list = nil;
-//        self.allLocations = nil;
-//        
-//        self.sattelites_list = [NSMutableArray arrayWithArray:newslist];
-//        
-//        for (SatellitesObject *sattelite in self.sattelites_list) {
-//            NSString *letter_key = [sattelite.name substringWithRange:NSMakeRange(0, 1)];
-//            if (![[self.allLocations allKeys] containsObject:letter_key]) {
-//                NSMutableArray *array = [NSMutableArray array];
-//                [self.allLocations setObject:[array mutableCopy] forKey:letter_key];
-//                
-//            }
-//            
-//            NSMutableArray *subArray = [self.allLocations objectForKey:letter_key];
-//            [subArray addObject:sattelite];
-//            
-//            
-//            
-//            [self.allLocations setObject:subArray forKey:letter_key];
-//        }
-//        
-//        
-//        [self.tableView reloadData];
-//    }
-//    else {
-        
-        
-        NETWORK_INDICATOR(YES)
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendSattelitesList:) name:kOBS_SATTELITES_NOTIFICATION object:nil];
-        
-        [self callGETAPI:kSATTELITES_LINK withParameters:nil completionNotification:kOBS_SATTELITES_NOTIFICATION];
-        
-        
-//    }
-    
+    [self reloadTables];
+
     
     
 //    [self showLoadingAnimation:self.view];
@@ -138,80 +89,6 @@
     [self.tableView addGestureRecognizer:self.yourTap];
     
     
-//    NSMutableDictionary *mutableAllLocations = [NSMutableDictionary dictionary];
-//    /*dummy start*/
-//    NSMutableArray *locationsPerLetter = [NSMutableArray array];
-//    
-//    NSMutableDictionary *location = [NSMutableDictionary dictionary];
-//    
-//    [location setObject:@"Abu Dhabi" forKey:@"kLocationName"];
-//    [location setObject:@"Foodlands Restaurant, Airport Road, Abu Dhabi, UAE Abu Dhabi, International" forKey:@"kAddress"];
-//    [location setObject:@"ccf.abudhabi13@gmail.com" forKey:@"kEmail"];
-//    [location setObject:@"+971-526422303" forKey:@"kContact"];
-//    [location setObject:@"http://www.ccf.org.ph" forKey:@"kWebsite"];
-//    [location setObject:@"24.478502" forKey:@"kLatitude"];
-//    [location setObject:@"54.363265" forKey:@"kLongitude"];
-//    
-//    [locationsPerLetter addObject:location];
-//    
-//    [mutableAllLocations setObject:locationsPerLetter forKey:@"A"];
-//    
-//    locationsPerLetter = nil;
-//    location = nil;
-//    locationsPerLetter = [NSMutableArray array];
-//    location = [NSMutableDictionary dictionary];
-//    
-//    
-//    [location setObject:@"Bacoor" forKey:@"kLocationName"];
-//    [location setObject:@"V. Central Mall Molino Rd., Molino Blvd, Bacoor City, Cavite" forKey:@"kAddress"];
-//    [location setObject:@"ccfbacoor@gmail.com" forKey:@"kEmail"];
-//    [location setObject:@"+63-9434770020" forKey:@"kContact"];
-//    [location setObject:@"http://www.ccf.org.ph" forKey:@"kWebsite"];
-//    [location setObject:@"14.4063622" forKey:@"kLatitude"];
-//    [location setObject:@"120.9734334" forKey:@"kLongitude"];
-//    
-//    [locationsPerLetter addObject:location];
-//    
-//    [mutableAllLocations setObject:locationsPerLetter forKey:@"B"];
-//    
-//    locationsPerLetter = nil;
-//    location = nil;
-//    locationsPerLetter = [NSMutableArray array];
-//    location = [NSMutableDictionary dictionary];
-//    
-//    [location setObject:@"C. Raymundo" forKey:@"kLocationName"];
-//    [location setObject:@"Danny Floro Bldg., C. Raymundo Ave., Canlogan, Pasig City, Pasig, Metro Manila" forKey:@"kAddress"];
-//    [location setObject:@"ccf.abudhabi13@gmail.com" forKey:@"kEmail"];
-//    [location setObject:@"+632-9111111" forKey:@"kContact"];
-//    [location setObject:@"http://www.ccf.org.ph" forKey:@"kWebsite"];
-//    [location setObject:@"14.572164" forKey:@"kLatitude"];
-//    [location setObject:@"121.083508" forKey:@"kLongitude"];
-//    
-//    [locationsPerLetter addObject:location];
-//    
-//    [mutableAllLocations setObject:locationsPerLetter forKey:@"C"];
-//    
-//    locationsPerLetter = nil;
-//    location = nil;
-//    locationsPerLetter = [NSMutableArray array];
-//    location = [NSMutableDictionary dictionary];
-//    
-//    [location setObject:@"Makati" forKey:@"kLocationName"];
-//    [location setObject:@"3rd Floor A. Venue Mall, Makati Ave, Makati City, Makati, Metro Manila" forKey:@"kAddress"];
-//    [location setObject:@"marco.ccfmakati@gmail.com" forKey:@"kEmail"];
-//    [location setObject:@"+632-7953019, +63-9177700251" forKey:@"kContact"];
-//    [location setObject:@"http://www.ccf.org.ph" forKey:@"kWebsite"];
-//    [location setObject:@"14.566184" forKey:@"kLatitude"];
-//    [location setObject:@"121.029731" forKey:@"kLongitude"];
-//    
-//    [locationsPerLetter addObject:location];
-//    
-//    [mutableAllLocations setObject:locationsPerLetter forKey:@"M"];
-//    
-//    locationsPerLetter = nil;
-//    location = nil;
-//    
-//    /*dummy end*/
     
     
     
@@ -249,15 +126,69 @@
         self.sattelites_list = nil;
         self.allLocations = nil;
         
-        [self callGETAPI:kSATTELITES_LINK withParameters:nil completionNotification:kOBS_SATTELITES_NOTIFICATION];
     }
+    
+    if([[AFNetworkReachabilityManager sharedManager] networkReachabilityStatus] == AFNetworkReachabilityStatusNotReachable){
+        //get offline data
+        
+        NSManagedObjectContext *context = ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext;
+        
+        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"OfflineData"];
+        
+        NSError *error = nil;
+        
+        NSManagedObject *offlineData = [[context executeFetchRequest:request error:&error] lastObject];
+        
+        NSArray *newslist = [NSKeyedUnarchiver unarchiveObjectWithData:[offlineData valueForKey:@"satellites_list"]];
+        
+        [self.sattelites_list removeAllObjects];
+        [self.allLocations removeAllObjects];
+        self.sattelites_list = nil;
+        self.allLocations = nil;
+        
+        self.sattelites_list = [NSMutableArray arrayWithArray:newslist];
+        
+        for (SatellitesObject *sattelite in self.sattelites_list) {
+            NSString *letter_key = [sattelite.name substringWithRange:NSMakeRange(0, 1)];
+            if (![[self.allLocations allKeys] containsObject:letter_key]) {
+                NSMutableArray *array = [NSMutableArray array];
+                [self.allLocations setObject:[array mutableCopy] forKey:letter_key];
+                
+            }
+            
+            NSMutableArray *subArray = [self.allLocations objectForKey:letter_key];
+            [subArray addObject:sattelite];
+            
+            
+            
+            [self.allLocations setObject:subArray forKey:letter_key];
+        }
+        
+        
+        [self.tableView reloadData];
+    }
+    else {
+        
+//        CGFloat value = 0.8f;
+//        
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
+//        
+//        NETWORK_INDICATOR(YES)
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendSattelitesList:) name:kOBS_SATTELITES_NOTIFICATION object:nil];
+        
+        [self callGETAPI:kSATTELITES_LINK withParameters:nil completionNotification:kOBS_SATTELITES_NOTIFICATION];
+        
+        
+    }
+    
 //    [self showLoadingAnimation:self.view];
 }
 
 - (void)appendSattelitesList:(NSNotification*)notification {
 //    NSLog(@"### result:%@",notification.object);
     
-    [self removeLoadingAnimation];
+//    [self removeLoadingAnimation];
     
     NETWORK_INDICATOR(NO)
     
@@ -274,7 +205,7 @@
     
     NSArray *data = result[@"data"];
     
-    [self showLoadingAnimation:self.view withTotalCount:data.count];
+//    [self showLoadingAnimation:self.view withTotalCount:data.count];
     for (NSDictionary *item in data) {
         
 //        NSDictionary *sattelite = @{@"kLocationName":item[@"name"],@"kLatitude":item[@"latitude"],@"kLongitude":item[@"longitude"],@"kAddress":item[@"address_full"],@"kCreatedTime":item[@"created_at"]};
@@ -292,8 +223,24 @@
             sattelite.address_full = item[@"address_full"];
         }
             sattelite.created_date = item[@"created_at"];
-            
+        
+        
+        
+        
+        BOOL alreadyAdded = NO;
+        for (SatellitesObject *i in self.sattelites_list) {
+            if ([i.id_num integerValue] == [sattelite.id_num integerValue]) {
+                alreadyAdded = YES;
+                break;
+            }
+        }
+        
+        if (!alreadyAdded) {
             [self.sattelites_list addObject:sattelite];
+        }
+        
+        
+        
         
         [self progressValue:((float)self.sattelites_list.count/(float)data.count)];
         
@@ -313,9 +260,9 @@
             [self.allLocations setObject:subArray forKey:letter_key];
             
         
-        CGFloat value = ((float)([data indexOfObject:item] + 1) / (float)data.count);
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
+//        CGFloat value = ((float)([data indexOfObject:item] + 1) / (float)data.count);
+//        
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
 //        });
     }
     
@@ -323,9 +270,9 @@
     NSMutableArray *sortArray = [NSMutableArray arrayWithArray:[self.allLocations allKeys]];
     self.alphabetSections = [sortArray sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     
-//    NSLog(@"locations:%@\n\n\nsections:%@",self.allLocations,self.alphabetSections);
+    //    NSLog(@"locations:%@\n\n\nsections:%@",self.allLocations,self.alphabetSections);
     
-    [self removeLoadingAnimation];
+//    [self removeLoadingAnimation];
     
     
     [self saveOfflineData:self.sattelites_list forKey:@"satellites_list"];
@@ -605,9 +552,12 @@
     
 //    NSLog(@"locations:%@",self.allLocations);
     
-    [self removeLoadingAnimation];
-    NETWORK_INDICATOR(YES)
-    [self showLoadingAnimation:self.view withTotalCount:self.sattelites_list.count];
+//    [self removeLoadingAnimation];
+//    NETWORK_INDICATOR(YES)
+//    [self showLoadingAnimation:self.view withTotalCount:self.sattelites_list.count];
+    
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@YES];
     
     CLGeocoder *geocoder = [[CLGeocoder alloc] init] ;
     [geocoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray *placemarks, NSError *error)
@@ -669,7 +619,7 @@
          else
          {
              
-             [self removeLoadingAnimation];
+//             [self removeLoadingAnimation];
              UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"GPS Failed" message:@"Please enable Locations or go outside for better GPS Signal." preferredStyle:UIAlertControllerStyleAlert];
              UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
                  [alert dismissViewControllerAnimated:YES completion:nil];
@@ -682,7 +632,7 @@
              
          }
          
-         NETWORK_INDICATOR(NO)
+//         NETWORK_INDICATOR(NO)
          /*---- For more results
           placemark.region);
           placemark.country);
@@ -700,7 +650,7 @@
 }
 
 - (void) locationUpdateFinished:(NSNotification*)notification {
-    NETWORK_INDICATOR(YES)
+//    NETWORK_INDICATOR(YES)
     self.nearbyLocations = nil;
     self.nearbySections = nil;
     self.nearbyLocations = [NSDictionary dictionaryWithDictionary:[notification object]];
@@ -711,11 +661,12 @@
     self.isLocationFinished = YES;
     
     
-    NETWORK_INDICATOR(NO)
+//    NETWORK_INDICATOR(NO)
     
     [self.tableView reloadData];
     
-    [self removeLoadingAnimation];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
+//    [self removeLoadingAnimation];
 }
 
 - (void) insertLocation:(SatellitesObject*)location withKey:(NSString*)key inDictionary:(NSMutableDictionary*)dictionary {

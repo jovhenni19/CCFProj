@@ -15,6 +15,7 @@
 @property (weak, nonatomic) IBOutlet UIView *viewMain;
 
 @property (assign, nonatomic) NSInteger shownPerPage;
+@property (weak, nonatomic) IBOutlet UIButton *buttonFacebook;
 
 @end
 
@@ -27,7 +28,7 @@
     
     self.shownPerPage = 0;
     
-    NETWORK_INDICATOR(YES)
+//    NETWORK_INDICATOR(YES)
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callLiveStreamData:) name:kOBS_LIVESTREAM_NOTIFICATION object:nil];
     
@@ -40,6 +41,13 @@
 //        
 //        
 //    }];
+    
+    
+    if (self.buttonFacebook.frame.origin.y + self.buttonFacebook.frame.size.height + 20.0f > self.view.frame.size.height) {
+        
+        self.mainScrollView.contentSize = CGSizeMake(0.0f, self.view.frame.size.height + 10.0f);
+    }
+    
 
     
     NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerAction) userInfo:nil repeats:YES];
@@ -92,6 +100,7 @@
         }
         
     });
+    
 }
 
 //- (void)viewDidAppear:(BOOL)animated {
@@ -154,5 +163,11 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+
+- (void)playerViewDidBecomeReady:(YTPlayerView *)playerView {
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
+}
 
 @end

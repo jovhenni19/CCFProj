@@ -32,7 +32,7 @@
 
 @property (assign, nonatomic) CGFloat preOffsetX;
 
-//@property (strong, nonatomic) SRScreenRecorder *screen_recorder;
+@property (assign, nonatomic) BOOL networkActivityIsShown;
 
 @end
 
@@ -71,7 +71,7 @@
     
     [[AFNetworkReachabilityManager sharedManager] startMonitoring];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(increaseProgressValue:) name:@"obs_progress" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showNetworkActivityIndicator:) name:@"obs_progress" object:nil];
     
     self.viewForProgressLoading.frame = CGRectMake(self.viewForProgressLoading.frame.origin.x, self.viewForProgressLoading.frame.origin.y, 0.0f, 2.0f);
     
@@ -420,12 +420,25 @@
     }
     
     else if([scrollView isEqual:self.horizontalTableview]){
+        
+//        CGFloat xOffset = ((self.horizontalTableview.contentOffset.x - self.preOffsetX) * 0.25);
+//        self.indicatorView.frame = CGRectMake(self.indicatorView.frame.origin.x + xOffset, self.indicatorView.frame.origin.y, self.indicatorView.frame.size.width, self.indicatorView.frame.size.height);
+//        self.preOffsetX = self.horizontalTableview.contentOffset.x;
+        
+//        if (self.indicatorView.frame.origin.x < self.scrollViewBar.contentOffset.x + 10.0f) {
+//            self.scrollViewBar.contentOffset = CGPointMake(self.scrollViewBar.contentOffset.x - (xOffset*2) , self.scrollViewBar.contentOffset.y);
+//        }
+//        else if ((self.indicatorView.frame.origin.x + self.indicatorView.frame.size.width) > (self.scrollViewBar.contentOffset.x + self.scrollViewBar.frame.size.width)) {
+//            self.scrollViewBar.contentOffset = CGPointMake(self.scrollViewBar.contentOffset.x + (xOffset*2), self.scrollViewBar.contentOffset.y);
+//        }
+        
+        
 //        CGFloat pageWidth = self.containerViewForTable.bounds.size.width;
 //        NSInteger index = (long)floor((self.horizontalTableview.contentOffset.y - pageWidth / 2) / pageWidth) + 1;
 //        self.selectedIndex = index;
 //        UIButton *button = [self.menuButtonList objectAtIndex:self.selectedIndex];
 //        self.indicatorView.frame = CGRectMake(button.frame.origin.x + 10.0f, 32.0f, button.frame.size.width - 20.0f, 2.0f);
-//        
+//
 //        CGFloat result = 0.0f;
 //        CGFloat buttonWidth = button.bounds.size.width + 5.0f;
 ////        CGFloat contentWidth = self.menuBarView.bounds.size.width;
@@ -452,6 +465,32 @@
 //        }
 //            
 //        [self.scrollViewBar setContentOffset:CGPointMake(result, 0.0f) animated:YES];
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    if ([scrollView isEqual:self.horizontalTableview]) {
+        
+        CGFloat pageWidth = self.containerViewForTable.bounds.size.width;
+        NSInteger index = (long)floor((self.horizontalTableview.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
+        
+        
+//        NSLog(@"index:%li",(long)index);
+        
+        UIButton *button = [self.menuButtonList objectAtIndex:index];
+        self.indicatorView.frame = CGRectMake(button.frame.origin.x + 10.0f, 32.0f, button.frame.size.width - 20.0f, 2.0f);
+        
+        
+        CGFloat offsetX = button.frame.origin.x;// + ((self.scrollViewBar.frame.size.width/2) - (button.frame.size.width/2));
+        
+        if (offsetX < 0.0f) {
+            offsetX = 0.0f;
+        }
+        else if (offsetX + self.scrollViewBar.frame.size.width > self.scrollViewBar.contentSize.width) {
+            offsetX = self.scrollViewBar.contentSize.width - self.scrollViewBar.frame.size.width;
+        }
+        
+        [self.scrollViewBar setContentOffset:CGPointMake(offsetX, 0.0f) animated:YES];
     }
 }
 
@@ -640,76 +679,43 @@
     
 }
 
+- (void) showNetworkActivityIndicator:(NSNotification*)notification {
+    
+    BOOL shown = [((NSNumber*)notification.object) boolValue];
+    
+    self.networkActivityIsShown = shown;
+    NETWORK_INDICATOR(shown)
+    [self customNetworkActivityIndicator];
 
-- (void) showProgressView {
-    self.progressView.progress = 0.0f;
-    self.progressView.hidden = NO;
 }
 
-- (void) addValueToProgressView {
-    self.progressView.hidden = NO;
-    self.progressView.progress += 0.2f;
-    if (self.progressView.progress == 1.0f) {
-        self.progressView.progress = 0.0f;
+- (void) customNetworkActivityIndicator {
+    
+    if(CGRectEqualToRect(self.viewForProgressLoading.frame, CGRectMake(0.0f, self.viewForProgressLoading.frame.origin.y, 0.0f, 2.0f))) {
+        NETWORK_INDICATOR(YES)
+        [UIView animateWithDuration:0.4f delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
+            self.viewForProgressLoading.frame = CGRectMake((self.view.frame.size.width/2) - 100.0f, self.viewForProgressLoading.frame.origin.y, 200.0f, 2.0f);
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:0.4f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
+                self.viewForProgressLoading.frame = CGRectMake(self.view.frame.size.width - 10.0f, self.viewForProgressLoading.frame.origin.y, 10.0f, 2.0f);
+            } completion:^(BOOL finished) {
+                [UIView animateWithDuration:0.4f delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
+                    self.viewForProgressLoading.frame = CGRectMake((self.view.frame.size.width/2) - 100.0f, self.viewForProgressLoading.frame.origin.y, 200.0f, 2.0f);
+                } completion:^(BOOL finished) {
+                    [UIView animateWithDuration:0.4f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
+                        self.viewForProgressLoading.frame = CGRectMake(0.0f, self.viewForProgressLoading.frame.origin.y, 10.0f, 2.0f);
+                    } completion:^(BOOL finished) {
+                        self.viewForProgressLoading.frame = CGRectMake(0.0f, self.viewForProgressLoading.frame.origin.y, 0.0f, 2.0f);
+                        NETWORK_INDICATOR(NO)
+                        //[self showNetworkActivityIndicator:[NSNotification notificationWithName:@"obs_progress" object:@YES]];
+                        
+                    }];
+                }];
+            }];
+        }];
     }
-}
-
-- (void) removeProgressView {
-    self.progressView.hidden = YES;
-}
-
-//- (void)recorderGesture:(UIGestureRecognizer *)recognizer
-//{
-//    if (!self.screen_recorder) {
-//        NSString *message = [NSString stringWithFormat:@"Start ScreenRecording ?"];
-//        UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Secret Feature" message:message preferredStyle:UIAlertControllerStyleAlert];
-//        UIAlertAction *close = [UIAlertAction actionWithTitle:@"NO" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//            [self dismissViewControllerAnimated:ac completion:nil];
-//        }];
-//        UIAlertAction *yes = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-////            [self startRecording];
-//        }];
-//        [ac addAction:close];
-//        [ac addAction:yes];
-//        [self presentViewController:ac animated:YES completion:^{
-//            
-//        }];
-//    }
-//    else {
-////        [self.screen_recorder stopRecording];
-////        self.screen_recorder = nil;
-//    }
-//}
-//
-//- (void) startRecording{
-//    self.screen_recorder = nil;
-//    self.screen_recorder = [SRScreenRecorder sharedInstance];
-//    self.screen_recorder.frameInterval = 1; // 60 FPS
-////    self.screen_recorder.autosaveDuration = 1800; // 30 minutes
-//    self.screen_recorder.showsTouchPointer = YES; // hidden touch pointer
-//    self.screen_recorder.filenameBlock = ^(void) {
-//        NSDateFormatter *df = [[NSDateFormatter alloc] init];
-//        [df setDateFormat:@"yyyyMMdd_HHmmss"];
-//        NSString *date = [df stringFromDate:[NSDate date]];
-//        return [NSString stringWithFormat:@"screencast-%@.mov",date];
-//    }; // change filename
-//    
-//    [self.screen_recorder startRecording];
-//}
-
-
-- (void)increaseProgressValue:(NSNotification*)notification {
-    
-    CGFloat value = [(NSNumber*)notification.object floatValue] * self.view.frame.size.width;
-//    NSLog(@"(%f)value:%f",[(NSNumber*)notification.object floatValue],value);
-    [UIView animateWithDuration:0.2f animations:^{
-        self.viewForProgressLoading.frame = CGRectMake(self.viewForProgressLoading.frame.origin.x, self.viewForProgressLoading.frame.origin.y, value, 2.0f);
-    } completion:^(BOOL finished) {
-        if ([(NSNumber*)notification.object floatValue] == 1.0f) {
-            self.viewForProgressLoading.frame = CGRectMake(self.viewForProgressLoading.frame.origin.x, self.viewForProgressLoading.frame.origin.y, 0.0f, 2.0f);
-        }
-    }];
     
 }
+
 
 @end

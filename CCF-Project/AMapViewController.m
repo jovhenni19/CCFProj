@@ -18,6 +18,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@YES];
     CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(self.latitude, self.longitude);
     self.mapView.delegate = self;
     [self.mapView setCenterCoordinate:coordinate animated:YES];
@@ -105,6 +106,7 @@
 }
 
 - (void)mapViewDidFinishLoadingMap:(MKMapView *)mapView {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
     for (id<MKAnnotation> currentAnnotation in mapView.annotations) {
         [mapView selectAnnotation:currentAnnotation animated:YES];
     }

@@ -10,6 +10,6 @@
 #import "YouTubeiOSPlayerHelper.h"
 #import "BaseViewController.h"
 
-@interface LiveStreamingViewController : BaseViewController
+@interface LiveStreamingViewController : BaseViewController <YTPlayerViewDelegate>
 
 @end

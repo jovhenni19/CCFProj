@@ -38,7 +38,6 @@
 - (void) addValueToProgressView;
 - (void) removeProgressView;
 
-
 @end
 
 

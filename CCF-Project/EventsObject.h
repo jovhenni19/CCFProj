@@ -12,7 +12,8 @@
     NSString *contact_info;
     NSString *created_date;
     NSString *date;
-    NSString *date_raw;
+    NSString *date_raw_start;
+    NSString *date_raw_end;
     NSString *description_detail;
     NSNumber *id_num;
     NSString *image_url;
@@ -27,7 +28,8 @@
 @property (nullable, nonatomic, copy) NSString *contact_info;
 @property (nullable, nonatomic, copy) NSString *created_date;
 @property (nullable, nonatomic, copy) NSString *date;
-@property (nullable, nonatomic, copy) NSString *date_raw;
+@property (nullable, nonatomic, copy) NSString *date_raw_start;
+@property (nullable, nonatomic, copy) NSString *date_raw_end;
 @property (nullable, nonatomic, copy) NSString *description_detail;
 @property (nullable, nonatomic, copy) NSNumber *id_num;
 @property (nullable, nonatomic, copy) NSString *image_url;

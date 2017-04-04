@@ -24,6 +24,8 @@
 @property (assign, nonatomic) CGFloat locationLatitude;
 @property (assign, nonatomic) CGFloat locationLongitude;
 @property (strong, nonatomic) NSString *dateText;
+@property (strong, nonatomic) NSString *date_start;
+@property (strong, nonatomic) NSString *date_end;
 @property (strong, nonatomic) NSString *timeText;
 @property (strong, nonatomic) NSString *imageURL;
 @property (strong, nonatomic) NSData *imageData;

@@ -41,138 +41,8 @@
     self.shownPerPage = 0;
     
     
+    [self reloadTables];
     
-    
-//    if([[AFNetworkReachabilityManager sharedManager] networkReachabilityStatus] > 0){
-//        //get offline data
-//        
-//        NSManagedObjectContext *context = ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext;
-//        
-//        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"OfflineData"];
-//        
-//        NSError *error = nil;
-//        
-//        NSManagedObject *offlineData = [[context executeFetchRequest:request error:&error] lastObject];
-//        
-//        NSArray *newslist = [NSKeyedUnarchiver unarchiveObjectWithData:[offlineData valueForKey:@"podcasts_list"]];
-//        
-//        [self.podcastList removeAllObjects];
-//        
-//        [self.categories removeAllObjects];
-//        
-//        self.podcastList = nil;
-//        self.categories = nil;
-//        self.categorizedPodcast = nil;
-//        
-//        self.podcastList = [NSMutableArray arrayWithArray:newslist];
-//        
-//        for (PodcastsObject *podcastsItem in self.podcastList) {
-//            NSString *key = podcastsItem.category_name;
-//            if (![[self.categorizedPodcast allKeys] containsObject:key]) {
-//                NSMutableArray *array = [NSMutableArray array];
-//                [self.categorizedPodcast setObject:[array mutableCopy] forKey:key];
-//                
-//                NSDictionary *category = @{@"kTitle":[key uppercaseString],@"kImage":podcastsItem.image_url,@"kImageData":isNIL(podcastsItem.image_data)};
-//                [self.categories addObject:category];
-//            }
-//            
-//            NSMutableArray *subArray = [self.categorizedPodcast objectForKey:key];
-//            [subArray addObject:podcastsItem];
-//            
-//            [self.categorizedPodcast setObject:subArray forKey:key];
-//        }
-//        
-//        
-//        [self.mainTableView reloadData];
-//    }
-//    else {
-    
-        
-        NETWORK_INDICATOR(YES)
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendPodcastsList:) name:kOBS_PODCAST_NOTIFICATION object:nil];
-        
-        [self callGETAPI:kPODCAST_LINK withParameters:nil completionNotification:kOBS_PODCAST_NOTIFICATION];
-        
-        
-//    }
-    
-    
-    
-    
-    
-//    [self showLoadingAnimation:self.view];
-    
-    
-//    self.podcastList = [NSMutableArray array];
-//    self.categories = [NSMutableArray array];
-//    
-//    NSString *title = @"Podcast Title";
-//    NSString *description = @"Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
-//    NSString *category = @"all-access";
-//    
-//    UIImage *image = [UIImage imageNamed:@"all-access"];
-//    NSDictionary *catDict = [NSDictionary dictionaryWithObjectsAndKeys:category,@"kTitle",image,@"kImage", nil];
-//    
-//    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:title,@"kTitle",description,@"kDescription",category,@"kCategory", nil];
-//    
-//    [self.categories addObject:catDict];
-//    [self.podcastList addObject:dictionary];
-//    [self.podcastList addObject:dictionary];
-//    
-//    [self.podcastList addObject:dictionary];
-//    
-//    
-//    title = @"Podcast Title";
-//    description = @"Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
-//    category = @"life";
-//    
-//    image = [UIImage imageNamed:@"life-unboxed"];
-//    catDict = [NSDictionary dictionaryWithObjectsAndKeys:category,@"kTitle",image,@"kImage", nil];
-//    
-//    dictionary = [NSDictionary dictionaryWithObjectsAndKeys:title,@"kTitle",description,@"kDescription",category,@"kCategory", nil];
-//    
-//    [self.categories addObject:catDict];
-//    [self.podcastList addObject:dictionary];
-//    [self.podcastList addObject:dictionary];
-//    
-//    [self.podcastList addObject:dictionary];
-//    
-//    [self.podcastList addObject:dictionary];
-//    
-//    [self.podcastList addObject:dictionary];
-//    [self.podcastList addObject:dictionary];
-//
-//
-//    
-//    
-//    title = @"Podcast Title";
-//    description = @"Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
-//    category = @"everyday-conversation";
-//    
-//    image = [UIImage imageNamed:@"everyday-conversation"];
-//    catDict = [NSDictionary dictionaryWithObjectsAndKeys:category,@"kTitle",image,@"kImage", nil];
-//    
-//    dictionary = [NSDictionary dictionaryWithObjectsAndKeys:title,@"kTitle",description,@"kDescription",category,@"kCategory", nil];
-//    
-//    [self.categories addObject:catDict];
-//    [self.podcastList addObject:dictionary];
-//    
-//    [self.podcastList addObject:dictionary];
-//    
-//    self.categorizedPodcast = [NSMutableDictionary dictionary];
-//    for (NSDictionary *dictionary in self.podcastList) {
-//        NSString *key = [dictionary objectForKey:@"kCategory"];
-//        if (![[self.categorizedPodcast allKeys] containsObject:key]) {
-//            NSMutableArray *array = [NSMutableArray array];
-//            [self.categorizedPodcast setObject:[array mutableCopy] forKey:key];
-//        }
-//        
-//        NSMutableArray *subArray = [self.categorizedPodcast objectForKey:key];
-//        [subArray addObject:dictionary];
-//        
-//        [self.categorizedPodcast setObject:subArray forKey:key];
-//    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -190,9 +60,68 @@
         self.podcastList = nil;
         self.categories = nil;
         self.categorizedPodcast = nil;
-        [self callGETAPI:kPODCAST_LINK withParameters:nil completionNotification:kOBS_PODCAST_NOTIFICATION];
+        
         
     }
+    
+    if([[AFNetworkReachabilityManager sharedManager] networkReachabilityStatus] == AFNetworkReachabilityStatusNotReachable){
+        //get offline data
+        
+        NSManagedObjectContext *context = ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext;
+        
+        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"OfflineData"];
+        
+        NSError *error = nil;
+        
+        NSManagedObject *offlineData = [[context executeFetchRequest:request error:&error] lastObject];
+        
+        NSArray *newslist = [NSKeyedUnarchiver unarchiveObjectWithData:[offlineData valueForKey:@"podcasts_list"]];
+        
+        [self.podcastList removeAllObjects];
+        
+        [self.categories removeAllObjects];
+        
+        self.podcastList = nil;
+        self.categories = nil;
+        self.categorizedPodcast = nil;
+        
+        self.podcastList = [NSMutableArray arrayWithArray:newslist];
+        
+        for (PodcastsObject *podcastsItem in self.podcastList) {
+            NSString *key = podcastsItem.category_name;
+            if (![[self.categorizedPodcast allKeys] containsObject:key]) {
+                NSMutableArray *array = [NSMutableArray array];
+                [self.categorizedPodcast setObject:[array mutableCopy] forKey:key];
+                
+                NSDictionary *category = @{@"kTitle":[key uppercaseString],@"kImage":podcastsItem.image_url,@"kImageData":isNIL(podcastsItem.image_data)};
+                [self.categories addObject:category];
+            }
+            
+            NSMutableArray *subArray = [self.categorizedPodcast objectForKey:key];
+            [subArray addObject:podcastsItem];
+            
+            [self.categorizedPodcast setObject:subArray forKey:key];
+        }
+        
+        
+        [self.mainTableView reloadData];
+    }
+    else {
+        
+//        CGFloat value = 0.8f;
+//        
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
+        
+//        NETWORK_INDICATOR(YES)
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendPodcastsList:) name:kOBS_PODCAST_NOTIFICATION object:nil];
+        
+        [self callGETAPI:kPODCAST_LINK withParameters:nil completionNotification:kOBS_PODCAST_NOTIFICATION];
+        
+        
+    }
+    
+    
 //    [self showLoadingAnimation:self.view];
 }
 
@@ -224,7 +153,7 @@
     
 //    NSManagedObjectContext *context = MANAGE_CONTEXT;
     
-    [self showLoadingAnimation:self.view withTotalCount:data.count];
+//    [self showLoadingAnimation:self.view withTotalCount:data.count];
     for (NSDictionary *item in data) {
         
         
@@ -240,6 +169,17 @@
         podcastsItem.audioURL = isNIL(item[@"audiofile"]);
         podcastsItem.youtubeURL = isNIL(item[@"youtubeID"]);
         
+        
+        
+        BOOL alreadyAdded = NO;
+        for (PodcastsObject *i in self.podcastList) {
+            if ([i.id_num integerValue] == [podcastsItem.id_num integerValue]) {
+                alreadyAdded = YES;
+                break;
+            }
+        }
+        
+        if (!alreadyAdded) {
             [self.podcastList addObject:podcastsItem];
             
             NSString *key = podcastsItem.category_name;
@@ -255,18 +195,19 @@
             [subArray addObject:podcastsItem];
             
             [self.categorizedPodcast setObject:subArray forKey:key];
-        
-        CGFloat value = ((float)([data indexOfObject:item] + 1) / (float)data.count);
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
-        
-        [self progressValue:((float)self.podcastList.count/(float)data.count)];
-//            dispatch_sync(dispatch_get_main_queue(), ^{
-        
-                [self.mainTableView reloadData];
-//            });
+            
+//            CGFloat value = ((float)([data indexOfObject:item] + 1) / (float)data.count);
 //            
-//        });
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
+            
+            
+            [self.mainTableView reloadData];
+        }
+        
+        
+        
+        
+        
     }
     
 //    for (PodcastsObject *item in self.podcastList) {
@@ -290,7 +231,8 @@
     
     [self saveOfflineData:self.podcastList forKey:@"podcasts_list"];
     
-    [self removeLoadingAnimation];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
+//    [self removeLoadingAnimation];
     
 }
 
@@ -502,6 +444,10 @@
     buttonVenue.button.locationName = @"CCF CENTER";
     [buttonVenue.button addTarget:self action:@selector(viewMapButton:) forControlEvents:UIControlEventTouchUpInside];
     [cell.viewForControls addSubview:buttonVenue];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewMapButton:)];
+    tap.numberOfTapsRequired = 1;
+    [buttonVenue.button addGestureRecognizer:tap];
     
     
 }

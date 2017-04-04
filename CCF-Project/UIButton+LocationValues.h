@@ -18,6 +18,7 @@
 @property (strong, nonatomic) NSString *eventTitle;
 @property (strong, nonatomic) NSString *eventAddress;
 @property (strong, nonatomic) NSString *eventDate;
-@property (strong, nonatomic) NSString *eventTime;
+//@property (strong, nonatomic) NSString *eventTime;
+@property (strong, nonatomic) NSString *eventEndDate;
 
 @end

@@ -38,47 +38,8 @@
     self.shownPerPage = 0;
     
     
-    
-//    if([[AFNetworkReachabilityManager sharedManager] networkReachabilityStatus] > 0){
-//        //get offline data
-//        
-//        NSManagedObjectContext *context = ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext;
-//        
-//        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"OfflineData"];
-//        
-//        NSError *error = nil;
-//        
-//        NSManagedObject *offlineData = [[context executeFetchRequest:request error:&error] lastObject];
-//        
-//        NSArray *newslist = [NSKeyedUnarchiver unarchiveObjectWithData:[offlineData valueForKey:@"news_list"]];
-//        
-//        [self.news_list removeAllObjects];
-//        
-//        self.news_list = nil;
-//        
-//        self.news_list = [NSMutableArray arrayWithArray:newslist];
-//        
-//        [self.tableView reloadData];
-//    }
-//    else {
-    
-        
-        NETWORK_INDICATOR(YES)
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callGroupsData:) name:kOBS_GROUPS_NOTIFICATION object:nil];
-        
-        [self callGETAPI:kGROUPS_LINK withParameters:nil completionNotification:kOBS_GROUPS_NOTIFICATION];
-        
-        
-//    }
-    
-    PTPusher *pusherClient = APPDELEGATE_CLASS.pusherClient;
-    
-    PTPusherChannel *channel = [pusherClient subscribeToChannelNamed:@"news"];
-    [channel bindToEventNamed:@"B1G Singles" handleWithBlock:^(PTPusherEvent *channelEvent) {
-        // channelEvent.data is a NSDictionary of the JSON object received
-        NSLog(@"##data:%@",channelEvent.data);
-    }];
+    [self reloadTables];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -91,11 +52,51 @@
         
     if(self.news_list){
         [self.news_list removeAllObjects];
+        [self.groupList removeAllObjects];
+        
+        self.news_list = nil;
+        self.groupList = nil;
+        
+    }
+    
+    
+    if([[AFNetworkReachabilityManager sharedManager] networkReachabilityStatus] == AFNetworkReachabilityStatusNotReachable){
+        //get offline data
+        
+        NSManagedObjectContext *context = ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext;
+        
+        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"OfflineData"];
+        
+        NSError *error = nil;
+        
+        NSManagedObject *offlineData = [[context executeFetchRequest:request error:&error] lastObject];
+        
+        NSArray *newslist = [NSKeyedUnarchiver unarchiveObjectWithData:[offlineData valueForKey:@"news_list"]];
+        
+        [self.news_list removeAllObjects];
         
         self.news_list = nil;
         
-        [self callGETAPI:kNEWS_LINK withParameters:nil completionNotification:kOBS_NEWS_NOTIFICATION];
+        self.news_list = [NSMutableArray arrayWithArray:newslist];
+        
+        [self.tableView reloadData];
     }
+    else {
+        
+//        CGFloat value = 0.8f;
+//        
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
+//
+//        NETWORK_INDICATOR(YES)
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callGroupsData:) name:kOBS_GROUPS_NOTIFICATION object:nil];
+        
+        [self callGETAPI:kGROUPS_LINK withParameters:nil completionNotification:kOBS_GROUPS_NOTIFICATION];
+        
+        
+    }
+    
+    
 //    [self showLoadingAnimation:self.view];
 }
 
@@ -103,7 +104,7 @@
     //    NSLog(@"## result:%@",notification.object);
     
     
-    NETWORK_INDICATOR(NO)
+//    NETWORK_INDICATOR(NO)
     
     if(!self.groupList){
         self.groupList = [NSMutableArray array];
@@ -115,15 +116,27 @@
     NSArray *data = result[@"data"];
     
     for (NSDictionary *item in data) {
-        [self.groupList addObject:item];
         
-        CGFloat value = ((float)([data indexOfObject:item] + 1) / (float)data.count);
+        NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
+        BOOL switchValue = [[NSUserDefaults standardUserDefaults] boolForKey:valueKey];
+        
+        if (switchValue == YES) {
+            [self.groupList addObject:item[@"id"]];
+        }
+        
+        
+//        CGFloat value = ((float)([data indexOfObject:item] + 1) / (float)data.count);
+//        
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
     }
     
     
-    NETWORK_INDICATOR(YES)
+//    CGFloat value = 0.8f;
+//    
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
+    
+//    NETWORK_INDICATOR(YES)
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendNewsList:) name:kOBS_NEWS_NOTIFICATION object:nil];
     
@@ -136,7 +149,7 @@
     
 //    [self removeLoadingAnimation];
     
-    NETWORK_INDICATOR(NO)
+//    NETWORK_INDICATOR(NO)
     
     if(!self.news_list){
         self.news_list = [NSMutableArray array];
@@ -152,31 +165,7 @@
     for (NSDictionary *item in data) {
         
         
-        BOOL hasGroupSelection = NO;
         
-        for (NSDictionary *groupItem in self.groupList) {
-            
-            NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
-            
-            BOOL switchValue = [[NSUserDefaults standardUserDefaults] boolForKey:valueKey];
-            
-            if ([item[@"groups"] isKindOfClass:[NSArray class]]) {
-                if ([item[@"groups"] count]) {
-                    for (NSDictionary *groups in item[@"groups"]) {
-                        if ([groupItem[@"id"] integerValue] == [groups[@"id"] integerValue] && switchValue) {
-                            hasGroupSelection = YES;
-                            break;
-                        }
-                    }
-                }
-                else {
-                    hasGroupSelection = YES;
-                    break;
-                }
-            }
-            
-            
-        }
         
 //        NSManagedObjectContext *context = MANAGE_CONTEXT;
 //        
@@ -206,6 +195,21 @@
         
         
 //        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        BOOL hasGroupSelection = NO;
+        
+        if ([item[@"groups"] isKindOfClass:[NSArray class]]) {
+            if ([item[@"groups"] count]) {
+                for (NSDictionary *group_item in item[@"groups"]) {
+                    if ([self.groupList containsObject:group_item[@"id"]]) {
+                        hasGroupSelection = YES;
+                        break;
+                    }
+                }
+            }
+            else {
+                hasGroupSelection = YES;
+            }
+        }
         
         if (hasGroupSelection) {
             NewsObject *newsItem = [[NewsObject alloc] init];
@@ -228,21 +232,32 @@
 //                newsItem.group_name = isNIL(item[@"groups"]);
 //            }
             
+            BOOL alreadyAdded = NO;
+            for (NewsObject *i in self.news_list) {
+                if ([i.id_num integerValue] == [newsItem.id_num integerValue]) {
+                    alreadyAdded = YES;
+                    break;
+                }
+            }
             
-            [self.news_list addObject:newsItem];
+            if (!alreadyAdded) {
+                [self.news_list addObject:newsItem];
+            }
             
         }
         
         
         
-        CGFloat value = ((float)([data indexOfObject:item] + 1) / (float)data.count);
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
+//        CGFloat value = ((float)([data indexOfObject:item] + 1) / (float)data.count);
+//        
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:[NSNumber numberWithFloat:value]];
         
         [self.tableView reloadData];
     }
     
     [self saveOfflineData:self.news_list forKey:@"news_list"];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
 }
 
 #pragma mark - Table view data source

@@ -38,7 +38,15 @@
     [[UIApplication sharedApplication] registerForRemoteNotifications];
     
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-        
+    
+    
+    
+    PTPusherChannel *channel = [self.pusherClient subscribeToChannelNamed:@"news"];
+    [channel bindToEventNamed:@"B1G Singles" handleWithBlock:^(PTPusherEvent *channelEvent) {
+        // channelEvent.data is a NSDictionary of the JSON object received
+        NSLog(@"##data:%@",channelEvent.data);
+    }];
+    
     return YES;
 }
 

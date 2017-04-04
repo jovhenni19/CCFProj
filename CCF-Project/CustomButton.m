@@ -25,7 +25,7 @@
     
 - (instancetype)initWithText:(NSString*)text image:(UIImage*)image frame:(CGRect)viewFrame locked:(BOOL)locked {
     
-    UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(28.0f, 0.0f, viewFrame.size.width - 20.0f, viewFrame.size.height)];
+    UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(22.0f, 0.0f, viewFrame.size.width - 20.0f, viewFrame.size.height)];
     tv.text = [text uppercaseString];
     tv.font = [UIFont fontWithName:@"OpenSans" size:11.0f];
     CGSize contentSize = [tv contentSize];
@@ -34,7 +34,7 @@
     
     CGRect newFrame = CGRectMake(viewFrame.origin.x, viewFrame.origin.y, viewFrame.size.width, height);
     
-    UILabel *lblText = [[UILabel alloc] initWithFrame:CGRectMake(28.0f, 0.0f, newFrame.size.width - 28.0f, newFrame.size.height)];
+    UILabel *lblText = [[UILabel alloc] initWithFrame:CGRectMake(22.0f, 0.0f, newFrame.size.width - 22.0f, newFrame.size.height)];
     lblText.text = [text uppercaseString];
     lblText.font = [UIFont fontWithName:@"OpenSans" size:11.0f];
     lblText.numberOfLines = 0;
@@ -42,7 +42,7 @@
     
     [lblText sizeToFit];
     
-    newFrame = CGRectMake(viewFrame.origin.x, viewFrame.origin.y, lblText.frame.size.width + 30.0f, height);
+    newFrame = CGRectMake(viewFrame.origin.x, viewFrame.origin.y, lblText.frame.size.width + 22.0f, height);
     
     if (locked) {
         newFrame = viewFrame;
@@ -57,18 +57,24 @@
         
         [self addSubview:self.imageView];
         
-        self.labelText = [[UILabel alloc] initWithFrame:CGRectMake(28.0f, 0.0f, newFrame.size.width - 28.0f, newFrame.size.height)];
+        self.labelText = [[UILabel alloc] initWithFrame:CGRectMake(22.0f, 0.0f, newFrame.size.width - 22.0f, newFrame.size.height)];
         self.labelText.text = [text uppercaseString];
         self.labelText.font = [UIFont fontWithName:@"OpenSans" size:11.0f];
         self.labelText.numberOfLines = 0;
         self.labelText.lineBreakMode = NSLineBreakByWordWrapping;
+//        self.labelText.layer.borderWidth = 1.0f;
         
         [self addSubview:self.labelText];
         
         self.button = [UIButton buttonWithType:UIButtonTypeCustom];
         self.button.frame = newFrame;
+        self.button.layer.zPosition = 99.0f;
         
         [self addSubview:self.button];
+        
+        
+//        self.layer.borderColor = [UIColor redColor].CGColor;
+//        self.layer.borderWidth = 1.0f;
         
     }
     
@@ -77,7 +83,7 @@
 
 - (instancetype)initWithText:(NSString*)text image:(UIImage*)image frame:(CGRect)viewFrame {
     
-    UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(28.0f, 0.0f, viewFrame.size.width - 20.0f, viewFrame.size.height)];
+    UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(22.0f, 0.0f, viewFrame.size.width - 20.0f, viewFrame.size.height)];
     tv.text = [text uppercaseString];
     tv.font = [UIFont fontWithName:@"OpenSans" size:11.0f];
     CGSize contentSize = [tv contentSize];
@@ -95,7 +101,7 @@
         
         [self addSubview:self.imageView];
         
-        self.labelText = [[UILabel alloc] initWithFrame:CGRectMake(28.0f, 0.0f, newFrame.size.width - 28.0f, newFrame.size.height)];
+        self.labelText = [[UILabel alloc] initWithFrame:CGRectMake(22.0f, 0.0f, newFrame.size.width - 22.0f, newFrame.size.height)];
         self.labelText.text = [text uppercaseString];
         self.labelText.font = [UIFont fontWithName:@"OpenSans" size:11.0f];
         self.labelText.numberOfLines = 0;
@@ -105,6 +111,7 @@
         
         self.button = [UIButton buttonWithType:UIButtonTypeCustom];
         self.button.frame = newFrame;
+        self.button.layer.zPosition = 99.0f;
         
         [self addSubview:self.button];        
         
