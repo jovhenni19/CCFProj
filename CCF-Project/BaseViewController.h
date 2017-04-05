@@ -38,6 +38,8 @@
 #import "UIImageView+WebCache.h"
 #import "AFNetworkReachabilityManager.h"
 
+#import "STKAudioPlayer.h"
+
 
 #define NETWORK_INDICATOR(bool)                                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:bool];
 

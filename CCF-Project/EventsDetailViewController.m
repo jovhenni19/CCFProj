@@ -107,15 +107,6 @@
     [self.imageHeaderView addConstraint:[NSLayoutConstraint constraintWithItem:buttonTime attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0f]];
     
     
-    self.header = self.imageHeaderView;
-//    self.footer = self.shareControlFooterView;
-    
-    [self.imageHeaderView removeFromSuperview];
-//    [self.shareControlFooterView removeFromSuperview];
-    
-    self.mainTableVIew.tableHeaderView = nil;
-//    self.mainTableVIew.tableFooterView = nil;
-    
     if (self.imageData) {
         self.imageView.image = [UIImage imageWithData:self.imageData];
     }
@@ -125,20 +116,20 @@
             self.imageData = UIImageJPEGRepresentation(image, 100.0f);
         }];
         
-        
-//        [self getImageFromURL:self.imageURL completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-//            
-//            UIImage *image = (UIImage*)responseObject;
-//            
-//            [self.imageView setImage:image];
-//            
-//        } andProgress:^(NSInteger expectedBytesToReceive, NSInteger receivedBytes) {
-//            
-//        }];
     }
     else {
         self.imageView.image = [UIImage imageNamed:@"placeholder"];
     }
+    
+    self.header = self.imageHeaderView;
+//    self.footer = self.shareControlFooterView;
+    
+    [self.imageHeaderView removeFromSuperview];
+//    [self.shareControlFooterView removeFromSuperview];
+    
+    self.mainTableVIew.tableHeaderView = nil;
+//    self.mainTableVIew.tableFooterView = nil;
+    
     
     
     buttonDate.translatesAutoresizingMaskIntoConstraints = YES;
@@ -209,9 +200,13 @@
         CGSize contentSize = textRect.size;
         
         if (contentSize.height > 20.0f) {
-            return 30 + (contentSize.height);
+            return 65.0f + (contentSize.height);
         }
-        return 30 + (contentSize.height);
+        
+        
+        
+        
+        return 65.0f + (contentSize.height);
         
     }
     else if ([indexPath row] == 1 && self.showRegisterCell) {
@@ -232,6 +227,7 @@
         textView.text = self.detailDescription;
         textView.font = [UIFont fontWithName:@"OpenSans" size:14.0f];
         
+                
     }
     else if ([indexPath row] == 1 && self.showRegisterCell) {
         cell = [tableView dequeueReusableCellWithIdentifier:@"registerCell"];

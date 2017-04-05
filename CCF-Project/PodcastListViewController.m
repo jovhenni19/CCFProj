@@ -182,7 +182,7 @@
     
     details.imageURL = item.image_url;
     details.youtubeID = [item.youtubeURL length]?[item.youtubeURL substringWithRange:NSMakeRange(32, 11)]:@"";
-    details.urlForAudio = [item.audioURL length]?[NSString stringWithFormat:@"%@%@%@/audio/%@",kAPI_LINK,kPODCAST_LINK,item.id_num,item.audioURL]:@"";
+    details.urlForAudio = [item.audioURL length]?[NSString stringWithFormat:@"%@%@%@/audio/%@",kAPI_LINK,@"/podcasts/",item.id_num,item.audioURL]:@"";
     
     
     CATransition *transition = [CATransition animation];

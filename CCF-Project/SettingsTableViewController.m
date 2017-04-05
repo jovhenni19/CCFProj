@@ -112,38 +112,68 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cellSetting"];
     
     
-    // Configure the cell...
+    NSString *identifier = @"cellSetting";
+    if ([indexPath section] == 0) {
+        identifier = @"cellSettingPush";
+    }
+    else if ([indexPath section] == 1) {
+        identifier = @"cellSettingAll";
+    }
+    else {
+        identifier = @"cellSetting";
+    }
     
-    UILabel *label = [cell.contentView viewWithTag:1];
-    UISwitch *switchControl = [cell.contentView viewWithTag:2];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
     
-    [switchControl addTarget:self action:@selector(changeSwitchValue:) forControlEvents:UIControlEventValueChanged];
     
     if ([indexPath section] == 0) {
+        
+        
+        
+        // Configure the cell...
+        
+        UILabel *label = [cell.contentView viewWithTag:1];
+        UISwitch *switchControl = [cell.contentView viewWithTag:2];
         label.text = @"Push Notification";
-        switchControl.tag = 9999;
         
         BOOL pushNotification_ON = [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
         
+        [switchControl addTarget:self action:@selector(changePushValue:) forControlEvents:UIControlEventValueChanged];
         [switchControl setOn:pushNotification_ON];
         
     }
     else if ([indexPath section] == 1) {
         
-        label.text = @"All Groups";
-        switchControl.tag = 9998;
         
+        
+        // Configure the cell...
+        
+        UILabel *label = [cell.contentView viewWithTag:1];
+        UISwitch *switchControl = [cell.contentView viewWithTag:2];
+        
+        label.text = @"All Groups";
+        
+        [switchControl addTarget:self action:@selector(changeAllGroupsValue:) forControlEvents:UIControlEventValueChanged];
         [switchControl setOn:self.allIsOn];
     }
     else {
         
         
         NSDictionary *item = self.groupList[[indexPath row]];
+        
+        
+        
+        // Configure the cell...
+        
+        UILabel *label = [cell.contentView viewWithTag:1];
+        UISwitch *switchControl = [cell.contentView viewWithTag:10];
+        
         label.text = item[@"name"];
-        switchControl.tag = [indexPath row];
+//        switchControl.tag = [indexPath row];
+        
+        [switchControl addTarget:self action:@selector(changeSwitchValue:) forControlEvents:UIControlEventValueChanged];
         
         NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
         
@@ -165,40 +195,77 @@
     return nil;
 }
 
-
-- (void) changeSwitchValue:(UISwitch*)sender {
-    if ([sender tag] == 9999) {
-        if ([sender isOn]) {
-            [[UIApplication sharedApplication] registerForRemoteNotifications];
-        }
-        else {
-            [[UIApplication sharedApplication] unregisterForRemoteNotifications];
-        }
-    }
-    else if ([sender tag] == 9998) {
-        if ([sender isOn]) {
-            self.allIsOn = YES;
-        }
-        else {
-            self.allIsOn = NO;
-        }
-        
-        [self.mainTableView reloadSections:[NSIndexSet indexSetWithIndex:2] withRowAnimation:UITableViewRowAnimationFade];
+- (void) changePushValue:(UISwitch*)sender {
+    if ([sender isOn]) {
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
     }
     else {
-        NSDictionary *item = self.groupList[[sender tag]];
+        [[UIApplication sharedApplication] unregisterForRemoteNotifications];
+    }
+}
+
+- (void) changeAllGroupsValue:(UISwitch*)sender {
+    
+    if ([sender isOn]) {
+        self.allIsOn = YES;
         
-        NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
-        if ([sender isOn]) {
-            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:valueKey];
+        for (NSDictionary *item in self.groupList) {
+            
+            NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:valueKey];
         }
-        else {
+    }
+    else {
+        self.allIsOn = NO;
+    }
+    
+    [self.mainTableView reloadSections:[NSIndexSet indexSetWithIndex:2] withRowAnimation:UITableViewRowAnimationFade];
+}
+
+- (void) changeSwitchValue:(UISwitch*)sender {
+    
+    CGPoint pointInTable = [sender convertPoint:sender.bounds.origin toView:self.mainTableView];
+    
+    NSIndexPath *indexPath = [self.mainTableView indexPathForRowAtPoint:pointInTable];
+    
+    NSDictionary *item = self.groupList[[indexPath row]];
+    
+    NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
+    if ([sender isOn]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:valueKey];
+    }
+    else {
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:valueKey];
+    }
+    
+    self.allIsOn = [self isAllGroupEnabled];
+    if (self.allIsOn) {
+        
+        for (NSDictionary *item in self.groupList) {
+            
+            NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:valueKey];
         }
     }
     
+    [self.mainTableView reloadSections:[NSIndexSet indexSetWithIndex:2] withRowAnimation:UITableViewRowAnimationFade];
+    [self.mainTableView reloadData];
 }
 
+- (BOOL) isAllGroupEnabled {
+    BOOL enabled = NO;
+    for (NSDictionary *item in self.groupList) {
+        
+        NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
+        if(![[NSUserDefaults standardUserDefaults] boolForKey:valueKey]) {
+            enabled = NO;
+            break;
+        }
+        enabled = YES;
+    }
+    
+    return enabled;
+}
 
 /*
 // Override to support conditional editing of the table view.

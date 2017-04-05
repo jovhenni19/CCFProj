@@ -19,4 +19,7 @@
 @property (strong ,nonatomic) NSString *urlForAudio;
 @property (strong, nonatomic) YMCAudioPlayer *audioPlayer;
 @property (strong, nonatomic) id<AudioCellDelegate> delegate;
+@property (strong, nonatomic) AVPlayer *audioStreamerPlayer;
+
+- (void)initAudioPlayer;
 @end

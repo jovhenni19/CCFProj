@@ -17,7 +17,15 @@
 - (void)initPlayerFromURL:(NSString*)urlString {
     NSURL *url = [NSURL URLWithString:urlString];
     NSError *error;
-    self.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:&error];
+    
+    NSData *soundData = [NSData dataWithContentsOfURL:url];
+    NSString *filePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
+                                                               NSUserDomainMask, YES) objectAtIndex:0]
+                          stringByAppendingPathComponent:[url lastPathComponent]];
+    [soundData writeToFile:filePath atomically:YES];
+    self.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL
+                                                           fileURLWithPath:filePath] error:&error];
+    
     if (error) {
         NSLog(@"## %@ error:%@",urlString,[error description]);
     }

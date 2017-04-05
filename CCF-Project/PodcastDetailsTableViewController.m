@@ -38,8 +38,27 @@
     self.arrayContents = @[isNil(self.imageURL),isNil(self.podcastDescription),isNil(self.urlForAudio),isNil(self.youtubeID)];
     [self.tableView reloadData];
     
-    NSLog(@"URL-AUDIO:%@",self.urlForAudio);
     
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@YES];
+//    NSURL *baseURL = [NSURL URLWithString:kAPI_LINK];
+//    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:baseURL];
+//    manager.responseSerializer = [AFImageResponseSerializer serializer];
+//    //    NSLog(@"base:%@ url:%@",baseURL,urlPath);
+//    
+//    NSURLSessionDataTask *task = [manager dataTaskWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.urlForAudio]] completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+//        
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
+//    }];
+//    
+//    
+//    [manager setDataTaskDidReceiveDataBlock:^(NSURLSession * _Nonnull session, NSURLSessionDataTask * _Nonnull dataTask, NSData * _Nonnull data) {
+//        
+//        
+////        progress(dataTask.countOfBytesExpectedToReceive,dataTask.countOfBytesReceived);
+//    }];
+//    
+//    
+//    [task resume];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
 }
@@ -161,7 +180,6 @@
                 custom.urlForAudio = self.urlForAudio;
                 custom.delegate = self;
                 self.audioPlayer = custom.audioPlayer;
-                
                 cell = custom;
             }
             else {

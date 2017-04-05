@@ -184,14 +184,12 @@
     
     [self.horizontalTableview setCollectionViewLayout:layout];
     
-    [self.horizontalTableview reloadData];
     
 //    UILongPressGestureRecognizer *holdGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(recorderGesture:)];
 //    holdGesture.numberOfTouchesRequired = 1;
 //    holdGesture.minimumPressDuration = 10;
 //    
 //    [self.imageLogoTop addGestureRecognizer:holdGesture];
-    
     
 }
 
@@ -239,11 +237,8 @@
         [self.horizontalTableview reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
         [self.horizontalTableview reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:1 inSection:0]]];
         
-        
-//        [self.horizontalTableview scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        [self.horizontalTableview reloadData];
     }
-//    self.horizontalTableview.layer.borderWidth = 3.0f;
-//    self.horizontalTableview.layer.borderColor = [UIColor redColor].CGColor;
     
 }
 
@@ -555,12 +550,12 @@
 //    }
     
     
-    CGRect frame = cell.contentView.frame;
-    frame.origin.x = 0.0f;
-    frame.origin.y = -200.0f;
-    frame.size.width = [[NSUserDefaults standardUserDefaults] floatForKey:@"horizontal_width"];//self.containerViewForTable.frame.size.height;
-    frame.size.height = [[NSUserDefaults standardUserDefaults] floatForKey:@"horizontal_height"];//self.containerViewForTable.frame.size.width;
-    cell.contentView.frame = frame;
+//    CGRect frame = self.containerViewForTable.frame;
+//    frame.origin.x = 0.0f;
+//    frame.origin.y = 0.0f;
+//    frame.size.width = [[NSUserDefaults standardUserDefaults] floatForKey:@"horizontal_width"];//self.containerViewForTable.frame.size.height;
+//    frame.size.height = [[NSUserDefaults standardUserDefaults] floatForKey:@"horizontal_height"];//self.containerViewForTable.frame.size.width;
+//    self.containerViewForTable.frame = frame;
     
     [self loadViewControllerWithContentView:cell.contentView index:[indexPath row]];
     
@@ -692,27 +687,33 @@
 - (void) customNetworkActivityIndicator {
     
     if(CGRectEqualToRect(self.viewForProgressLoading.frame, CGRectMake(0.0f, self.viewForProgressLoading.frame.origin.y, 0.0f, 2.0f))) {
-        NETWORK_INDICATOR(YES)
-        [UIView animateWithDuration:0.4f delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
-            self.viewForProgressLoading.frame = CGRectMake((self.view.frame.size.width/2) - 100.0f, self.viewForProgressLoading.frame.origin.y, 200.0f, 2.0f);
-        } completion:^(BOOL finished) {
-            [UIView animateWithDuration:0.4f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
-                self.viewForProgressLoading.frame = CGRectMake(self.view.frame.size.width - 10.0f, self.viewForProgressLoading.frame.origin.y, 10.0f, 2.0f);
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NETWORK_INDICATOR(YES)
+            [UIView animateWithDuration:0.4f delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
+                self.viewForProgressLoading.frame = CGRectMake((self.view.frame.size.width/2) - 100.0f, self.viewForProgressLoading.frame.origin.y, 200.0f, 2.0f);
             } completion:^(BOOL finished) {
-                [UIView animateWithDuration:0.4f delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
-                    self.viewForProgressLoading.frame = CGRectMake((self.view.frame.size.width/2) - 100.0f, self.viewForProgressLoading.frame.origin.y, 200.0f, 2.0f);
+                [UIView animateWithDuration:0.4f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
+                    self.viewForProgressLoading.frame = CGRectMake(self.view.frame.size.width - 10.0f, self.viewForProgressLoading.frame.origin.y, 10.0f, 2.0f);
                 } completion:^(BOOL finished) {
-                    [UIView animateWithDuration:0.4f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
-                        self.viewForProgressLoading.frame = CGRectMake(0.0f, self.viewForProgressLoading.frame.origin.y, 10.0f, 2.0f);
+                    [UIView animateWithDuration:0.4f delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
+                        self.viewForProgressLoading.frame = CGRectMake((self.view.frame.size.width/2) - 100.0f, self.viewForProgressLoading.frame.origin.y, 200.0f, 2.0f);
                     } completion:^(BOOL finished) {
-                        self.viewForProgressLoading.frame = CGRectMake(0.0f, self.viewForProgressLoading.frame.origin.y, 0.0f, 2.0f);
-                        NETWORK_INDICATOR(NO)
-                        //[self showNetworkActivityIndicator:[NSNotification notificationWithName:@"obs_progress" object:@YES]];
-                        
+                        [UIView animateWithDuration:0.4f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
+                            self.viewForProgressLoading.frame = CGRectMake(0.0f, self.viewForProgressLoading.frame.origin.y, 10.0f, 2.0f);
+                        } completion:^(BOOL finished) {
+                            self.viewForProgressLoading.frame = CGRectMake(0.0f, self.viewForProgressLoading.frame.origin.y, 0.0f, 2.0f);
+                            NETWORK_INDICATOR(NO)
+                            //[self showNetworkActivityIndicator:[NSNotification notificationWithName:@"obs_progress" object:@YES]];
+                            
+                        }];
                     }];
                 }];
             }];
-        }];
+        });
+        
+        
+        
     }
     
 }
