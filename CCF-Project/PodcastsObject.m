@@ -19,6 +19,7 @@
 @synthesize title;
 @synthesize youtubeURL;
 @synthesize audioURL;
+@synthesize audioFilePath;
 
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super init]) {
@@ -31,6 +32,7 @@
         self.category_name = [decoder decodeObjectForKey:@"podcasts_category_name"];
         self.youtubeURL = [decoder decodeObjectForKey:@"podcasts_youtube_url"];
         self.audioURL = [decoder decodeObjectForKey:@"podcasts_audio_url"];
+        self.audioFilePath = [decoder decodeObjectForKey:@"podcasts_audio_filepath"];
     }
     return self;
 }
@@ -45,6 +47,7 @@
     [encoder encodeObject:category_name forKey:@"podcasts_category_name"];
     [encoder encodeObject:youtubeURL forKey:@"podcasts_youtube_url"];
     [encoder encodeObject:audioURL forKey:@"podcasts_audio_url"];
+    [encoder encodeObject:audioFilePath forKey:@"podcasts_audio_filepath"];
 }
 
 @end

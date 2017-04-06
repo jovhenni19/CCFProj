@@ -38,7 +38,9 @@
 #import "UIImageView+WebCache.h"
 #import "AFNetworkReachabilityManager.h"
 
-#import "STKAudioPlayer.h"
+#import <AVFoundation/AVPlayer.h>
+#import <AVFoundation/AVPlayerItem.h>
+#import <AVFoundation/AVAsset.h>
 
 
 #define NETWORK_INDICATOR(bool)                                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:bool];
@@ -103,4 +105,9 @@ extern NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION;
 - (void) reloadTables;
 
 - (void) saveOfflineData:(NSArray*)list forKey:(NSString*)key;
+
+- (void)getAudioFromURL:(NSString*)urlPath
+               progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock
+            destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
+      completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
 @end

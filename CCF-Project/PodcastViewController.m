@@ -84,7 +84,17 @@
         self.podcastList = nil;
         self.categories = nil;
         self.categorizedPodcast = nil;
+        if(!self.podcastList){
+            self.podcastList = [NSMutableArray array];
+        }
         
+        if(!self.categories){
+            self.categories = [NSMutableArray array];
+        }
+        
+        if(!self.categorizedPodcast){
+            self.categorizedPodcast = [NSMutableDictionary dictionary];
+        }
         self.podcastList = [NSMutableArray arrayWithArray:newslist];
         
         for (PodcastsObject *podcastsItem in self.podcastList) {
@@ -169,6 +179,11 @@
         podcastsItem.audioURL = isNIL(item[@"audiofile"]);
         podcastsItem.youtubeURL = isNIL(item[@"youtubeID"]);
         
+        if ([isNIL(item[@"audiofile"]) length]) {
+            
+            NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+            podcastsItem.audioFilePath = [[documentsDirectoryURL URLByAppendingPathComponent:[item[@"audiofile"]stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]]] absoluteString];
+        }
         
         
         BOOL alreadyAdded = NO;
@@ -475,6 +490,7 @@
     details.imageURL = item.image_url;
     details.youtubeID = [item.youtubeURL length]?[item.youtubeURL substringWithRange:NSMakeRange(32, 11)]:@"";
     details.urlForAudio = [item.audioURL length]?[NSString stringWithFormat:@"%@%@%@/audio/%@",kAPI_LINK,@"/podcasts/",item.id_num,item.audioURL]:@"";
+    details.audioFilePath = item.audioFilePath;
     
     
     CATransition *transition = [CATransition animation];
@@ -601,7 +617,7 @@
     }];
 }
 
-- (void)activeAudioPlayer:(YMCAudioPlayer *)player {
+- (void)activeAudioPlayer:(AVPlayer *)player {
     self.audioPlayerPauser = player;
 }
 

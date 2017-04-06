@@ -106,6 +106,9 @@
     
     [self.imageHeaderView addConstraint:[NSLayoutConstraint constraintWithItem:buttonTime attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0f]];
     
+    buttonDate.translatesAutoresizingMaskIntoConstraints = YES;
+    buttonLocation.translatesAutoresizingMaskIntoConstraints = YES;
+    buttonTime.translatesAutoresizingMaskIntoConstraints = YES;
     
     if (self.imageData) {
         self.imageView.image = [UIImage imageWithData:self.imageData];
@@ -213,6 +216,7 @@
         if (self.registerLink.length == 0) {
             return 40.0f;
         }
+        return 100.0f;
         
     }
     return 65.0f;

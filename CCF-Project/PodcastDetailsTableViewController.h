@@ -13,7 +13,7 @@
 
 @protocol PodcastsDetailDelegate <NSObject>
 
-- (void) activeAudioPlayer:(YMCAudioPlayer*)player;
+- (void) activeAudioPlayer:(AVPlayer*)player;
 - (void) activeYoutubePlayer:(YTPlayerView*)youtubePlayer;
 
 @end
@@ -28,8 +28,9 @@
 @property (strong, nonatomic) NSString *podcastDescription;
 @property (strong, nonatomic) NSString *urlForAudio;
 @property (strong, nonatomic) NSString *youtubeID;
+@property (strong, nonatomic) NSString *audioFilePath;
 
-@property (strong, nonatomic) YMCAudioPlayer *audioPlayer;
+@property (strong, nonatomic) AVPlayer *audioPlayer;
 
 @property (strong, nonatomic) YTPlayerView *youtubePlayer;
 

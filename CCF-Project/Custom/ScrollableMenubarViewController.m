@@ -234,12 +234,22 @@
         [[NSUserDefaults standardUserDefaults] setFloat:self.containerViewForTable.frame.size.width forKey:@"horizontal_width"];
         [[NSUserDefaults standardUserDefaults] setFloat:self.containerViewForTable.frame.size.height forKey:@"horizontal_height"];
         
-        [self.horizontalTableview reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
-        [self.horizontalTableview reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:1 inSection:0]]];
-        
         [self.horizontalTableview reloadData];
+        
+        [self performSelector:@selector(reloadNews) withObject:self afterDelay:1];
+        [self performSelector:@selector(reloadPodcast) withObject:self afterDelay:2];
     }
     
+}
+
+- (void) reloadNews {
+    
+    [self.horizontalTableview reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
+}
+
+- (void) reloadPodcast {
+    
+    [self.horizontalTableview reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:1 inSection:0]]];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
@@ -621,8 +631,7 @@
         PodcastViewController *vc1 = [self.viewControllers objectAtIndex:1];
         
         if ([vc1 respondsToSelector:@selector(audioPlayerPauser)]) {
-            [vc1.audioPlayerPauser pauseAudio];
-            [vc1.audioPlayerPauser stopAudio];
+            [vc1.audioPlayerPauser pause];
             vc1.audioPlayerPauser = nil;
         }
         
@@ -688,7 +697,7 @@
     
     if(CGRectEqualToRect(self.viewForProgressLoading.frame, CGRectMake(0.0f, self.viewForProgressLoading.frame.origin.y, 0.0f, 2.0f))) {
         
-        dispatch_async(dispatch_get_main_queue(), ^{
+//        dispatch_async(dispatch_get_main_queue(), ^{
             NETWORK_INDICATOR(YES)
             [UIView animateWithDuration:0.4f delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
                 self.viewForProgressLoading.frame = CGRectMake((self.view.frame.size.width/2) - 100.0f, self.viewForProgressLoading.frame.origin.y, 200.0f, 2.0f);
@@ -710,7 +719,7 @@
                     }];
                 }];
             }];
-        });
+//        });
         
         
         

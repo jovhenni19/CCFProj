@@ -145,7 +145,12 @@
         [self.allLocations removeAllObjects];
         self.sattelites_list = nil;
         self.allLocations = nil;
-        
+        if(!self.sattelites_list){
+            self.sattelites_list = [NSMutableArray array];
+        }
+        if(!self.allLocations){
+            self.allLocations = [NSMutableDictionary dictionary];
+        }
         self.sattelites_list = [NSMutableArray arrayWithArray:newslist];
         
         for (SatellitesObject *sattelite in self.sattelites_list) {

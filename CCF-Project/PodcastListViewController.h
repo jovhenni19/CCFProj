@@ -11,7 +11,7 @@
 
 @interface PodcastListViewController : BaseViewController <PodcastsDetailDelegate>
 
-@property (strong, nonatomic) YMCAudioPlayer *audioPlayerPauser;
+@property (strong, nonatomic) AVPlayer *audioPlayerPauser;
 
 @property (strong, nonatomic) YTPlayerView *youtubePlayerPauser;
 

@@ -136,7 +136,11 @@
 //        events.date_raw_end = isNIL(item[@"date_end"][@"dateRaw"][@"date"]);
             events.registration_link = isNIL(item[@"registration_link"]);
             events.speakers = isNIL(item[@"speakers"]);
-            events.contact_info = isNIL(item[@"contact_info"]);
+        NSString *contacts = isNIL(item[@"contact_info"]);
+        if ([contacts rangeOfString:@"("].location != NSNotFound || [contacts rangeOfString:@")"].location != NSNotFound || [contacts rangeOfString:@"-"].location != NSNotFound || [contacts rangeOfString:@" "].location != NSNotFound || [contacts rangeOfString:@"+"].location != NSNotFound) {
+            contacts = [contacts stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"()+- "]];
+        }
+            events.contact_info = contacts;
             events.venue = isNIL(item[@"venue"]);
             events.created_date = isNIL(item[@"created_at"]);
         
@@ -381,7 +385,7 @@
     eventsDetailVC.imageData = events.image_data;
     eventsDetailVC.detailDescription = events.description_detail;
     eventsDetailVC.personName = events.speakers;
-    eventsDetailVC.personMobile = [NSString stringWithFormat:@"+63%@",[events.contact_info substringFromIndex:1]];
+    eventsDetailVC.personMobile = events.contact_info;// [NSString stringWithFormat:@"+63%@",[events.contact_info substringFromIndex:1]];
     eventsDetailVC.registerLink = events.registration_link;
     
     

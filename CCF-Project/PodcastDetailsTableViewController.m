@@ -66,8 +66,10 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    [self.audioPlayer pauseAudio];
-    [self.audioPlayer stopAudio];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_podcast_pause2" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_podcast_pause1" object:nil];
+    
+    [self.audioPlayer pause];
     self.audioPlayer = nil;
     
     [self.youtubePlayer pauseVideo];
@@ -179,7 +181,7 @@
                 PodDetailAudioTableViewCell *custom = (PodDetailAudioTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"audioCell" forIndexPath:indexPath];
                 custom.urlForAudio = self.urlForAudio;
                 custom.delegate = self;
-                self.audioPlayer = custom.audioPlayer;
+                self.audioPlayer = custom.audioStreamerPlayer;
                 cell = custom;
             }
             else {
@@ -292,7 +294,18 @@
         buttonDownload.backgroundColor = [UIColor colorWithRed:36.0f/255.0f green:179.0f/255.0f blue:196/255.0f alpha:1.0f];
         buttonDownload.titleLabel.font = [UIFont systemFontOfSize:14.0f];
         [buttonDownload setTitle:@"DOWNLOAD" forState:UIControlStateNormal];
+        [buttonDownload setEnabled:YES];
+        [buttonDownload addTarget:self action:@selector(downloadPressed:) forControlEvents:UIControlEventTouchUpInside];
         [buttonDownload setFrame:CGRectMake(0.0f, 0.0f, 120.0f, 24.0f)];
+        
+        NSString* documentsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+        
+        NSString* foofile = [documentsPath stringByAppendingPathComponent:[self.urlForAudio lastPathComponent]];
+        BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:foofile];
+        if (fileExists) {
+            [buttonDownload setEnabled:NO];
+            [buttonDownload setTitle:@"DOWNLOADED" forState:UIControlStateNormal];
+        }
         
         
         UIButton *buttonRead = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -491,7 +504,7 @@
 }
 
 - (void)removeFromParentViewController {
-    [self.audioPlayer pauseAudio];
+    [self.audioPlayer pause];
     [self.youtubePlayer pauseVideo];
 }
 
@@ -514,11 +527,11 @@
 }
 
 - (void)audioIsPlaying {
-//    [self.delegate activeAudioPlayer:self.audioPlayer];
+    [self.delegate activeAudioPlayer:self.audioPlayer];
 }
 
 - (void)youtubeIsPlaying {
-//    [self.delegate activeYoutubePlayer:self.youtubePlayer];
+    [self.delegate activeYoutubePlayer:self.youtubePlayer];
 }
 
 
@@ -528,4 +541,56 @@
 //    
 //    [self.youtubePlayer pauseVideo];
 //}
+
+- (void) downloadPressed:(UIButton*)button {
+    
+    
+    NSURL *baseURL = [NSURL URLWithString:kAPI_LINK];
+    
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[[self.urlForAudio stringByReplacingOccurrencesOfString:kAPI_LINK withString:@""] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]] relativeToURL:baseURL]];
+    
+//    NSLog(@"base:%@ url:%@",baseURL,self.urlForAudio);
+    
+    
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    
+    __block UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    
+    activity.center = button.center;
+    
+    NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:urlRequest progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+        [button setEnabled:NO];
+        [button setTitle:@"DOWNLOADING" forState:UIControlStateNormal];
+        [button addSubview:activity];
+        [activity startAnimating];
+        
+    } destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+        
+        NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+        NSLog(@"destination:%@",[documentsDirectoryURL URLByAppendingPathComponent:[response suggestedFilename]]);
+        return [documentsDirectoryURL URLByAppendingPathComponent:[response suggestedFilename]];
+    } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+        NSLog(@"File downloaded to: %@", filePath);
+        [button setEnabled:YES];
+        [activity stopAnimating];
+        [activity removeFromSuperview];
+        [button setTitle:@"DOWNLOADED" forState:UIControlStateNormal];
+    }];
+    
+    [downloadTask resume];
+    
+//    NSProgress * downloadProgress = [manager downloadProgressForTask:downloadTask];
+//    NSLog(@"File progress to: %@", downloadProgress);
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        [button setEnabled:NO];
+//        [button setTitle:[NSString stringWithFormat:@"%li%%",(long)((downloadProgress.completedUnitCount/downloadProgress.totalUnitCount)*100)] forState:UIControlStateNormal];
+//    });
+    
+    
+    
+}
+
+
 @end

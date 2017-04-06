@@ -10,6 +10,9 @@
 #import "YMCAudioPlayer.h"
 #import "YTPlayerView.h"
 #import "Pusher.h"
+#import <AVFoundation/AVPlayer.h>
+#import <AVFoundation/AVPlayerItem.h>
+#import <AVFoundation/AVAsset.h>
 
 @protocol ScrollableMenubarViewControllerDelegate <NSObject>
 @optional

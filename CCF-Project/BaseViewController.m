@@ -916,6 +916,42 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     
 }
 
+- (void)getAudioFromURL:(NSString*)urlPath
+               progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock1
+            destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination1
+      completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler1{
+    NETWORK_INDICATOR(YES)
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@YES];
+    
+    NSURL *baseURL = [NSURL URLWithString:kAPI_LINK];
+    
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[[urlPath stringByReplacingOccurrencesOfString:kAPI_LINK withString:@""] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]] relativeToURL:baseURL]];
+    
+        NSLog(@"base:%@ url:%@",baseURL,urlPath);
+    
+    
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    
+    
+    NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:urlRequest progress:^(NSProgress * _Nonnull downloadProgress) {
+        NSLog(@"File progress to: %@", [NSString stringWithFormat:@"%li%%",(long)((downloadProgress.completedUnitCount/downloadProgress.totalUnitCount)*100)]);
+        downloadProgressBlock1(downloadProgress);
+    } destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+        destination1(targetPath,response);
+        NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+        return [documentsDirectoryURL URLByAppendingPathComponent:[response suggestedFilename]];
+    } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+        NSLog(@"File downloaded to: %@", filePath);
+        completionHandler1(response,filePath,error);
+    }];
+    
+    [downloadTask resume];
+    
+}
+
+
 - (void) showLoadingAnimation:(UIView*)view withTotalCount:(NSInteger)count{
     
 //    UIImageView *loading = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"loading-logo"]];

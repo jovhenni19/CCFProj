@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "YMCAudioPlayer.h"
+#import <AVFoundation/AVPlayer.h>
+#import <AVFoundation/AVPlayerItem.h>
+#import <AVFoundation/AVAsset.h>
 
 @protocol AudioCellDelegate <NSObject>
 

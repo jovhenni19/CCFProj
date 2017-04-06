@@ -1,19 +1,20 @@
 //
-//  PodcastViewController.h
+//  DownloadsViewController.h
 //  CCF-Project
 //
-//  Created by Joshua Jose Pecson on 01/02/2017.
+//  Created by Joshua Jose Pecson on 07/04/2017.
 //  Copyright © 2017 JoVhengshua Apps. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "BaseViewController.h"
 #import "PodcastDetailsTableViewController.h"
 
-@interface PodcastViewController : BaseViewController <UITableViewDelegate, UITableViewDataSource, PodcastsDetailDelegate>
+@interface DownloadsViewController : BaseViewController <UITableViewDelegate, UITableViewDataSource, PodcastsDetailDelegate>
 
 @property (strong, nonatomic) AVPlayer *audioPlayerPauser;
 
 @property (strong, nonatomic) YTPlayerView *youtubePlayerPauser;
 
 @end
+
+

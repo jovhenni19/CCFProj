@@ -82,6 +82,7 @@
     NSString *time = [[NSString alloc]
                       initWithFormat:@"%d:%02d",
                       roundedMinutes, roundedSeconds];
+    NSLog(@"time:%@",time);
     return time;
 }
 

@@ -18,6 +18,7 @@
     NSString *title;
     NSString *youtubeURL;
     NSString *audioURL;
+    NSString *audioFilePath;
 }
 
 @property (nullable, nonatomic, copy) NSString *category_name;
@@ -29,5 +30,6 @@
 @property (nullable, nonatomic, copy) NSString *title;
 @property (nullable, nonatomic, copy) NSString *youtubeURL;
 @property (nullable, nonatomic, copy) NSString *audioURL;
+@property (nullable, nonatomic, copy) NSString *audioFilePath;
 
 @end

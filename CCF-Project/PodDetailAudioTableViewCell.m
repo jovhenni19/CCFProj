@@ -32,7 +32,7 @@
 //    self.audioPlayer = [[YMCAudioPlayer alloc] init];
 //    [self setupAudioPlayer:self.urlForAudio];
     
-    self.duration.text = @"--:--";
+    self.duration.text = @"--:-- / --:--";
     
     self.currentTimeSlider.value = 0.0f;
 }
@@ -50,12 +50,12 @@
                           stringByAppendingPathComponent:@"sound"];
     BOOL success = [soundData writeToFile:filePath atomically:YES];
     
-//    if (success) {
-//        NSLog(@"[%@]\nsuccess !!!%@",url,soundData);
-//    }
-//    else {
-//        NSLog(@"[%@]\n (%@)failed !!!%@",url,[error description],soundData);
-//    }
+    if (success) {
+        NSLog(@"[%@]\nsuccess !!!%@",url,soundData);
+    }
+    else {
+        NSLog(@"[%@]\n (%@)failed !!!%@",url,[error description],soundData);
+    }
     
     [self.audioPlayer initPlayer:[[url lastPathComponent] stringByDeletingPathExtension] fileExtension:[[url lastPathComponent] pathExtension]];
     
@@ -64,7 +64,7 @@
     self.currentTimeSlider.maximumValue = [self.audioPlayer getAudioDuration];
     
     self.duration.text = [NSString stringWithFormat:@"0:00 / %@",
-                          [self.audioPlayer timeFormat:[self.audioPlayer getAudioDuration]]];
+                          [self timeFormat:[self.audioPlayer getAudioDuration]]];
     
 }
 
@@ -83,7 +83,7 @@
     self.currentTimeSlider.maximumValue = [self.audioPlayer getAudioDuration];
     
     self.duration.text = [NSString stringWithFormat:@"0:00 / %@",
-                          [self.audioPlayer timeFormat:[self.audioPlayer getAudioDuration]]];
+                          [self timeFormat:[self.audioPlayer getAudioDuration]]];
     
 }
 
@@ -120,10 +120,12 @@
         self.audioStreamerPlayer= player;
         [self.audioStreamerPlayer addObserver:self forKeyPath:@"status" options:0 context:nil];
         
+//        [self.audioStreamerPlayer.currentItem addObserver:self forKeyPath:@"status" options:0 context:nil];
         
+        self.audioStreamerPlayer.allowsExternalPlayback = NO;
+                
 //        [self.audioPlayer playAudio];
-//        
-//        [self.delegate audioIsPlaying];
+//
         
         
     } else {
@@ -144,11 +146,27 @@
 }
 
 - (void)updateTime:(NSTimer *)timer {
+    
+//    [self observeValueForKeyPath:@"status" ofObject:self.audioStreamerPlayer change:nil context:nil];
+    
     //to don't update every second. When scrubber is mouseDown the the slider will not set
     if (!self.scrubbing) {
 //        NSLog(@"time:%f",CMTimeGetSeconds(self.audioStreamerPlayer.currentItem.currentTime));
-        self.currentTimeSlider.value = CMTimeGetSeconds(self.audioStreamerPlayer.currentItem.currentTime);
+        self.currentTimeSlider.value = CMTimeGetSeconds(self.audioStreamerPlayer.currentTime);
     }
+    
+    
+    self.currentTimeSlider.maximumValue = 1;
+    
+    if ([self playableDuration]>0) {
+        self.currentTimeSlider.maximumValue = [self playableDuration];
+    }
+    
+    self.duration.text = [NSString stringWithFormat:@"%@ / %@",[self timeFormat:CMTimeGetSeconds(self.audioStreamerPlayer.currentTime)],
+                          [self timeFormat:[self playableDuration]]];
+
+    
+        
     
 //    NSLog(@"time:%f",CMTimeGetSeconds(self.audioStreamerPlayer.currentItem.currentTime));
     
@@ -158,21 +176,27 @@
 //                          [self.audioPlayer timeFormat:[self.audioPlayer getAudioDuration]]];
     
 //    //When resetted/ended reset the playButton
-//    if (![self.audioPlayer isPlaying]) {
-//        [self.playButton setImage:[UIImage imageNamed:@"play.png"]
-//                                   forState:UIControlStateNormal];
-//        [self.audioPlayer pauseAudio];
-//        self.isPaused = NO;
-//        
-//        if (self.isRepeatEnabled) {
-//            [self playAudioPressed:self.playButton];
-//        }
-//    }
+    if ([self playableDuration] == CMTimeGetSeconds(self.audioStreamerPlayer.currentTime)) {
+        [self.playButton setImage:[UIImage imageNamed:@"play.png"]
+                                   forState:UIControlStateNormal];
+        [self.audioStreamerPlayer pause];
+        self.isPaused = NO;
+        
+        if (self.isRepeatEnabled) {
+            [self playAudioPressed:self.playButton];
+        }
+    }
     
 }
 
 - (IBAction)setCurrentTime:(id)scrubber {
     self.scrubbing = NO;
+    [NSTimer scheduledTimerWithTimeInterval:0.01
+                                     target:self
+                                   selector:@selector(updateTime:)
+                                   userInfo:nil
+                                    repeats:NO];
+    [self.audioStreamerPlayer seekToTime:CMTimeMakeWithSeconds(self.currentTimeSlider.value, 10)];
 }
 
 /*
@@ -188,7 +212,6 @@
                                    userInfo:nil
                                     repeats:NO];
     
-    [self.audioStreamerPlayer seekToTime:CMTimeMakeWithSeconds(self.currentTimeSlider.value, 10)];
     
 //    [self.audioPlayer setCurrentAudioTime:self.currentTimeSlider.value];
 }
@@ -202,6 +225,11 @@
 
 
 - (void)podcastPaused2:(NSNotification*)notification{
+    [self.audioStreamerPlayer pause];
+    
+    [self.audioStreamerPlayer removeObserver:self forKeyPath:@"status" context:nil];
+    
+    self.audioStreamerPlayer = nil;
     [self.audioPlayer pauseAudio];
 }
 
@@ -211,18 +239,18 @@
     if (object == self.audioStreamerPlayer && [keyPath isEqualToString:@"status"]) {
         if (self.audioStreamerPlayer.status == AVPlayerStatusFailed)
         {
-            //  //NSLog(@"AVPlayer Failed");
+            NSLog(@"AVPlayer Failed");
         }
         else if (self.audioStreamerPlayer.status == AVPlayerStatusReadyToPlay)
         {
             [self.audioStreamerPlayer play];
             
-            [self.audioStreamerPlayer.currentItem addObserver:self forKeyPath:@"status" options:0 context:nil];
-            
-            
-            self.duration.text = @"--:--";
+            self.duration.text = @"--:-- / --:--";
             
             self.currentTimeSlider.value = 0.0f;
+            [self.delegate audioIsPlaying];
+            
+//            NSLog(@"duration:%f",[self playableDuration]);
             
 //            NSLog(@"range:%@\n\n%@",self.audioStreamerPlayer.currentItem.tracks, self.audioStreamerPlayer.currentItem.seekableTimeRanges);
             
@@ -235,23 +263,19 @@
 //            
 //            NSLog(@"time:%@",[self.audioPlayer timeFormat:self.audioStreamerPlayer.currentItem.preferredForwardBufferDuration]);
 //
-//            self.currentTimeSlider.maximumValue = duration;
-//            
-//            self.duration.text = [NSString stringWithFormat:@"0:00 / %@",
-//                                  [self.audioPlayer timeFormat:duration]];
         }
         else if (self.audioStreamerPlayer.status == AVPlayerItemStatusUnknown)
         {
-            //  //NSLog(@"AVPlayer Unknown");
+            NSLog(@"AVPlayer Unknown");
             
         }
-    }
-    else if (object == self.audioStreamerPlayer.currentItem && [keyPath isEqualToString:@"status"]) {
-        if (self.audioStreamerPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay) {
-            
-//            NSLog(@"##time:%f",CMTimeGetSeconds([[[self.audioStreamerPlayer currentItem] asset] duration]));
+        else {
+            NSLog(@"ELSE");
         }
     }
+//    else if (object == self.audioStreamerPlayer.currentItem && [keyPath isEqualToString:@"status"] && [self playableDuration] > 0) {
+//        
+//    }
 }
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
@@ -277,15 +301,32 @@
         // FIXME: shoule we sum up all sections to have a total playable duration,
         // or we just use first section as whole?
         
-        NSLog(@"get time range, its start is %f seconds, its duration is %f seconds.", startTime, loadedDuration);
+//        NSLog(@"get time range, its start is %f seconds, its duration is %f seconds.", startTime, loadedDuration);
         
+        return loadedDuration;
         
-        return (NSTimeInterval)(startTime + loadedDuration);
+//        return (NSTimeInterval)(startTime + loadedDuration);
     }
     else
     {
         return(CMTimeGetSeconds(kCMTimeInvalid));
     }
 }
+
+-(NSString*)timeFormat:(float)value{
+    
+    float minutes = floor(lroundf(value)/60);
+    float seconds = lroundf(value) - (minutes * 60);
+    
+    int roundedSeconds = lroundf(seconds);
+    int roundedMinutes = lroundf(minutes);
+    
+    NSString *time = [[NSString alloc]
+                      initWithFormat:@"%d:%02d",
+                      roundedMinutes, roundedSeconds];
+//    NSLog(@"time:%@",time);
+    return time;
+}
+
 
 @end

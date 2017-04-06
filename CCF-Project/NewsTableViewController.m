@@ -195,21 +195,26 @@
         
         
 //        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        BOOL hasGroupSelection = NO;
+        BOOL hasGroupSelection = YES;
         
-        if ([item[@"groups"] isKindOfClass:[NSArray class]]) {
-            if ([item[@"groups"] count]) {
-                for (NSDictionary *group_item in item[@"groups"]) {
-                    if ([self.groupList containsObject:group_item[@"id"]]) {
-                        hasGroupSelection = YES;
-                        break;
+        if(self.groupList.count) {
+            hasGroupSelection = NO;
+            if ([item[@"groups"] isKindOfClass:[NSArray class]]) {
+                if ([item[@"groups"] count]) {
+                    for (NSDictionary *group_item in item[@"groups"]) {
+                        if ([self.groupList containsObject:group_item[@"id"]]) {
+                            hasGroupSelection = YES;
+                            break;
+                        }
                     }
                 }
-            }
-            else {
-                hasGroupSelection = YES;
+                else {
+                    hasGroupSelection = YES;
+                }
             }
         }
+        
+        
         
         if (hasGroupSelection) {
             NewsObject *newsItem = [[NewsObject alloc] init];

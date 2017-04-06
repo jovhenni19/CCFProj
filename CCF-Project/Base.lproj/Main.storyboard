@@ -1234,7 +1234,7 @@
         <!--DOWNLOADS-->
         <scene sceneID="zxv-hc-DjH">
             <objects>
-                <viewController storyboardIdentifier="downloaded" title="DOWNLOADS" useStoryboardIdentifierAsRestorationIdentifier="YES" id="7L6-zB-K8X" customClass="PodcastViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="downloaded" title="DOWNLOADS" useStoryboardIdentifierAsRestorationIdentifier="YES" id="7L6-zB-K8X" customClass="DownloadsViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Xdr-iQ-2KO"/>
                         <viewControllerLayoutGuide type="bottom" id="lzc-I6-oEl"/>
@@ -1307,8 +1307,8 @@
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
-                                    <outlet property="dataSource" destination="7L6-zB-K8X" id="4qe-uw-Oz5"/>
-                                    <outlet property="delegate" destination="7L6-zB-K8X" id="0V4-e5-tbX"/>
+                                    <outlet property="dataSource" destination="7L6-zB-K8X" id="MQc-bf-MXO"/>
+                                    <outlet property="delegate" destination="7L6-zB-K8X" id="BY2-Uv-IlT"/>
                                 </connections>
                             </tableView>
                         </subviews>
@@ -1322,7 +1322,7 @@
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
                     <connections>
-                        <outlet property="mainTableView" destination="hoY-Kd-Qyg" id="tE9-x1-YXf"/>
+                        <outlet property="mainTableView" destination="hoY-Kd-Qyg" id="5fs-AJ-IQc"/>
                         <outlet property="view" destination="sqC-Zx-sjQ" id="T4R-Bv-H9O"/>
                     </connections>
                 </viewController>

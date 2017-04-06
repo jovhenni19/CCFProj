@@ -116,6 +116,9 @@
 		33ACB7691E795F1F005ACBBB /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 33ACB7591E795F1F005ACBBB /* UIRefreshControl+AFNetworking.m */; };
 		33ACB76A1E795F1F005ACBBB /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 33ACB75B1E795F1F005ACBBB /* UIWebView+AFNetworking.m */; };
 		33ACB76D1E7985E0005ACBBB /* EventsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 33ACB76C1E7985E0005ACBBB /* EventsTableViewCell.m */; };
+		33B1FA251E9648B900D70ED1 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33B1FA241E9648B900D70ED1 /* AVFoundation.framework */; };
+		33B1FA271E9648C200D70ED1 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33B1FA261E9648C200D70ED1 /* CoreMedia.framework */; };
+		33B1FA2A1E96D30100D70ED1 /* DownloadsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33B1FA291E96D30100D70ED1 /* DownloadsViewController.m */; };
 		33C2601B1E456FD000C251C0 /* PodcastDetailsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C2601A1E456FD000C251C0 /* PodcastDetailsTableViewController.m */; };
 		33C2601E1E457C5100C251C0 /* PodDetailImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C2601D1E457C5100C251C0 /* PodDetailImageTableViewCell.m */; };
 		33C260211E457C9800C251C0 /* PodDetailDescriptionTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C260201E457C9800C251C0 /* PodDetailDescriptionTableViewCell.m */; };
@@ -366,6 +369,10 @@
 		33ACB75B1E795F1F005ACBBB /* UIWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+AFNetworking.m"; sourceTree = "<group>"; };
 		33ACB76B1E7985E0005ACBBB /* EventsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsTableViewCell.h; sourceTree = "<group>"; };
 		33ACB76C1E7985E0005ACBBB /* EventsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsTableViewCell.m; sourceTree = "<group>"; };
+		33B1FA241E9648B900D70ED1 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		33B1FA261E9648C200D70ED1 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		33B1FA281E96D30100D70ED1 /* DownloadsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadsViewController.h; sourceTree = "<group>"; };
+		33B1FA291E96D30100D70ED1 /* DownloadsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadsViewController.m; sourceTree = "<group>"; };
 		33C260191E456FD000C251C0 /* PodcastDetailsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PodcastDetailsTableViewController.h; sourceTree = "<group>"; };
 		33C2601A1E456FD000C251C0 /* PodcastDetailsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PodcastDetailsTableViewController.m; sourceTree = "<group>"; };
 		33C2601C1E457C5100C251C0 /* PodDetailImageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PodDetailImageTableViewCell.h; sourceTree = "<group>"; };
@@ -426,6 +433,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33B1FA271E9648C200D70ED1 /* CoreMedia.framework in Frameworks */,
+				33B1FA251E9648B900D70ED1 /* AVFoundation.framework in Frameworks */,
 				3363F29C1E8FF73100DE651A /* CFNetwork.framework in Frameworks */,
 				33A76CD81E76C70200A6757F /* MapKit.framework in Frameworks */,
 				3391BE211E728CD4005BC164 /* SafariServices.framework in Frameworks */,
@@ -516,6 +525,8 @@
 		333724C41E360E34001DBE50 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				33B1FA261E9648C200D70ED1 /* CoreMedia.framework */,
+				33B1FA241E9648B900D70ED1 /* AVFoundation.framework */,
 				3363F29B1E8FF73100DE651A /* CFNetwork.framework */,
 				33A76CD71E76C70200A6757F /* MapKit.framework */,
 				3391BE221E728CDB005BC164 /* WebKit.framework */,
@@ -624,6 +635,8 @@
 				33EFBC4D1E3CBC9B00A72040 /* SattelitesTableViewCell.m */,
 				33D7216E1E3F4AA40071FC2D /* LiveStreamingViewController.h */,
 				33D7216F1E3F4AA40071FC2D /* LiveStreamingViewController.m */,
+				33B1FA281E96D30100D70ED1 /* DownloadsViewController.h */,
+				33B1FA291E96D30100D70ED1 /* DownloadsViewController.m */,
 				333724A71E3608A5001DBE50 /* MapViewController.h */,
 				333724A81E3608A5001DBE50 /* MapViewController.m */,
 				33A76CD41E76C45300A6757F /* AMapViewController.h */,
@@ -1101,6 +1114,7 @@
 				3363F4E51E8FF8C400DE651A /* PTPusher.m in Sources */,
 				336F6DDD1E83BB53008FB120 /* SDWebImagePrefetcher.m in Sources */,
 				334DC3B91E7AA6D2002E4EA8 /* SatellitesItem+CoreDataProperties.m in Sources */,
+				33B1FA2A1E96D30100D70ED1 /* DownloadsViewController.m in Sources */,
 				33A8DF751E3C0C9C003EB844 /* SattelitesTableViewController.m in Sources */,
 				334DC3B81E7AA6D2002E4EA8 /* SatellitesItem+CoreDataClass.m in Sources */,
 				334DC3B71E7AA6D2002E4EA8 /* NewsItem+CoreDataProperties.m in Sources */,
