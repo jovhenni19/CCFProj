@@ -42,7 +42,7 @@
     
     [lblText sizeToFit];
     
-    newFrame = CGRectMake(viewFrame.origin.x, viewFrame.origin.y, lblText.frame.size.width + 22.0f, height);
+    newFrame = CGRectMake(viewFrame.origin.x, viewFrame.origin.y, lblText.frame.size.width + 22.0f + 10.0f, height);
     
     if (locked) {
         newFrame = viewFrame;
