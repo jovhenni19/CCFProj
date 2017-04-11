@@ -725,29 +725,31 @@
 //        }];
 //        
         
-        
-        //progressive? animation
-        
-        CGFloat thirdWidth = (self.view.frame.size.width/3);
-        
-        
-        double val = ((double)arc4random() / 0x100000000) + 0.1;
-        
-        NETWORK_INDICATOR(YES)
-        [UIView animateWithDuration:val delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
-            self.viewForProgressLoading.frame = CGRectMake(0.0f, self.viewForProgressLoading.frame.origin.y, thirdWidth * 1, 2.0f);
-        } completion:^(BOOL finished) {
-            [UIView animateWithDuration:val delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
-                self.viewForProgressLoading.frame = CGRectMake(0.0f, self.viewForProgressLoading.frame.origin.y, thirdWidth * 2, 2.0f);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //progressive? animation
+            
+            CGFloat thirdWidth = (self.view.frame.size.width/3);
+            
+            
+            double val = ((double)arc4random() / 0x100000000) + 0.1;
+            
+            NETWORK_INDICATOR(YES)
+            [UIView animateWithDuration:val delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
+                self.viewForProgressLoading.frame = CGRectMake(0.0f, self.viewForProgressLoading.frame.origin.y, thirdWidth * 1, 2.0f);
             } completion:^(BOOL finished) {
-                [UIView animateWithDuration:val delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
-                    self.viewForProgressLoading.frame = CGRectMake(0.0f, self.viewForProgressLoading.frame.origin.y, thirdWidth * 3, 2.0f);
+                [UIView animateWithDuration:val delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
+                    self.viewForProgressLoading.frame = CGRectMake(0.0f, self.viewForProgressLoading.frame.origin.y, thirdWidth * 2, 2.0f);
                 } completion:^(BOOL finished) {
-                    self.viewForProgressLoading.frame = CGRectMake(0.0f, self.viewForProgressLoading.frame.origin.y, 0.0f, 2.0f);
-                    NETWORK_INDICATOR(NO)
+                    [UIView animateWithDuration:val delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
+                        self.viewForProgressLoading.frame = CGRectMake(0.0f, self.viewForProgressLoading.frame.origin.y, thirdWidth * 3, 2.0f);
+                    } completion:^(BOOL finished) {
+                        self.viewForProgressLoading.frame = CGRectMake(0.0f, self.viewForProgressLoading.frame.origin.y, 0.0f, 2.0f);
+                        NETWORK_INDICATOR(NO)
+                    }];
                 }];
             }];
-        }];
+
+        });
         
     }
     

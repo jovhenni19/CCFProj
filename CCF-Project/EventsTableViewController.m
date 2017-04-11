@@ -205,12 +205,12 @@
     
     CGFloat buttonWidth = (tableView.frame.size.width-25.0f)/3; //divide per control
     
-    CustomButton *buttonVenue = [[CustomButton alloc] initWithText:[events.venue uppercaseString] image:[UIImage imageNamed:@"pin-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 30.0f) locked:NO];
+    CustomButton *buttonVenue = [[CustomButton alloc] initWithText:[events.venue uppercaseString] image:[UIImage imageNamed:@"pin-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 30.0f) locked:YES];
     
     
-    CustomButton *buttonDate = [[CustomButton alloc] initWithText:[events.date uppercaseString] image:[UIImage imageNamed:@"calendar-icon-small"] frame:CGRectMake(buttonWidth, 0.0f, buttonWidth, 30.0f) locked:NO];
+    CustomButton *buttonDate = [[CustomButton alloc] initWithText:[events.date uppercaseString] image:[UIImage imageNamed:@"calendar-icon-small"] frame:CGRectMake(buttonWidth, 0.0f, buttonWidth, 30.0f) locked:YES];
     
-    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[events.time uppercaseString] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 0.0f, buttonWidth, 30.0f) locked:NO];
+    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[events.time uppercaseString] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 0.0f, buttonWidth, 30.0f) locked:YES];
     
     CGFloat height = 30.0f;
     for (CustomButton *button in @[buttonVenue,buttonDate,buttonTime]) {
@@ -220,7 +220,7 @@
     }
     
     
-    return height + 170.0f;
+    return height + 170.0f + 10.0f;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -300,26 +300,6 @@
     tap1.numberOfTapsRequired = 1;
     [buttonTime addGestureRecognizer:tap1];
     
-    buttonDate.translatesAutoresizingMaskIntoConstraints = NO;
-    buttonVenue.translatesAutoresizingMaskIntoConstraints = NO;
-    buttonTime.translatesAutoresizingMaskIntoConstraints = NO;
-    //layout
-    
-    UILayoutGuide *marginLayout = cell.contentView.layoutMarginsGuide;
-    
-    
-    [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonDate attribute:NSLayoutAttributeCenterXWithinMargins relatedBy:NSLayoutRelationEqual toItem:marginLayout attribute:NSLayoutAttributeCenterXWithinMargins multiplier:1.0 constant:-(buttonDate.frame.size.width/2)]];
-    
-    [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonDate attribute:NSLayoutAttributeTrailingMargin relatedBy:NSLayoutRelationEqual toItem:buttonVenue attribute:NSLayoutAttributeLeadingMargin multiplier:1.0 constant:buttonVenue.frame.size.width]];
-    
-    [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonTime attribute:NSLayoutAttributeTrailingMargin relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeLeadingMargin multiplier:1.0 constant:buttonDate.frame.size.width]];
-    
-    [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonDate attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:cell.eventsImageView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:5.0f]];
-    
-    [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonVenue attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0f]];
-    
-    [cell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:buttonTime attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0f]];
-    
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
@@ -345,18 +325,41 @@
     
    
 //    CGRect frame = cell.viewControls.frame;
+//    frame.origin.x = 0;
 //    frame.size.width = ([cell.viewControls viewWithTag:1].frame.origin.x + [cell.viewControls viewWithTag:1].frame.size.width) + ([cell.viewControls viewWithTag:2].frame.origin.x + [cell.viewControls viewWithTag:2].frame.size.width) + ([cell.viewControls viewWithTag:3].frame.origin.x + [cell.viewControls viewWithTag:3].frame.size.width);
 //    cell.viewControls.frame = frame;
-//    
+//
 //    frame = cell.viewControls.frame;
 //    frame.origin.x = (cell.contentView.frame.size.width/2) - (frame.size.width/2);
 //    cell.viewControls.frame = frame;
     
+//    cell.viewControls.layer.borderColor = [UIColor blueColor].CGColor;
+//    cell.viewControls.layer.borderWidth = 1.0f;
     
-    [cell.viewControls viewWithTag:1].translatesAutoresizingMaskIntoConstraints = YES;
-    [cell.viewControls viewWithTag:2].translatesAutoresizingMaskIntoConstraints = YES;
-    [cell.viewControls viewWithTag:3].translatesAutoresizingMaskIntoConstraints = YES;
+    CustomButton *buttonVenue = (CustomButton*)[cell.viewControls viewWithTag:1];
+    CustomButton *buttonDate = (CustomButton*)[cell.viewControls viewWithTag:2];
+    CustomButton *buttonTime = (CustomButton*)[cell.viewControls viewWithTag:3];
     
+    buttonDate.translatesAutoresizingMaskIntoConstraints = NO;
+    buttonVenue.translatesAutoresizingMaskIntoConstraints = NO;
+    buttonTime.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    //layout
+    
+    UILayoutGuide *marginLayout = cell.viewControls.layoutMarginsGuide;
+    
+    
+    [cell.viewControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonDate attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:cell.viewControls attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0f]];
+    
+    [cell.viewControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonVenue attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:cell.viewControls attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0f]];
+    
+    [cell.viewControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonDate attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:cell.viewControls attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0f]];
+    
+    [cell.viewControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonTime attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:cell.viewControls attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0f]];
+    
+    [cell.viewControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonVenue attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0f]];
+    
+    [cell.viewControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonTime attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0f]];
     
 }
 

@@ -288,10 +288,10 @@
     CGSize contentSize = [tv contentSize];
     
     if (contentSize.height < 100.0f) {
-        return 100.0f + (contentSize.height);
+        return 100.0f + (contentSize.height) + 10.0f;
     }
     
-    return 140.0f;
+    return 140.0f + 10.0f;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -302,6 +302,7 @@
     NewsObject *newsItem = (NewsObject*)[self.news_list objectAtIndex:[indexPath row]];
     
     cell.labelNewsTitle.text = [newsItem.title uppercaseString];
+    [cell.labelNewsTitle sizeToFit];
     cell.labelTimeCreated.text = [self getTimepassedTextFrom:newsItem.created_date];
     cell.textNewsDetails.text = newsItem.description_excerpt;
     [cell.textNewsDetails scrollsToTop];
@@ -313,21 +314,18 @@
     [cell.buttonSpeaker setHidden:YES];
 //    [cell.buttonLocation setHidden:YES];
     
-    
     while ([[cell.viewControls subviews] count] > 0) {
         [[[cell.viewControls subviews] lastObject] removeFromSuperview];
     }
     
     // add controls
     if ([newsItem.group_name length]) {
-        CGFloat buttonWidth = cell.contentView.frame.size.width; //divide per control
-        
-        CustomButton *buttonGroup = [[CustomButton alloc] initWithText:[newsItem.group_name uppercaseString] image:[UIImage imageNamed:@"group-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 25.0f)];
+        CGFloat buttonWidth = cell.viewControls.frame.size.width; //divide per control
+        CustomButton *buttonGroup = [[CustomButton alloc] initWithText:[newsItem.group_name uppercaseString] image:[UIImage imageNamed:@"group-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 25.0f) locked:NO];
         buttonGroup.labelText.textColor = [UIColor grayColor];
         
         [cell.viewControls addSubview:buttonGroup];
     }
-    
     
     cell.delegate = self;
     cell.indexPath = indexPath;

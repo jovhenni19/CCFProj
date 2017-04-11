@@ -29,13 +29,13 @@
     self.labelTitle.lineBreakMode = NSLineBreakByWordWrapping;
 //    self.labelTitle.layer.borderWidth = 1.0f;
     
-    [self.buttondate setTitle:[NSString stringWithFormat:@"  %@",[self.dateText uppercaseString]] forState:UIControlStateNormal];
-    [self.buttonTime setTitle:[NSString stringWithFormat:@"  %@",[self.timeText uppercaseString]] forState:UIControlStateNormal];
-    [self.buttonLocation setTitle:[NSString stringWithFormat:@"  %@",[self.locationName uppercaseString]] forState:UIControlStateNormal];
-    self.buttonLocation.latitude = [NSNumber numberWithDouble:self.locationLatitude];
-    self.buttonLocation.longitude = [NSNumber numberWithDouble:self.locationLongitude];
-    self.buttonLocation.locationName = self.locationName;
-    
+//    [self.buttondate setTitle:[NSString stringWithFormat:@"  %@",[self.dateText uppercaseString]] forState:UIControlStateNormal];
+//    [self.buttonTime setTitle:[NSString stringWithFormat:@"  %@",[self.timeText uppercaseString]] forState:UIControlStateNormal];
+//    [self.buttonLocation setTitle:[NSString stringWithFormat:@"  %@",[self.locationName uppercaseString]] forState:UIControlStateNormal];
+//    self.buttonLocation.latitude = [NSNumber numberWithDouble:self.locationLatitude];
+//    self.buttonLocation.longitude = [NSNumber numberWithDouble:self.locationLongitude];
+//    self.buttonLocation.locationName = self.locationName;
+//    
 //    self.buttondate.eventTitle = self.titleText;
 //    self.buttondate.eventAddress = self.locationName;
 //    self.buttondate.eventDate = self.dateText;
@@ -46,16 +46,16 @@
 //    self.buttonTime.eventDate = self.dateText;
 //    self.buttonTime.eventTime = self.timeText;
     
-    self.buttonLocation.hidden = !self.showVenueDateTime;
-    self.buttondate.hidden = !self.showVenueDateTime;
-    self.buttonTime.hidden = !self.showVenueDateTime;
+//    self.buttonLocation.hidden = !self.showVenueDateTime;
+//    self.buttondate.hidden = !self.showVenueDateTime;
+//    self.buttonTime.hidden = !self.showVenueDateTime;
     self.viewForControls.hidden = !self.showVenueDateTime;
     
     // add controls
     
     CGFloat buttonWidth = (self.view.bounds.size.width - 10.0f)/3; //divide per control
     
-    CustomButton *buttonLocation = [[CustomButton alloc] initWithText:[self.locationName uppercaseString] image:[UIImage imageNamed:@"pin-icon-small"] frame:CGRectMake(0.0f, 5.0f, buttonWidth, 22.0f) locked:NO];
+    CustomButton *buttonLocation = [[CustomButton alloc] initWithText:[self.locationName uppercaseString] image:[UIImage imageNamed:@"pin-icon-small"] frame:CGRectMake(0.0f, 5.0f, buttonWidth, 22.0f) locked:YES];
     buttonLocation.labelText.textColor = TEAL_COLOR;
     buttonLocation.userInteractionEnabled = YES;
     buttonLocation.tag = 12;
@@ -66,23 +66,25 @@
     [self.viewForControls addSubview:buttonLocation];
     
     
-    CustomButton *buttonDate = [[CustomButton alloc] initWithText:[self.dateText uppercaseString] image:[UIImage imageNamed:@"calendar-icon-small"] frame:CGRectMake(buttonWidth, 5.0f, buttonWidth, 22.0f) locked:NO];
+    CustomButton *buttonDate = [[CustomButton alloc] initWithText:[self.dateText uppercaseString] image:[UIImage imageNamed:@"calendar-icon-small"] frame:CGRectMake(buttonWidth, 5.0f, buttonWidth, 22.0f) locked:YES];
     buttonDate.labelText.textColor = TEAL_COLOR;
     buttonDate.userInteractionEnabled = YES;
     buttonLocation.tag = 13;
     buttonDate.button.eventTitle = self.titleText;
     buttonDate.button.eventAddress = self.locationName;
     buttonDate.button.eventDate = self.date_start;
+    [buttonDate.button addTarget:self action:@selector(saveDateCalendar:) forControlEvents:UIControlEventTouchUpInside];
 //    buttonDate.button.eventTime = self.timeText;
     [self.viewForControls addSubview:buttonDate];
     
-    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[self.timeText uppercaseString] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 5.0f, buttonWidth, 22.0f) locked:NO];
+    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[self.timeText uppercaseString] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 5.0f, buttonWidth, 22.0f) locked:YES];
     buttonTime.labelText.textColor = TEAL_COLOR;
     buttonTime.userInteractionEnabled = YES;
     buttonLocation.tag = 14;
     buttonTime.button.eventTitle = self.titleText;
     buttonTime.button.eventAddress = self.locationName;
     buttonTime.button.eventDate = self.date_start;
+    [buttonTime.button addTarget:self action:@selector(saveDateCalendar:) forControlEvents:UIControlEventTouchUpInside];
 //    buttonTime.button.eventTime = self.timeText;
     [self.viewForControls addSubview:buttonTime];
     
@@ -91,24 +93,21 @@
     buttonTime.translatesAutoresizingMaskIntoConstraints = NO;
     //layout
     
-    UILayoutGuide *marginLayout = self.imageHeaderView.layoutMarginsGuide;
+    
+    UILayoutGuide *marginLayout = self.viewForControls.layoutMarginsGuide;
     
     
-    [self.imageHeaderView addConstraint:[NSLayoutConstraint constraintWithItem:buttonDate attribute:NSLayoutAttributeCenterXWithinMargins relatedBy:NSLayoutRelationEqual toItem:marginLayout attribute:NSLayoutAttributeCenterXWithinMargins multiplier:1.0 constant:-(buttonDate.frame.size.width/2)]];
+    [self.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonDate attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.viewForControls attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0f]];
     
-    [self.imageHeaderView addConstraint:[NSLayoutConstraint constraintWithItem:buttonDate attribute:NSLayoutAttributeTrailingMargin relatedBy:NSLayoutRelationEqual toItem:buttonLocation attribute:NSLayoutAttributeLeadingMargin multiplier:1.0 constant:buttonLocation.frame.size.width]];
+    [self.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonLocation attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.viewForControls attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0f]];
     
-    [self.imageHeaderView addConstraint:[NSLayoutConstraint constraintWithItem:buttonTime attribute:NSLayoutAttributeTrailingMargin relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeLeadingMargin multiplier:1.0 constant:buttonDate.frame.size.width]];
+    [self.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonDate attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.viewForControls attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0f]];
     
-    [self.imageHeaderView addConstraint:[NSLayoutConstraint constraintWithItem:buttonDate attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.imageView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:5.0f]];
+    [self.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonTime attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.viewForControls attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0f]];
     
-    [self.imageHeaderView addConstraint:[NSLayoutConstraint constraintWithItem:buttonLocation attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0f]];
+    [self.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonLocation attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0f]];
     
-    [self.imageHeaderView addConstraint:[NSLayoutConstraint constraintWithItem:buttonTime attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0f]];
-    
-    buttonDate.translatesAutoresizingMaskIntoConstraints = YES;
-    buttonLocation.translatesAutoresizingMaskIntoConstraints = YES;
-    buttonTime.translatesAutoresizingMaskIntoConstraints = YES;
+    [self.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonTime attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:buttonDate attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0f]];
     
     if (self.imageData) {
         self.imageView.image = [UIImage imageWithData:self.imageData];
@@ -132,13 +131,7 @@
     
     self.mainTableVIew.tableHeaderView = nil;
 //    self.mainTableVIew.tableFooterView = nil;
-    
-    
-    
-    buttonDate.translatesAutoresizingMaskIntoConstraints = YES;
-    buttonLocation.translatesAutoresizingMaskIntoConstraints = YES;
-    buttonTime.translatesAutoresizingMaskIntoConstraints = YES;
-    
+   
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
 }
