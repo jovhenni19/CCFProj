@@ -191,6 +191,16 @@
 //    
 //    [self.imageLogoTop addGestureRecognizer:holdGesture];
     
+    
+    PTPusherChannel *channel = [APPDELEGATE_CLASS.pusherClient subscribeToChannelNamed:@"news"];
+    [channel bindToEventNamed:@"B1G Singles" handleWithBlock:^(PTPusherEvent *channelEvent) {
+        // channelEvent.data is a NSDictionary of the JSON object received
+        self.labelNotificationBadge.text = [NSString stringWithFormat:@"NEWS: B1G Singles"];
+        [self.labelNotificationBadge sizeToFit];
+        NSLog(@"##[B1G Singles]data:%@",channelEvent.data);
+    }];
+    
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -626,24 +636,25 @@
     self.selectedIndex = index;
     
     BaseViewController *vc = [self.viewControllers objectAtIndex:self.selectedIndex];
-       
-    if (![vc respondsToSelector:@selector(audioPlayerPauser)] || ![vc respondsToSelector:@selector(youtubePlayerPauser)]) {
-        PodcastViewController *vc1 = [self.viewControllers objectAtIndex:1];
-        
-        if ([vc1 respondsToSelector:@selector(audioPlayerPauser)]) {
-            [vc1.audioPlayerPauser pause];
-            vc1.audioPlayerPauser = nil;
-        }
-        
-        if ([vc1 respondsToSelector:@selector(youtubePlayerPauser)]) {
-            [vc1.youtubePlayerPauser pauseVideo];
-            [vc1.youtubePlayerPauser stopVideo];
-            vc1.youtubePlayerPauser = nil;
-        }
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_podcast_pause1" object:nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_podcast_pause2" object:nil];
-    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_podcast_pause1" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_podcast_pause2" object:nil];
+    
+//    if (![vc respondsToSelector:@selector(audioPlayerPauser)] || ![vc respondsToSelector:@selector(youtubePlayerPauser)]) {
+//        PodcastViewController *vc1 = [self.viewControllers objectAtIndex:1];
+//        
+//        if ([vc1 respondsToSelector:@selector(audioPlayerPauser)]) {
+//            [vc1.audioPlayerPauser pause];
+//            vc1.audioPlayerPauser = nil;
+//        }
+//        
+//        if ([vc1 respondsToSelector:@selector(youtubePlayerPauser)]) {
+//            [vc1.youtubePlayerPauser pauseVideo];
+//            [vc1.youtubePlayerPauser stopVideo];
+//            vc1.youtubePlayerPauser = nil;
+//        }
+//        
+//    }
     
     while ([[contentView subviews] count] > 0) {
         [[[contentView subviews] lastObject] removeFromSuperview];

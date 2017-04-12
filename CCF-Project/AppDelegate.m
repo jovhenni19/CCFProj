@@ -40,21 +40,6 @@
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
     
-    
-    PTPusherChannel *channel = [self.pusherClient subscribeToChannelNamed:@"news"];
-    [channel bindToEventNamed:@"B1G Singles" handleWithBlock:^(PTPusherEvent *channelEvent) {
-        // channelEvent.data is a NSDictionary of the JSON object received
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Pusher [B1G Singles] Data" message:[NSString stringWithFormat:@"%@",channelEvent.data] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
-        NSLog(@"##[B1G Singles]data:%@",channelEvent.data);
-    }];
-    [channel bindToEventNamed:@"Singles" handleWithBlock:^(PTPusherEvent *channelEvent) {
-        // channelEvent.data is a NSDictionary of the JSON object received
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Pusher [Singles] Data" message:[NSString stringWithFormat:@"%@",channelEvent.data] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
-        NSLog(@"##[Singles]data:%@",channelEvent.data);
-    }];
-    
     return YES;
 }
 

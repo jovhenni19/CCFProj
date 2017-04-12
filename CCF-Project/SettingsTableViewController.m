@@ -70,12 +70,12 @@
         
         BOOL switchValue = [[NSUserDefaults standardUserDefaults] boolForKey:valueKey];
         
-        if (switchValue) {
+        if (switchValue == YES) {
             self.allIsOn = NO;
         }
     }
     
-//    [self.mainTableView reloadData];
+    [self.mainTableView reloadData];
 //    [self removeLoadingAnimation];
     
     
@@ -238,8 +238,7 @@
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:valueKey];
     }
     
-    self.allIsOn = [self isAllGroupEnabled];
-    if (self.allIsOn) {
+    if ([self isAllGroupSame]) {
         
         for (NSDictionary *item in self.groupList) {
             
@@ -252,19 +251,29 @@
     [self.mainTableView reloadData];
 }
 
-- (BOOL) isAllGroupEnabled {
-    BOOL enabled = NO;
+- (BOOL) isAllGroupSame {
+    BOOL result = NO;
+    BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:[NSString stringWithFormat:@"groups_%@_key",self.groupList[0][@"id"]]];
     for (NSDictionary *item in self.groupList) {
         
         NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
-        if(![[NSUserDefaults standardUserDefaults] boolForKey:valueKey]) {
-            enabled = NO;
+        if(enabled != [[NSUserDefaults standardUserDefaults] boolForKey:valueKey]) {
+            result = NO;
             break;
         }
-        enabled = YES;
+        enabled = [[NSUserDefaults standardUserDefaults] boolForKey:valueKey];
+        result = YES;
     }
     
-    return enabled;
+    if (result) {
+        self.allIsOn = YES;
+    }
+    else {
+        self.allIsOn = NO;
+    }
+        
+    
+    return result;
 }
 
 /*

@@ -2324,12 +2324,12 @@ FELLOWSHIP</string>
                                     <constraint firstItem="Jab-9G-E3a" firstAttribute="top" secondItem="wo9-Nz-aFw" secondAttribute="top" id="7Lw-et-dhh"/>
                                     <constraint firstAttribute="height" constant="34" id="9dF-bR-hhH"/>
                                     <constraint firstAttribute="bottom" secondItem="1xx-aM-sH5" secondAttribute="bottom" constant="7" id="B1p-gf-S1T"/>
-                                    <constraint firstAttribute="trailing" secondItem="Jab-9G-E3a" secondAttribute="trailing" constant="15" id="Bzw-E4-4T5"/>
+                                    <constraint firstAttribute="trailing" secondItem="Jab-9G-E3a" secondAttribute="trailing" constant="28" id="Bzw-E4-4T5"/>
                                     <constraint firstItem="1xx-aM-sH5" firstAttribute="top" secondItem="wo9-Nz-aFw" secondAttribute="top" constant="7" id="Duq-Ig-USC"/>
                                     <constraint firstAttribute="trailing" secondItem="SZJ-n8-3DM" secondAttribute="trailing" id="KMu-UB-g6s"/>
                                     <constraint firstAttribute="bottom" secondItem="SZJ-n8-3DM" secondAttribute="bottom" constant="7" id="YOB-09-Pul"/>
                                     <constraint firstItem="1xx-aM-sH5" firstAttribute="leading" secondItem="wo9-Nz-aFw" secondAttribute="leading" constant="-2" id="lQh-OP-nzD"/>
-                                    <constraint firstItem="Jab-9G-E3a" firstAttribute="leading" secondItem="wo9-Nz-aFw" secondAttribute="leading" constant="13" id="pyw-wG-Zr7"/>
+                                    <constraint firstItem="Jab-9G-E3a" firstAttribute="leading" secondItem="wo9-Nz-aFw" secondAttribute="leading" constant="26" id="pyw-wG-Zr7"/>
                                     <constraint firstItem="SZJ-n8-3DM" firstAttribute="top" secondItem="wo9-Nz-aFw" secondAttribute="top" constant="7" id="vEi-j9-wbr"/>
                                 </constraints>
                             </view>

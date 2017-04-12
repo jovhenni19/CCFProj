@@ -26,6 +26,7 @@
     // Do any additional setup after loading the view.
     
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(podcastPaused1:) name:@"obs_podcast_pause1" object:nil];
     self.shownPerPage = 0;
     
 //    NETWORK_INDICATOR(YES)
@@ -56,9 +57,14 @@
     
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_podcast_pause1" object:nil];
+}
 
 - (void)callLiveStreamData:(NSNotification*)notification {
-    NSLog(@"## result:%@",notification.object);
+//    NSLog(@"## result:%@",notification.object);
     
     NSDictionary *result = (NSDictionary*)notification.object;
     
@@ -168,6 +174,11 @@
 - (void)playerViewDidBecomeReady:(YTPlayerView *)playerView {
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
+}
+
+
+- (void)podcastPaused1:(NSNotification*)notification{
+    [self.youtubePlayerView pauseVideo];
 }
 
 @end
