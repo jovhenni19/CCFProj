@@ -47,21 +47,6 @@
 		335EA72F1E31D5E800416E67 /* CCF_ProjectUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 335EA72E1E31D5E800416E67 /* CCF_ProjectUITests.m */; };
 		3361BD111E827F9D00EA6440 /* CustomButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3361BD101E827F9D00EA6440 /* CustomButton.m */; };
 		3363F29C1E8FF73100DE651A /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3363F29B1E8FF73100DE651A /* CFNetwork.framework */; };
-		3363F4D61E8FF8C400DE651A /* NSDictionary+QueryString.m in Sources */ = {isa = PBXBuildFile; fileRef = 3363F3641E8FF8C300DE651A /* NSDictionary+QueryString.m */; };
-		3363F4D71E8FF8C400DE651A /* NSDictionary+StringValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 3363F3651E8FF8C300DE651A /* NSDictionary+StringValue.m */; };
-		3363F4D81E8FF8C400DE651A /* NSString+Hashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 3363F3661E8FF8C300DE651A /* NSString+Hashing.m */; };
-		3363F4E21E8FF8C400DE651A /* PTBlockEventListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 3363F3851E8FF8C300DE651A /* PTBlockEventListener.m */; };
-		3363F4E31E8FF8C400DE651A /* PTJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 3363F3871E8FF8C300DE651A /* PTJSON.m */; };
-		3363F4E51E8FF8C400DE651A /* PTPusher.m in Sources */ = {isa = PBXBuildFile; fileRef = 3363F38C1E8FF8C300DE651A /* PTPusher.m */; };
-		3363F4E61E8FF8C400DE651A /* PTPusherAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 3363F38E1E8FF8C300DE651A /* PTPusherAPI.m */; };
-		3363F4E81E8FF8C400DE651A /* PTPusherChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3363F3921E8FF8C300DE651A /* PTPusherChannel.m */; };
-		3363F4EA1E8FF8C400DE651A /* PTPusherChannelServerBasedAuthorization.m in Sources */ = {isa = PBXBuildFile; fileRef = 3363F3961E8FF8C300DE651A /* PTPusherChannelServerBasedAuthorization.m */; };
-		3363F4EB1E8FF8C400DE651A /* PTPusherConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 3363F3981E8FF8C300DE651A /* PTPusherConnection.m */; };
-		3363F4ED1E8FF8C400DE651A /* PTPusherEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 3363F39D1E8FF8C300DE651A /* PTPusherEvent.m */; };
-		3363F4EE1E8FF8C400DE651A /* PTPusherEventDispatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 3363F39F1E8FF8C300DE651A /* PTPusherEventDispatcher.m */; };
-		3363F4F11E8FF8C400DE651A /* PTPusherMockConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 3363F3A51E8FF8C300DE651A /* PTPusherMockConnection.m */; };
-		3363F4F51E8FF8C400DE651A /* PTTargetActionEventListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 3363F3AA1E8FF8C300DE651A /* PTTargetActionEventListener.m */; };
-		3363F4F61E8FF8C400DE651A /* PTURLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3363F3AC1E8FF8C300DE651A /* PTURLRequestOperation.m */; };
 		336F6DD51E83BB53008FB120 /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 336F6DB51E83BB53008FB120 /* MKAnnotationView+WebCache.m */; };
 		336F6DD61E83BB53008FB120 /* NSData+ImageContentType.m in Sources */ = {isa = PBXBuildFile; fileRef = 336F6DB71E83BB53008FB120 /* NSData+ImageContentType.m */; };
 		336F6DD71E83BB53008FB120 /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 336F6DB91E83BB53008FB120 /* SDImageCache.m */; };
@@ -147,6 +132,9 @@
 		33EFBC4E1E3CBC9B00A72040 /* SattelitesTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 33EFBC4D1E3CBC9B00A72040 /* SattelitesTableViewCell.m */; };
 		33F500771E38BC7500A16D32 /* EventsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F500761E38BC7500A16D32 /* EventsDetailViewController.m */; };
 		33F5007A1E38BEE200A16D32 /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F500791E38BEE200A16D32 /* BaseViewController.m */; };
+		6DD37CC628BB639428FB125D /* Pods_CCF_ProjectUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB8E2649F78A0806F86F762 /* Pods_CCF_ProjectUITests.framework */; };
+		97A9288829E2347684C43B6D /* Pods_CCF_Project.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 411EA5039E248C90C29B2E32 /* Pods_CCF_Project.framework */; };
+		DA3A60F7ABF9766A06CF0F80 /* Pods_CCF_ProjectTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6297825603580020D7CB36C1 /* Pods_CCF_ProjectTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -167,6 +155,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1DDC6D193A07D03AB6960952 /* Pods-CCF-ProjectUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CCF-ProjectUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CCF-ProjectUITests/Pods-CCF-ProjectUITests.release.xcconfig"; sourceTree = "<group>"; };
 		3306F1BF1E6453050020D2C1 /* NewsCollapsedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsCollapsedTableViewCell.h; sourceTree = "<group>"; };
 		3306F1C01E6453050020D2C1 /* NewsCollapsedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsCollapsedTableViewCell.m; sourceTree = "<group>"; };
 		332746AA1E322BCA003A0A20 /* ScrollableMenubarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScrollableMenubarViewController.h; path = Custom/ScrollableMenubarViewController.h; sourceTree = "<group>"; };
@@ -228,46 +217,6 @@
 		3361BD0F1E827F9D00EA6440 /* CustomButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomButton.h; sourceTree = "<group>"; };
 		3361BD101E827F9D00EA6440 /* CustomButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomButton.m; sourceTree = "<group>"; };
 		3363F29B1E8FF73100DE651A /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
-		3363F3641E8FF8C300DE651A /* NSDictionary+QueryString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+QueryString.m"; sourceTree = "<group>"; };
-		3363F3651E8FF8C300DE651A /* NSDictionary+StringValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+StringValue.m"; sourceTree = "<group>"; };
-		3363F3661E8FF8C300DE651A /* NSString+Hashing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Hashing.m"; sourceTree = "<group>"; };
-		3363F37E1E8FF8C300DE651A /* NSDictionary+QueryString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+QueryString.h"; sourceTree = "<group>"; };
-		3363F37F1E8FF8C300DE651A /* NSDictionary+StringValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+StringValue.h"; sourceTree = "<group>"; };
-		3363F3801E8FF8C300DE651A /* NSString+Hashing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Hashing.h"; sourceTree = "<group>"; };
-		3363F3811E8FF8C300DE651A /* PTBlockEventListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTBlockEventListener.h; sourceTree = "<group>"; };
-		3363F3821E8FF8C300DE651A /* PTJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTJSON.h; sourceTree = "<group>"; };
-		3363F3831E8FF8C300DE651A /* PTPusherChannel_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTPusherChannel_Private.h; sourceTree = "<group>"; };
-		3363F3841E8FF8C300DE651A /* PTTargetActionEventListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTTargetActionEventListener.h; sourceTree = "<group>"; };
-		3363F3851E8FF8C300DE651A /* PTBlockEventListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTBlockEventListener.m; sourceTree = "<group>"; };
-		3363F3861E8FF8C300DE651A /* PTEventListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTEventListener.h; sourceTree = "<group>"; };
-		3363F3871E8FF8C300DE651A /* PTJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTJSON.m; sourceTree = "<group>"; };
-		3363F38A1E8FF8C300DE651A /* PTPusher+ReactiveExtensions_Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PTPusher+ReactiveExtensions_Internal.h"; sourceTree = "<group>"; };
-		3363F38B1E8FF8C300DE651A /* PTPusher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTPusher.h; sourceTree = "<group>"; };
-		3363F38C1E8FF8C300DE651A /* PTPusher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTPusher.m; sourceTree = "<group>"; };
-		3363F38D1E8FF8C300DE651A /* PTPusherAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTPusherAPI.h; sourceTree = "<group>"; };
-		3363F38E1E8FF8C300DE651A /* PTPusherAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTPusherAPI.m; sourceTree = "<group>"; };
-		3363F3911E8FF8C300DE651A /* PTPusherChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTPusherChannel.h; sourceTree = "<group>"; };
-		3363F3921E8FF8C300DE651A /* PTPusherChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTPusherChannel.m; sourceTree = "<group>"; };
-		3363F3931E8FF8C300DE651A /* PTPusherChannelAuthorizationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTPusherChannelAuthorizationDelegate.h; sourceTree = "<group>"; };
-		3363F3951E8FF8C300DE651A /* PTPusherChannelServerBasedAuthorization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTPusherChannelServerBasedAuthorization.h; sourceTree = "<group>"; };
-		3363F3961E8FF8C300DE651A /* PTPusherChannelServerBasedAuthorization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTPusherChannelServerBasedAuthorization.m; sourceTree = "<group>"; };
-		3363F3971E8FF8C300DE651A /* PTPusherConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTPusherConnection.h; sourceTree = "<group>"; };
-		3363F3981E8FF8C300DE651A /* PTPusherConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTPusherConnection.m; sourceTree = "<group>"; };
-		3363F39A1E8FF8C300DE651A /* PTPusherDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTPusherDelegate.h; sourceTree = "<group>"; };
-		3363F39B1E8FF8C300DE651A /* PTPusherErrors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTPusherErrors.h; sourceTree = "<group>"; };
-		3363F39C1E8FF8C300DE651A /* PTPusherEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTPusherEvent.h; sourceTree = "<group>"; };
-		3363F39D1E8FF8C300DE651A /* PTPusherEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTPusherEvent.m; sourceTree = "<group>"; };
-		3363F39E1E8FF8C300DE651A /* PTPusherEventDispatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTPusherEventDispatcher.h; sourceTree = "<group>"; };
-		3363F39F1E8FF8C300DE651A /* PTPusherEventDispatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTPusherEventDispatcher.m; sourceTree = "<group>"; };
-		3363F3A11E8FF8C300DE651A /* PTPusherEventPublisher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTPusherEventPublisher.h; sourceTree = "<group>"; };
-		3363F3A31E8FF8C300DE651A /* PTPusherMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTPusherMacros.h; sourceTree = "<group>"; };
-		3363F3A41E8FF8C300DE651A /* PTPusherMockConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTPusherMockConnection.h; sourceTree = "<group>"; };
-		3363F3A51E8FF8C300DE651A /* PTPusherMockConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTPusherMockConnection.m; sourceTree = "<group>"; };
-		3363F3A71E8FF8C300DE651A /* PTPusherPresenceChannelDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTPusherPresenceChannelDelegate.h; sourceTree = "<group>"; };
-		3363F3AA1E8FF8C300DE651A /* PTTargetActionEventListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTTargetActionEventListener.m; sourceTree = "<group>"; };
-		3363F3AB1E8FF8C300DE651A /* PTURLRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTURLRequestOperation.h; sourceTree = "<group>"; };
-		3363F3AC1E8FF8C300DE651A /* PTURLRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTURLRequestOperation.m; sourceTree = "<group>"; };
-		3363F3AE1E8FF8C300DE651A /* Pusher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Pusher.h; sourceTree = "<group>"; };
 		336F6DB41E83BB53008FB120 /* MKAnnotationView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKAnnotationView+WebCache.h"; sourceTree = "<group>"; };
 		336F6DB51E83BB53008FB120 /* MKAnnotationView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKAnnotationView+WebCache.m"; sourceTree = "<group>"; };
 		336F6DB61E83BB53008FB120 /* NSData+ImageContentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+ImageContentType.h"; sourceTree = "<group>"; };
@@ -426,6 +375,14 @@
 		33F500761E38BC7500A16D32 /* EventsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsDetailViewController.m; sourceTree = "<group>"; };
 		33F500781E38BEE200A16D32 /* BaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseViewController.h; sourceTree = "<group>"; };
 		33F500791E38BEE200A16D32 /* BaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseViewController.m; sourceTree = "<group>"; };
+		411EA5039E248C90C29B2E32 /* Pods_CCF_Project.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CCF_Project.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A824C2135E786FD259D27B3 /* Pods-CCF-ProjectTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CCF-ProjectTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CCF-ProjectTests/Pods-CCF-ProjectTests.debug.xcconfig"; sourceTree = "<group>"; };
+		6297825603580020D7CB36C1 /* Pods_CCF_ProjectTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CCF_ProjectTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6FB8E2649F78A0806F86F762 /* Pods_CCF_ProjectUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CCF_ProjectUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F4B1013A2174AAC2309EAFA /* Pods-CCF-ProjectUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CCF-ProjectUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CCF-ProjectUITests/Pods-CCF-ProjectUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		A372496241F6A254BCCF494C /* Pods-CCF-Project.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CCF-Project.release.xcconfig"; path = "Pods/Target Support Files/Pods-CCF-Project/Pods-CCF-Project.release.xcconfig"; sourceTree = "<group>"; };
+		EA020783F489ED2D5EC02A89 /* Pods-CCF-Project.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CCF-Project.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CCF-Project/Pods-CCF-Project.debug.xcconfig"; sourceTree = "<group>"; };
+		F6EEB082C48176C4147B4E90 /* Pods-CCF-ProjectTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CCF-ProjectTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CCF-ProjectTests/Pods-CCF-ProjectTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -462,6 +419,7 @@
 				333724BA1E360D22001DBE50 /* GoogleMaps.framework in Frameworks */,
 				333724BC1E360D22001DBE50 /* GoogleMapsCore.framework in Frameworks */,
 				333724BB1E360D22001DBE50 /* GoogleMapsBase.framework in Frameworks */,
+				97A9288829E2347684C43B6D /* Pods_CCF_Project.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -469,6 +427,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA3A60F7ABF9766A06CF0F80 /* Pods_CCF_ProjectTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -476,6 +435,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DD37CC628BB639428FB125D /* Pods_CCF_ProjectUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -496,7 +456,6 @@
 			isa = PBXGroup;
 			children = (
 				33EB521C1E9523F90010F8ED /* StreamingKit */,
-				3363F29F1E8FF8C300DE651A /* Pusher */,
 				336F6DE51E83BB9F008FB120 /* WebImage */,
 				336F6DB31E83BB53008FB120 /* SDWebImage */,
 				33ACB7391E795F1F005ACBBB /* AFNetworking */,
@@ -544,6 +503,9 @@
 				333724C71E360E35001DBE50 /* CoreGraphics.framework */,
 				333724C81E360E35001DBE50 /* CoreLocation.framework */,
 				333724C91E360E35001DBE50 /* CoreText.framework */,
+				411EA5039E248C90C29B2E32 /* Pods_CCF_Project.framework */,
+				6297825603580020D7CB36C1 /* Pods_CCF_ProjectTests.framework */,
+				6FB8E2649F78A0806F86F762 /* Pods_CCF_ProjectUITests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -579,6 +541,7 @@
 				335EA72D1E31D5E800416E67 /* CCF-ProjectUITests */,
 				335EA7041E31D5E800416E67 /* Products */,
 				333724C41E360E34001DBE50 /* Frameworks */,
+				6C3A0F18D68B747272E91FF3 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -690,61 +653,6 @@
 				3361BD101E827F9D00EA6440 /* CustomButton.m */,
 			);
 			name = Customs;
-			sourceTree = "<group>";
-		};
-		3363F29F1E8FF8C300DE651A /* Pusher */ = {
-			isa = PBXGroup;
-			children = (
-				3363F3641E8FF8C300DE651A /* NSDictionary+QueryString.m */,
-				3363F3651E8FF8C300DE651A /* NSDictionary+StringValue.m */,
-				3363F3661E8FF8C300DE651A /* NSString+Hashing.m */,
-				3363F37D1E8FF8C300DE651A /* Private Headers */,
-				3363F3851E8FF8C300DE651A /* PTBlockEventListener.m */,
-				3363F3861E8FF8C300DE651A /* PTEventListener.h */,
-				3363F3871E8FF8C300DE651A /* PTJSON.m */,
-				3363F38A1E8FF8C300DE651A /* PTPusher+ReactiveExtensions_Internal.h */,
-				3363F38B1E8FF8C300DE651A /* PTPusher.h */,
-				3363F38C1E8FF8C300DE651A /* PTPusher.m */,
-				3363F38D1E8FF8C300DE651A /* PTPusherAPI.h */,
-				3363F38E1E8FF8C300DE651A /* PTPusherAPI.m */,
-				3363F3911E8FF8C300DE651A /* PTPusherChannel.h */,
-				3363F3921E8FF8C300DE651A /* PTPusherChannel.m */,
-				3363F3931E8FF8C300DE651A /* PTPusherChannelAuthorizationDelegate.h */,
-				3363F3951E8FF8C300DE651A /* PTPusherChannelServerBasedAuthorization.h */,
-				3363F3961E8FF8C300DE651A /* PTPusherChannelServerBasedAuthorization.m */,
-				3363F3971E8FF8C300DE651A /* PTPusherConnection.h */,
-				3363F3981E8FF8C300DE651A /* PTPusherConnection.m */,
-				3363F39A1E8FF8C300DE651A /* PTPusherDelegate.h */,
-				3363F39B1E8FF8C300DE651A /* PTPusherErrors.h */,
-				3363F39C1E8FF8C300DE651A /* PTPusherEvent.h */,
-				3363F39D1E8FF8C300DE651A /* PTPusherEvent.m */,
-				3363F39E1E8FF8C300DE651A /* PTPusherEventDispatcher.h */,
-				3363F39F1E8FF8C300DE651A /* PTPusherEventDispatcher.m */,
-				3363F3A11E8FF8C300DE651A /* PTPusherEventPublisher.h */,
-				3363F3A31E8FF8C300DE651A /* PTPusherMacros.h */,
-				3363F3A41E8FF8C300DE651A /* PTPusherMockConnection.h */,
-				3363F3A51E8FF8C300DE651A /* PTPusherMockConnection.m */,
-				3363F3A71E8FF8C300DE651A /* PTPusherPresenceChannelDelegate.h */,
-				3363F3AA1E8FF8C300DE651A /* PTTargetActionEventListener.m */,
-				3363F3AB1E8FF8C300DE651A /* PTURLRequestOperation.h */,
-				3363F3AC1E8FF8C300DE651A /* PTURLRequestOperation.m */,
-				3363F3AE1E8FF8C300DE651A /* Pusher.h */,
-			);
-			path = Pusher;
-			sourceTree = "<group>";
-		};
-		3363F37D1E8FF8C300DE651A /* Private Headers */ = {
-			isa = PBXGroup;
-			children = (
-				3363F37E1E8FF8C300DE651A /* NSDictionary+QueryString.h */,
-				3363F37F1E8FF8C300DE651A /* NSDictionary+StringValue.h */,
-				3363F3801E8FF8C300DE651A /* NSString+Hashing.h */,
-				3363F3811E8FF8C300DE651A /* PTBlockEventListener.h */,
-				3363F3821E8FF8C300DE651A /* PTJSON.h */,
-				3363F3831E8FF8C300DE651A /* PTPusherChannel_Private.h */,
-				3363F3841E8FF8C300DE651A /* PTTargetActionEventListener.h */,
-			);
-			path = "Private Headers";
 			sourceTree = "<group>";
 		};
 		336F6DB31E83BB53008FB120 /* SDWebImage */ = {
@@ -915,6 +823,19 @@
 			path = StreamingKit;
 			sourceTree = "<group>";
 		};
+		6C3A0F18D68B747272E91FF3 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				EA020783F489ED2D5EC02A89 /* Pods-CCF-Project.debug.xcconfig */,
+				A372496241F6A254BCCF494C /* Pods-CCF-Project.release.xcconfig */,
+				4A824C2135E786FD259D27B3 /* Pods-CCF-ProjectTests.debug.xcconfig */,
+				F6EEB082C48176C4147B4E90 /* Pods-CCF-ProjectTests.release.xcconfig */,
+				8F4B1013A2174AAC2309EAFA /* Pods-CCF-ProjectUITests.debug.xcconfig */,
+				1DDC6D193A07D03AB6960952 /* Pods-CCF-ProjectUITests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -922,10 +843,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 335EA7331E31D5E800416E67 /* Build configuration list for PBXNativeTarget "CCF-Project" */;
 			buildPhases = (
+				E9A077A45FA72DEA3916A429 /* [CP] Check Pods Manifest.lock */,
 				335EA6FF1E31D5E800416E67 /* Sources */,
 				335EA7001E31D5E800416E67 /* Frameworks */,
 				335EA7011E31D5E800416E67 /* Resources */,
 				3391BE191E726D09005BC164 /* ShellScript */,
+				FD3B3F98E218324C7584236B /* [CP] Embed Pods Frameworks */,
+				89B90883D8B4588275C4942B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -940,9 +864,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 335EA7361E31D5E800416E67 /* Build configuration list for PBXNativeTarget "CCF-ProjectTests" */;
 			buildPhases = (
+				73B7E9B14555598A717AD858 /* [CP] Check Pods Manifest.lock */,
 				335EA71B1E31D5E800416E67 /* Sources */,
 				335EA71C1E31D5E800416E67 /* Frameworks */,
 				335EA71D1E31D5E800416E67 /* Resources */,
+				EA274C40E449A4113118EA4F /* [CP] Embed Pods Frameworks */,
+				64819EA6D0A322F9341BC33F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -958,9 +885,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 335EA7391E31D5E800416E67 /* Build configuration list for PBXNativeTarget "CCF-ProjectUITests" */;
 			buildPhases = (
+				F05D0391786E015B4C47E87E /* [CP] Check Pods Manifest.lock */,
 				335EA7261E31D5E800416E67 /* Sources */,
 				335EA7271E31D5E800416E67 /* Frameworks */,
 				335EA7281E31D5E800416E67 /* Resources */,
+				3965BBB16D24BC675C29FB77 /* [CP] Embed Pods Frameworks */,
+				01D8EFFD039A17834B1D073C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1064,6 +994,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		01D8EFFD039A17834B1D073C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CCF-ProjectUITests/Pods-CCF-ProjectUITests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		3391BE191E726D09005BC164 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
@@ -1077,6 +1022,126 @@
 			shellPath = /bin/sh;
 			shellScript = "./Fabric.framework/run 557d18c9674f8d3ef2ff56ffa38e06ed5639ee1e bb9f7dcc81166afb560b79e0d9502870f78557446814c0747559aaf4a816df1b";
 		};
+		3965BBB16D24BC675C29FB77 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CCF-ProjectUITests/Pods-CCF-ProjectUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		64819EA6D0A322F9341BC33F /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CCF-ProjectTests/Pods-CCF-ProjectTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		73B7E9B14555598A717AD858 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		89B90883D8B4588275C4942B /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CCF-Project/Pods-CCF-Project-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E9A077A45FA72DEA3916A429 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		EA274C40E449A4113118EA4F /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CCF-ProjectTests/Pods-CCF-ProjectTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F05D0391786E015B4C47E87E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FD3B3F98E218324C7584236B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CCF-Project/Pods-CCF-Project-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -1084,14 +1149,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3363F4E21E8FF8C400DE651A /* PTBlockEventListener.m in Sources */,
 				336F6DE21E83BB53008FB120 /* UIImageView+HighlightedWebCache.m in Sources */,
 				336F6DDF1E83BB53008FB120 /* UIImage+GIF.m in Sources */,
 				33EB52351E9523F90010F8ED /* STKDataSourceWrapper.m in Sources */,
 				33C260271E457CBF00C251C0 /* PodDetailVideoTableViewCell.m in Sources */,
 				336F6DD71E83BB53008FB120 /* SDImageCache.m in Sources */,
 				336F6DDA1E83BB53008FB120 /* SDWebImageDownloader.m in Sources */,
-				3363F4EA1E8FF8C400DE651A /* PTPusherChannelServerBasedAuthorization.m in Sources */,
 				33AC57341E38AA5800F71699 /* EventsTableViewController.m in Sources */,
 				336F6DE01E83BB53008FB120 /* UIImage+MultiFormat.m in Sources */,
 				33ACB7691E795F1F005ACBBB /* UIRefreshControl+AFNetworking.m in Sources */,
@@ -1108,10 +1171,8 @@
 				334DC3BD1E7AA6D2002E4EA8 /* EventsItem+CoreDataProperties.m in Sources */,
 				336F6DDB1E83BB53008FB120 /* SDWebImageDownloaderOperation.m in Sources */,
 				33C260241E457CAC00C251C0 /* PodDetailAudioTableViewCell.m in Sources */,
-				3363F4E81E8FF8C400DE651A /* PTPusherChannel.m in Sources */,
 				33EB52361E9523F90010F8ED /* STKHTTPDataSource.m in Sources */,
 				336F6DD61E83BB53008FB120 /* NSData+ImageContentType.m in Sources */,
-				3363F4E51E8FF8C400DE651A /* PTPusher.m in Sources */,
 				336F6DDD1E83BB53008FB120 /* SDWebImagePrefetcher.m in Sources */,
 				334DC3B91E7AA6D2002E4EA8 /* SatellitesItem+CoreDataProperties.m in Sources */,
 				33B1FA2A1E96D30100D70ED1 /* DownloadsViewController.m in Sources */,
@@ -1119,17 +1180,14 @@
 				334DC3B81E7AA6D2002E4EA8 /* SatellitesItem+CoreDataClass.m in Sources */,
 				334DC3B71E7AA6D2002E4EA8 /* NewsItem+CoreDataProperties.m in Sources */,
 				336F6DDE1E83BB53008FB120 /* UIButton+WebCache.m in Sources */,
-				3363F4ED1E8FF8C400DE651A /* PTPusherEvent.m in Sources */,
 				336F6DE41E83BB53008FB120 /* UIView+WebCacheOperation.m in Sources */,
 				33ACB7671E795F1F005ACBBB /* UIImageView+AFNetworking.m in Sources */,
 				333724E11E361229001DBE50 /* NewsTableViewController.m in Sources */,
 				334DC3BA1E7AA6D2002E4EA8 /* PodcastsItem+CoreDataClass.m in Sources */,
-				3363F4F11E8FF8C400DE651A /* PTPusherMockConnection.m in Sources */,
 				33A5CD981E41F57700B6D9EC /* PodcastTableViewCell.m in Sources */,
 				33ACB7611E795F1F005ACBBB /* AFURLSessionManager.m in Sources */,
 				33A76CD61E76C45300A6757F /* AMapViewController.m in Sources */,
 				336F6DE31E83BB53008FB120 /* UIImageView+WebCache.m in Sources */,
-				3363F4EE1E8FF8C400DE651A /* PTPusherEventDispatcher.m in Sources */,
 				33ACB75D1E795F1F005ACBBB /* AFNetworkReachabilityManager.m in Sources */,
 				334DC3B61E7AA6D2002E4EA8 /* NewsItem+CoreDataClass.m in Sources */,
 				336F6DD81E83BB53008FB120 /* SDWebImageCompat.m in Sources */,
@@ -1141,7 +1199,6 @@
 				33ACB76A1E795F1F005ACBBB /* UIWebView+AFNetworking.m in Sources */,
 				33C260211E457C9800C251C0 /* PodDetailDescriptionTableViewCell.m in Sources */,
 				33ACB7601E795F1F005ACBBB /* AFURLResponseSerialization.m in Sources */,
-				3363F4E31E8FF8C400DE651A /* PTJSON.m in Sources */,
 				33EB52311E9523F90010F8ED /* STKAudioPlayer.m in Sources */,
 				3306F1C11E6453050020D2C1 /* NewsCollapsedTableViewCell.m in Sources */,
 				33EB52321E9523F90010F8ED /* STKAutoRecoveringHTTPDataSource.m in Sources */,
@@ -1150,24 +1207,18 @@
 				33ACB7641E795F1F005ACBBB /* AFNetworkActivityIndicatorManager.m in Sources */,
 				335EA7141E31D5E800416E67 /* CCF_Project.xcdatamodeld in Sources */,
 				33ACB7661E795F1F005ACBBB /* UIButton+AFNetworking.m in Sources */,
-				3363F4D81E8FF8C400DE651A /* NSString+Hashing.m in Sources */,
 				333724A91E3608A5001DBE50 /* MapViewController.m in Sources */,
 				33ACB7681E795F1F005ACBBB /* UIProgressView+AFNetworking.m in Sources */,
-				3363F4D61E8FF8C400DE651A /* NSDictionary+QueryString.m in Sources */,
 				332746AC1E322BCA003A0A20 /* ScrollableMenubarViewController.m in Sources */,
 				33ACB7621E795F1F005ACBBB /* AFAutoPurgingImageCache.m in Sources */,
 				33D721701E3F4AA40071FC2D /* LiveStreamingViewController.m in Sources */,
-				3363F4F51E8FF8C400DE651A /* PTTargetActionEventListener.m in Sources */,
 				337F35B61E813D290009D6CD /* PodcastsObject.m in Sources */,
 				334DC3BB1E7AA6D2002E4EA8 /* PodcastsItem+CoreDataProperties.m in Sources */,
 				332C08641E718A41000175DF /* PodcastListViewController.m in Sources */,
 				33ACB75E1E795F1F005ACBBB /* AFSecurityPolicy.m in Sources */,
-				3363F4E61E8FF8C400DE651A /* PTPusherAPI.m in Sources */,
-				3363F4F61E8FF8C400DE651A /* PTURLRequestOperation.m in Sources */,
 				33CD19FE1E6BEF660019C279 /* UIButton+LocationValues.m in Sources */,
 				337F35B91E813E230009D6CD /* EventsObject.m in Sources */,
 				33ACB75C1E795F1F005ACBBB /* AFHTTPSessionManager.m in Sources */,
-				3363F4D71E8FF8C400DE651A /* NSDictionary+StringValue.m in Sources */,
 				336F6DD91E83BB53008FB120 /* SDWebImageDecoder.m in Sources */,
 				336F6DE11E83BB53008FB120 /* UIImage+WebP.m in Sources */,
 				33C2601E1E457C5100C251C0 /* PodDetailImageTableViewCell.m in Sources */,
@@ -1179,7 +1230,6 @@
 				334DC3BC1E7AA6D2002E4EA8 /* EventsItem+CoreDataClass.m in Sources */,
 				33C260301E45D0BA00C251C0 /* SettingsTableViewController.m in Sources */,
 				335EA7081E31D5E800416E67 /* main.m in Sources */,
-				3363F4EB1E8FF8C400DE651A /* PTPusherConnection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1328,6 +1378,7 @@
 		};
 		335EA7341E31D5E800416E67 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EA020783F489ED2D5EC02A89 /* Pods-CCF-Project.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "CCF-Project/CCF-Project.entitlements";
@@ -1362,6 +1413,7 @@
 		};
 		335EA7351E31D5E800416E67 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A372496241F6A254BCCF494C /* Pods-CCF-Project.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "CCF-Project/CCF-Project.entitlements";
@@ -1396,6 +1448,7 @@
 		};
 		335EA7371E31D5E800416E67 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4A824C2135E786FD259D27B3 /* Pods-CCF-ProjectTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = "CCF-ProjectTests/Info.plist";
@@ -1408,6 +1461,7 @@
 		};
 		335EA7381E31D5E800416E67 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F6EEB082C48176C4147B4E90 /* Pods-CCF-ProjectTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = "CCF-ProjectTests/Info.plist";
@@ -1420,6 +1474,7 @@
 		};
 		335EA73A1E31D5E800416E67 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8F4B1013A2174AAC2309EAFA /* Pods-CCF-ProjectUITests.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = "CCF-ProjectUITests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1431,6 +1486,7 @@
 		};
 		335EA73B1E31D5E800416E67 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1DDC6D193A07D03AB6960952 /* Pods-CCF-ProjectUITests.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = "CCF-ProjectUITests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

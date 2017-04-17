@@ -184,6 +184,9 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
     
 //    [self removeLoadingAnimation];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kOBS_EVENTS_NOTIFICATION object:nil];
+    
 }
 
 

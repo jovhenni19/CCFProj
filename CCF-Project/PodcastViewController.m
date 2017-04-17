@@ -249,6 +249,7 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
 //    [self removeLoadingAnimation];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kOBS_PODCAST_NOTIFICATION object:nil];
 }
 
 - (IBAction)changeView:(id)sender {

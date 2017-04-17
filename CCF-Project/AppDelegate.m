@@ -23,7 +23,6 @@
 @end
 
 @implementation AppDelegate
-@synthesize pusherClient = _pusherClient;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
@@ -39,6 +38,7 @@
     
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
+    [launchOptions valueForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     
     return YES;
 }
@@ -66,7 +66,7 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     
-    //    NSLog(@"completion received notification:%@",userInfo);
+        NSLog(@"completion received notification:%@",userInfo);
 //    [self saveNotificationData:userInfo[@"aps"][@"alert"]];
     
     completionHandler(UIBackgroundFetchResultNewData);
@@ -76,6 +76,23 @@
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     //    NSLog(@"error:%@",error.description);
+}
+
+-(void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    
+    UIAlertView *notificationAlert = [[UIAlertView alloc] initWithTitle:@"Notification"    message:@"This local notification"
+                                                               delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+    
+    [notificationAlert show];
+    // NSLog(@"didReceiveLocalNotification");
+}
+
+- (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forLocalNotification:(UILocalNotification *)notification completionHandler:(void (^)())completionHandler {
+    
+}
+
+- (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forLocalNotification:(UILocalNotification *)notification withResponseInfo:(NSDictionary *)responseInfo completionHandler:(void (^)())completionHandler {
+    
 }
 
 
@@ -88,6 +105,15 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+//    UILocalNotification *notification = [[UILocalNotification alloc] init];
+//    notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:1];
+//    notification.alertBody = @"APP ENTERING BACKGROUND";
+//    notification.timeZone = [NSTimeZone defaultTimeZone];
+//    notification.soundName = UILocalNotificationDefaultSoundName;
+//    notification.applicationIconBadgeNumber = 1;
+//    
+//    [[UIApplication sharedApplication] scheduleLocalNotification:notification];
 }
 
 
@@ -257,15 +283,6 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     }
 }
 
-
-- (PTPusher*) pusherClient {
-    if (!_pusherClient) {
-        _pusherClient = [PTPusher pusherWithKey:@"6b3550ae7aa57f259d34" delegate:self];
-        [_pusherClient connect];
-    }
-    
-    return _pusherClient;
-}
 
 
 @end

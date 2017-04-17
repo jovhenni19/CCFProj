@@ -33,10 +33,10 @@
     
     UILayoutGuide *marginGuide = self.layoutMarginsGuide;
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.imageView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:marginGuide attribute:NSLayoutAttributeTopMargin multiplier:1.0f constant:0.0f]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.labelText attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:marginGuide attribute:NSLayoutAttributeTopMargin multiplier:1.0f constant:0.0f]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.labelText attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:marginGuide attribute:NSLayoutAttributeTopMargin multiplier:1.0f constant:3.0f]];
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.button attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTopMargin multiplier:1.0f constant:0.0f]];
     
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.labelText attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:marginGuide attribute:NSLayoutAttributeBottomMargin multiplier:1.0f constant:0.0f]];
+//    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.labelText attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:marginGuide attribute:NSLayoutAttributeBottomMargin multiplier:1.0f constant:0.0f]];
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.button attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:marginGuide attribute:NSLayoutAttributeBottomMargin multiplier:1.0f constant:0.0f]];
     
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.imageView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:marginGuide attribute:NSLayoutAttributeLeadingMargin multiplier:1.0f constant:0.0f]];

@@ -72,6 +72,8 @@
     
     
     [self.youtubePlayerView loadWithVideoId:latest_videoID];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kOBS_LIVESTREAM_NOTIFICATION object:nil];
 }
 
 - (void) timerAction {

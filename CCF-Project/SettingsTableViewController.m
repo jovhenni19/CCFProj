@@ -80,6 +80,8 @@
     
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kOBS_GROUPS_NOTIFICATION object:nil];
 }
 
 

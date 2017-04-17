@@ -17,6 +17,7 @@
     NSData *image_data;
     NSString *title;
     NSString *group_name;
+    NSNumber *is_read;
 }
 
 @property (nullable, nonatomic, copy) NSString *created_date;
@@ -27,5 +28,6 @@
 @property (nullable, nonatomic, retain) NSData *image_data;
 @property (nullable, nonatomic, copy) NSString *title;
 @property (nullable, nonatomic, copy) NSString *group_name;
+@property (nullable, nonatomic, copy) NSNumber *is_read;
 
 @end

@@ -85,8 +85,8 @@
     
 //    [self showLoadingAnimation:self.view];
     
-    self.yourTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollTap:)];
-    [self.tableView addGestureRecognizer:self.yourTap];
+//    self.yourTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollTap:)];
+//    [self.view addGestureRecognizer:self.yourTap];
     
     
     
@@ -282,6 +282,7 @@
     
     [self saveOfflineData:self.sattelites_list forKey:@"satellites_list"];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kOBS_SATTELITES_NOTIFICATION object:nil];
     NETWORK_INDICATOR(YES)
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locationUpdateFinished:) name:kOBS_LOCATIONFINISHED_NOTIFICATION object:nil];
     
@@ -343,24 +344,17 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    SatellitesObject *location = nil;
-    NSInteger section = [indexPath section];
-    NSInteger row = [indexPath row];
-    if (self.isAllLocationSelected) {
-        location = [[self.allLocations objectForKey:self.alphabetSections[section]] objectAtIndex:row];
-    }
-    else {
-        location = [[self.nearbyLocations objectForKey:self.nearbySections[section]] objectAtIndex:row];
-    }
     
     if ([tableView isEqual:self.tableSearchResult]) {
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
         }
         
         if (self.searchResultList.count) {
+            SatellitesObject *location = [self.searchResultList objectAtIndex:[indexPath row]];
             cell.textLabel.text = [location.name capitalizedString];
             cell.textLabel.textColor = [UIColor blackColor];
             cell.selectionStyle = UITableViewCellSelectionStyleDefault;
@@ -377,8 +371,18 @@
     }
     else {
         
+        SatellitesObject *location = nil;
+        NSInteger section = [indexPath section];
+        NSInteger row = [indexPath row];
+        if (self.isAllLocationSelected) {
+            location = [[self.allLocations objectForKey:self.alphabetSections[section]] objectAtIndex:row];
+        }
+        else {
+            location = [[self.nearbyLocations objectForKey:self.nearbySections[section]] objectAtIndex:row];
+        }
         
         SattelitesTableViewCell *cell = (SattelitesTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"sattelitesCell"];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         cell.labelLocationName.text = location.name;
         
@@ -446,6 +450,8 @@
             }
             
         }
+        
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
     else {
         
@@ -671,6 +677,9 @@
     [self.tableView reloadData];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
+    
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kOBS_LOCATIONFINISHED_NOTIFICATION object:nil];
 //    [self removeLoadingAnimation];
 }
 
@@ -718,7 +727,7 @@
 
 
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView {
-    [self.searchTextfield resignFirstResponder];
+//    [self.searchTextfield resignFirstResponder];
 }
 
 
@@ -726,9 +735,13 @@
     
     CGFloat height = self.tableView.frame.size.height -  self.keyboardHeight - 50.0f;
     
-    self.tableSearchResult = [[UITableView alloc] initWithFrame:CGRectMake(5.0f, self.heightSearchResult, self.containerViewSearchResult.frame.size.width - 10.0f, height - self.heightSearchResult - 5.0f) style:UITableViewStylePlain];
-    self.tableSearchResult.delegate = self;
-    self.tableSearchResult.dataSource = self;
+    if (!self.tableSearchResult) {
+        self.tableSearchResult = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+        self.tableSearchResult.delegate = self;
+        self.tableSearchResult.dataSource = self;
+    }
+    
+    self.tableSearchResult.frame = CGRectMake(5.0f, self.heightSearchResult, self.containerViewSearchResult.frame.size.width - 10.0f, height - self.heightSearchResult - 5.0f);
     
     [self.containerViewSearchResult addSubview:self.tableSearchResult];
     
@@ -758,6 +771,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
+    [self searchString:textField.text];
     return NO;
 }
 
@@ -770,17 +784,36 @@
 }
 
 - (void) searchString:(NSString*)string {
-    if(!self.searchResultList){
-        self.searchResultList = [NSMutableArray array];
+//    if(!self.searchResultList){
+//        self.searchResultList = [NSMutableArray array];
+//    }
+    
+    if (string.length<1) {
+        return;
     }
-    for (SatellitesObject *item in self.sattelites_list) {
+    
+    if ([[self.allLocations allKeys] containsObject:[[string substringToIndex:1] uppercaseString]] == NO) {
+        return;
+    }
+    
+    self.searchResultList = nil;
+    self.searchResultList = [NSMutableArray array];
+    
+    
+    for (SatellitesObject *item in self.allLocations[[[string substringToIndex:1] uppercaseString]]) {
         
         if ([item.name rangeOfString:string options:NSCaseInsensitiveSearch].location != NSNotFound) {
-            if (![self.searchResultList containsObject:item.name]) {
-                [self.searchResultList addObject:item.name];
-            }
+            
+            [self.searchResultList addObject:item];
+//            if (![self.searchResultList containsObject:item.name]) {
+//                [self.searchResultList addObject:item.name];
+//            }
         }
     }
+    
+    
+    
+//    NSLog(@"%@ - %@",string,self.searchResultList);
     
     [self.tableSearchResult reloadData];
 }

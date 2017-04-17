@@ -15,6 +15,7 @@
 #import "PodcastViewController.h"
 #import "SettingsTableViewController.h"
 #import "AFNetworkReachabilityManager.h"
+#import "DownloadsViewController.h"
 //#import "SRScreenRecorder.h"
 
 
@@ -37,6 +38,8 @@
 @end
 
 @implementation ScrollableMenubarViewController
+@synthesize pusherClient = _pusherClient;
+
 - (id)initWithCoder:(NSCoder *)decoder
 {
     if ((self = [super initWithCoder:decoder])) {
@@ -92,7 +95,7 @@
     EventsTableViewController *eventsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"events"];
     SattelitesTableViewController *sViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"sattelites"];
     LiveStreamingViewController *streamViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"live"];
-    PodcastViewController *downloadedViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"downloaded"];
+    DownloadsViewController *downloadedViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"downloaded"];
     SettingsTableViewController *settingsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"settings"];
     
     self.viewControllers = [[NSArray alloc] initWithObjects:newsViewController, podcastViewController, eventsViewController,sViewController,streamViewController,downloadedViewController,settingsViewController, nil];
@@ -190,16 +193,7 @@
 //    holdGesture.minimumPressDuration = 10;
 //    
 //    [self.imageLogoTop addGestureRecognizer:holdGesture];
-    
-    
-    PTPusherChannel *channel = [APPDELEGATE_CLASS.pusherClient subscribeToChannelNamed:@"news"];
-    [channel bindToEventNamed:@"B1G Singles" handleWithBlock:^(PTPusherEvent *channelEvent) {
-        // channelEvent.data is a NSDictionary of the JSON object received
-        self.labelNotificationBadge.text = [NSString stringWithFormat:@"NEWS: B1G Singles"];
-        [self.labelNotificationBadge sizeToFit];
-        NSLog(@"##[B1G Singles]data:%@",channelEvent.data);
-    }];
-    
+    [self.pusherClient connect];
     
 }
 
@@ -253,6 +247,16 @@
 }
 
 - (void) reloadNews {
+    
+//    UILocalNotification *notification = [[UILocalNotification alloc] init];
+//    notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:5];
+//    notification.alertBody = @"THIS IS a LocalNotification";
+//    notification.timeZone = [NSTimeZone defaultTimeZone];
+//    notification.soundName = UILocalNotificationDefaultSoundName;
+//    notification.applicationIconBadgeNumber = 1;
+//    
+//    [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+    
     
     [self.horizontalTableview reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
 }
@@ -764,6 +768,105 @@
         
     }
     
+}
+
+- (PTPusher*) pusherClient {
+    if (!_pusherClient) {
+        _pusherClient = [PTPusher pusherWithKey:@"6b3550ae7aa57f259d34" delegate:self encrypted:YES cluster:@"ap1"];
+        [_pusherClient connect];
+        _pusherClient.reconnectDelay = 5;
+    }
+    
+    return _pusherClient;
+}
+
+- (void)pusher:(PTPusher *)pusher connectionDidConnect:(PTPusherConnection *)connection {
+    
+    NSLog(@"pusher connected:%@",[connection isConnected]?@"YES":@"NO");
+    PTPusherChannel *channel = [self.pusherClient subscribeToChannelNamed:@"news"];
+    [channel bindToEventNamed:@"B1G Singles" handleWithBlock:^(PTPusherEvent *channelEvent) {
+        // channelEvent.data is a NSDictionary of the JSON object received
+        
+        /*
+         data:{
+            date = "April 14, 2017";
+            datestamp =     {
+                date = "2017-04-14 21:08:03.000000";
+                timezone = "Asia/Manila";
+                "timezone_type" = 3;
+            };
+            id = 45;
+            module = news;
+            title = "test push 11";
+         }
+         */
+        
+//        NSLog(@"##[B1G Singles]data:%@",channelEvent.data);
+        
+//        UILocalNotification *notification = [[UILocalNotification alloc] init];
+//        notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:1];
+//        notification.alertBody = [NSString stringWithFormat:@"NEWS: %@",channelEvent.data[@"title"]];
+//        notification.timeZone = [NSTimeZone defaultTimeZone];
+//        notification.soundName = UILocalNotificationDefaultSoundName;
+//        notification.applicationIconBadgeNumber = [channelEvent.data[@"id"] integerValue];
+//        
+//        [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+
+        if (!self.newsFromPusher) {
+            self.newsFromPusher = [NSMutableArray array];
+        }
+        
+        NSDictionary *dictionary = @{@"id":channelEvent.data[@"id"],@"date_posted":channelEvent.data[@"date"],@"title":channelEvent.data[@"title"],@"read":@NO};
+        
+        [self.newsFromPusher addObject:dictionary];
+        
+        if (self.selectedIndex == 0) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_news_from_pusher" object:self.newsFromPusher];
+        }
+        
+    }];
+}
+
+- (BOOL)pusher:(PTPusher *)pusher connectionWillConnect:(PTPusherConnection *)connection {
+    return YES;
+}
+
+- (void)pusher:(PTPusher *)pusher connection:(PTPusherConnection *)connection failedWithError:(NSError *)error {
+    
+    NSLog(@"pusher failed error:%@",[error description]);
+}
+
+
+- (void)pusher:(PTPusher *)pusher didReceiveErrorEvent:(PTPusherErrorEvent *)errorEvent {
+    
+    NSLog(@"pusher failed error:%@",[errorEvent name]);
+}
+
+
+- (BOOL)pusher:(PTPusher *)pusher connectionWillAutomaticallyReconnect:(PTPusherConnection *)connection afterDelay:(NSTimeInterval)delay {
+    return YES;
+}
+
+- (void)pusher:(PTPusher *)pusher connection:(PTPusherConnection *)connection didDisconnectWithError:(NSError *)error willAttemptReconnect:(BOOL)willAttemptReconnect {
+    NSLog(@"pusher error:%@",[error description]);
+}
+
+- (void)pusher:(PTPusher *)pusher didSubscribeToChannel:(PTPusherChannel *)channel {
+    NSLog(@"pusher channel:%@",[channel name]);
+}
+
+- (void)pusherConnection:(PTPusherConnection *)connection didFailWithError:(NSError *)error wasConnected:(BOOL)wasConnected {
+    NSLog(@"pusher error:%@",[error description]);
+    
+}
+
+- (void)pusher:(PTPusher *)pusher didFailToSubscribeToChannel:(PTPusherChannel *)channel withError:(NSError *)error {
+    
+    NSLog(@"pusher error:%@",[error description]);
+}
+
+- (void) updateNotificationCounter {
+    self.labelNotificationBadge.text = [NSString stringWithFormat:@"%li",(long)self.newsFromPusher.count];
 }
 
 

@@ -18,6 +18,8 @@
 @property (strong, nonatomic) NSMutableArray *news_list;
 @property (assign, nonatomic) NSInteger shownPerPage;
 
+@property (strong, nonatomic) NSArray *news_pusher;
+
 //@property (strong, nonatomic) NSIndexPath *indexPath_expanded;
 
 @end
@@ -37,6 +39,7 @@
     
     self.shownPerPage = 0;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newsFromPusher:) name:@"obs_news_from_pusher" object:nil];
     
     [self reloadTables];
 
@@ -47,8 +50,20 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void) newsFromPusher:(NSNotification*)notification {
+    self.news_pusher = nil;
+    self.news_pusher = [NSArray arrayWithArray:notification.object];
+    
+    [self reloadTables];
+}
+
 - (void)reloadTables {
     [super reloadTables];
+    
+    
+//    NSLog(@"fromMenu:%@\n\nfromHere:%@",((ScrollableMenubarViewController*)self.parentViewController).newsFromPusher,self.news_pusher);
+    
+//    NSLog(@"_%s_",__FUNCTION__);
         
     if(self.news_list){
         [self.news_list removeAllObjects];
@@ -103,6 +118,7 @@
 - (void)callGroupsData:(NSNotification*)notification {
     //    NSLog(@"## result:%@",notification.object);
     
+//    NSLog(@"_%s_",__FUNCTION__);
     
 //    NETWORK_INDICATOR(NO)
     
@@ -138,6 +154,7 @@
     
 //    NETWORK_INDICATOR(YES)
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kOBS_GROUPS_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendNewsList:) name:kOBS_NEWS_NOTIFICATION object:nil];
     
     [self callGETAPI:kNEWS_LINK withParameters:nil completionNotification:kOBS_NEWS_NOTIFICATION];
@@ -151,6 +168,7 @@
     
 //    NETWORK_INDICATOR(NO)
     
+//    NSLog(@"_%s_",__FUNCTION__);
     if(!self.news_list){
         self.news_list = [NSMutableArray array];
     }
@@ -225,6 +243,18 @@
             newsItem.description_excerpt = isNIL(item[@"excerpt"]);
             newsItem.created_date = isNIL(item[@"created_at"]);
             
+            newsItem.is_read = @YES;
+            
+            //check highlight
+            
+            for (NSDictionary *dic in self.news_pusher) {
+                if (![dic[@"read"] boolValue] /*&& [self is1DayAgo:dic[@"date"]]*/) {
+                    if ([newsItem.id_num integerValue] == [dic[@"id"] integerValue]) {
+                        newsItem.is_read = @NO;
+                        break;
+                    }
+                }
+            }
             if ([item[@"groups"] isKindOfClass:[NSArray class]]) {
                 if ([item[@"groups"] count]) {
                     newsItem.group_name = isNIL(item[@"groups"][0][@"name"]);
@@ -263,6 +293,7 @@
     [self saveOfflineData:self.news_list forKey:@"news_list"];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kOBS_NEWS_NOTIFICATION object:nil];
 }
 
 #pragma mark - Table view data source
@@ -302,6 +333,10 @@
     NewsObject *newsItem = (NewsObject*)[self.news_list objectAtIndex:[indexPath row]];
     
     cell.labelNewsTitle.text = [newsItem.title uppercaseString];
+    cell.labelNewsTitle.font = [UIFont fontWithName:@"OpenSans" size:17.0f];
+    if (![newsItem.is_read boolValue]) {
+        cell.labelNewsTitle.font = [UIFont fontWithName:@"OpenSans-Bold" size:17.0f];
+    }
     [cell.labelNewsTitle sizeToFit];
     cell.labelTimeCreated.text = [self getTimepassedTextFrom:newsItem.created_date];
     cell.textNewsDetails.text = newsItem.description_excerpt;
@@ -331,6 +366,17 @@
     cell.indexPath = indexPath;
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.contentView.backgroundColor = [UIColor whiteColor];
+    
+    
+    cell.contentView.layer.borderColor = [UIColor clearColor].CGColor;
+    cell.contentView.layer.borderWidth = 0.0f;
+    if (![newsItem.is_read boolValue]) {
+        
+        cell.contentView.layer.borderColor = TEAL_COLOR.CGColor;
+        cell.contentView.layer.borderWidth = 5.0f;
+    }
+    
     
     return cell;
 }
@@ -362,6 +408,30 @@
     
 //    NSLog(@"## view:%@",[[self.view superview] subviews]);
     
+    NewsCollapsedTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    cell.contentView.backgroundColor = [UIColor whiteColor];
+    
+    cell.contentView.layer.borderColor = [UIColor clearColor].CGColor;
+    cell.contentView.layer.borderWidth = 0.0f;
+    cell.labelNewsTitle.font = [UIFont fontWithName:@"OpenSans" size:17.0f];
+    
+    newsItem.is_read = @YES;
+    
+    NSInteger index = 0;
+    for (NSDictionary *dic in self.news_pusher) {
+        if ([newsItem.id_num integerValue] == [dic[@"id"] integerValue]) {
+            index = [self.news_pusher indexOfObject:dic];
+            break;
+        }
+    }
+    
+    [((ScrollableMenubarViewController*)self.parentViewController).newsFromPusher removeObjectAtIndex:index];
+    
+    
+    self.news_pusher = nil;
+    self.news_pusher = [NSArray arrayWithArray:((ScrollableMenubarViewController*)self.parentViewController).newsFromPusher];
+    
+    
     detailsVC.view.frame = self.view.bounds;
     [self.view addSubview:detailsVC.view];
     [self addChildViewController:detailsVC];
@@ -376,7 +446,8 @@
 //    else {
 //        self.indexPath_expanded = indexPath;
 //    }
-//    [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    
+    [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
 }
 
 /*
@@ -486,6 +557,30 @@
     
     
     return text;
+}
+
+- (BOOL) is1DayAgo:(NSString*)date {
+    BOOL result = NO;
+    
+    NSDateFormatter *dF = [[NSDateFormatter alloc] init];
+    [dF setDateFormat:@"MMMM dd, yyyy"];
+    NSDate *postDate = [dF dateFromString:date];
+    
+    //wrong time!
+    
+    NSCalendar *c = [NSCalendar currentCalendar];
+    NSString *today = [dF stringFromDate:[NSDate date]];
+    NSDate *d1 = [dF dateFromString:today];
+    NSDateComponents *components = [c components:NSCalendarUnitDay fromDate:postDate toDate:d1 options:0];
+    
+    NSInteger days = components.day;
+    
+    if (days < 2) {
+        result = YES;
+    }
+    
+    
+    return YES;
 }
 
 

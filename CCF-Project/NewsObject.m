@@ -18,6 +18,7 @@
 @synthesize image_data;
 @synthesize title;
 @synthesize group_name;
+@synthesize is_read;
 
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super init]) {
@@ -29,6 +30,7 @@
         self.image_data = [decoder decodeObjectForKey:@"news_image_data"];
         self.title = [decoder decodeObjectForKey:@"news_title"];
         self.group_name = [decoder decodeObjectForKey:@"news_group_name"];
+        self.is_read = [decoder decodeObjectForKey:@"news_is_read"];
     }
     return self;
 }
@@ -42,5 +44,6 @@
     [encoder encodeObject:image_data forKey:@"news_image_data"];
     [encoder encodeObject:title forKey:@"news_title"];
     [encoder encodeObject:group_name forKey:@"news_group_name"];
+    [encoder encodeObject:is_read forKey:@"news_is_read"];
 }
 @end
