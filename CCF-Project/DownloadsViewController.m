@@ -103,16 +103,41 @@
     return 0.0f;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    return 140.0f;
-}
-
-
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     
     return nil;
 }
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    
+    CGFloat buttonHeight = 0.0f;
+    
+    
+    PodcastsObject *item = [self.podcastList objectAtIndex:[indexPath row]];
+    
+    
+    // add controls
+    
+    CGFloat buttonWidth = (tableView.bounds.size.width - 150.0f)/2; //divide per control
+    
+    CustomButton *buttonSpeaker = [[CustomButton alloc] initWithText:[item.category_name uppercaseString] image:[UIImage imageNamed:@"group-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 30.0f) locked:YES];
+    
+    
+    CustomButton *buttonVenue = [[CustomButton alloc] initWithText:[@"ccf center" uppercaseString] image:[UIImage imageNamed:@"pin-icon-small"] frame:CGRectMake(buttonWidth, 0.0f, buttonWidth, 30.0f) locked:YES];
+    
+    buttonHeight = 30.0f;
+    for (CustomButton *button in @[buttonSpeaker,buttonVenue]) {
+        if (button.frame.size.height > buttonHeight) {
+            buttonHeight = button.frame.size.height;
+        }
+    }
+    
+    
+    return 110.0f + buttonHeight;
+}
+
+
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -126,7 +151,8 @@
     
     cell.podcastTitle.text = [NSString stringWithFormat:@"%@",item.title];
     cell.podcastDescription.text = item.description_detail;
-    [cell.podcastDate setTitle:[NSString stringWithFormat:@"  %@",item.created_date] forState:UIControlStateNormal];
+    
+    //    [cell.podcastDate setTitle:[NSString stringWithFormat:@"  %@",item.created_date] forState:UIControlStateNormal];
     //    [cell.podcastSpeaker setTitle:@"  Speaker 1" forState:UIControlStateNormal];
     //    [cell.podcastLocation setTitle:@"  CCF CENTER" forState:UIControlStateNormal];
     //    cell.podcastLocation.latitude = [NSNumber numberWithDouble:14.589221];
@@ -153,6 +179,7 @@
     [cell.podcastTitle sizeToFit];
     
     
+    
     while ([[cell.viewForControls subviews] count] > 0) {
         [[[cell.viewForControls subviews] lastObject] removeFromSuperview];
     }
@@ -165,6 +192,7 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(PodcastTableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    
     PodcastsObject *item = [self.podcastList objectAtIndex:[indexPath row]];
     
     
@@ -172,13 +200,13 @@
     
     CGFloat buttonWidth = (cell.contentView.bounds.size.width - 150.0f)/2; //divide per control
     
-    CustomButton *buttonSpeaker = [[CustomButton alloc] initWithText:[item.category_name uppercaseString] image:[UIImage imageNamed:@"group-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 22.0f) locked:YES];
+    CustomButton *buttonSpeaker = [[CustomButton alloc] initWithText:[item.category_name uppercaseString] image:[UIImage imageNamed:@"group-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 30.0f) locked:YES];
     buttonSpeaker.labelText.textColor = [UIColor grayColor];
     buttonSpeaker.userInteractionEnabled = NO;
     [cell.viewForControls addSubview:buttonSpeaker];
     
     
-    CustomButton *buttonVenue = [[CustomButton alloc] initWithText:[@"ccf center" uppercaseString] image:[UIImage imageNamed:@"pin-icon-small"] frame:CGRectMake(buttonWidth, 0.0f, buttonWidth, 22.0f) locked:YES];
+    CustomButton *buttonVenue = [[CustomButton alloc] initWithText:[@"ccf center" uppercaseString] image:[UIImage imageNamed:@"pin-icon-small"] frame:CGRectMake(buttonWidth, 0.0f, buttonWidth, 30.0f) locked:YES];
     buttonVenue.labelText.textColor = TEAL_COLOR;
     buttonVenue.userInteractionEnabled = YES;
     buttonVenue.button.latitude = [NSNumber numberWithDouble:14.589221];
@@ -187,11 +215,25 @@
     [buttonVenue.button addTarget:self action:@selector(viewMapButton:) forControlEvents:UIControlEventTouchUpInside];
     [cell.viewForControls addSubview:buttonVenue];
     
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewMapButton:)];
-    tap.numberOfTapsRequired = 1;
-    [buttonVenue.button addGestureRecognizer:tap];
+    //    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewMapButton:)];
+    //    tap.numberOfTapsRequired = 1;
+    //    [buttonVenue.button addGestureRecognizer:tap];
     
     
+    buttonSpeaker.translatesAutoresizingMaskIntoConstraints = NO;
+    buttonVenue.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    UILayoutGuide *marginLayout = cell.viewForControls.layoutMarginsGuide;
+    
+    
+    [cell.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonSpeaker attribute:NSLayoutAttributeBottomMargin relatedBy:NSLayoutRelationEqual toItem:marginLayout attribute:NSLayoutAttributeBottom multiplier:1.0 constant:15.0f]];
+    
+    [cell.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonVenue attribute:NSLayoutAttributeBottomMargin relatedBy:NSLayoutRelationEqual toItem:marginLayout attribute:NSLayoutAttributeBottom multiplier:1.0 constant:15.0f]];
+    
+    
+    [cell.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonSpeaker attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:marginLayout attribute:NSLayoutAttributeLeadingMargin multiplier:1.0 constant:-15.0f]];
+    
+    [cell.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonVenue attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:buttonSpeaker attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0f]];
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -208,10 +250,20 @@
     details.podcastSpeaker = @"Speaker 1";
     
     details.imageURL = item.image_url;
-    details.youtubeID = [item.youtubeURL length]?[item.youtubeURL substringWithRange:NSMakeRange(32, 11)]:@"";
-    details.urlForAudio = [item.audioURL length]?[NSString stringWithFormat:@"%@%@%@/audio/%@",kAPI_LINK,@"/podcasts/",item.id_num,item.audioURL]:@"";
-    details.audioFilePath = item.audioFilePath;
+    details.youtubeID = @"";//[item.youtubeURL length]?[item.youtubeURL substringWithRange:NSMakeRange(32, 11)]:@"";
     
+    NSString *filePath = @"";
+    if ([item.audioURL length]) {
+        filePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
+                                                         NSUserDomainMask, YES) objectAtIndex:0]
+                    stringByAppendingPathComponent:item.audioURL];
+    }
+    
+    
+    
+    details.urlForAudio = @"";//[filePath length]?filePath:@"";
+    details.audioFilePath = item.audioFilePath;
+       
     
     CATransition *transition = [CATransition animation];
     transition.duration = 0.3;

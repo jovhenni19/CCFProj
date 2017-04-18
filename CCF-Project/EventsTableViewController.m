@@ -138,7 +138,11 @@
             events.speakers = isNIL(item[@"speakers"]);
         NSString *contacts = isNIL(item[@"contact_info"]);
         if ([contacts rangeOfString:@"("].location != NSNotFound || [contacts rangeOfString:@")"].location != NSNotFound || [contacts rangeOfString:@"-"].location != NSNotFound || [contacts rangeOfString:@" "].location != NSNotFound || [contacts rangeOfString:@"+"].location != NSNotFound) {
-            contacts = [contacts stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"()+- "]];
+//            contacts = [contacts stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"()+- "]];
+            contacts = [contacts stringByReplacingOccurrencesOfString:@"(" withString:@""];
+            contacts = [contacts stringByReplacingOccurrencesOfString:@")" withString:@""];
+            contacts = [contacts stringByReplacingOccurrencesOfString:@"+" withString:@""];
+            contacts = [contacts stringByReplacingOccurrencesOfString:@" " withString:@""];
         }
             events.contact_info = contacts;
             events.venue = isNIL(item[@"venue"]);

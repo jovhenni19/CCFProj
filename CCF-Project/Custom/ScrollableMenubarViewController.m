@@ -318,6 +318,8 @@
     BaseViewController *vc = [self.viewControllers objectAtIndex:sender.tag];
     [vc reloadTables];
     self.horizontalTableview.delegate = self;
+    
+    [self autoScrollMenuViewBarWithButton:sender];
 }
 
 //- (void) setCurrentViewController:(NSInteger)index {
@@ -499,18 +501,22 @@
         UIButton *button = [self.menuButtonList objectAtIndex:index];
         self.indicatorView.frame = CGRectMake(button.frame.origin.x + 10.0f, 32.0f, button.frame.size.width - 20.0f, 2.0f);
         
-        
-        CGFloat offsetX = button.frame.origin.x;// + ((self.scrollViewBar.frame.size.width/2) - (button.frame.size.width/2));
-        
-        if (offsetX < 0.0f) {
-            offsetX = 0.0f;
-        }
-        else if (offsetX + self.scrollViewBar.frame.size.width > self.scrollViewBar.contentSize.width) {
-            offsetX = self.scrollViewBar.contentSize.width - self.scrollViewBar.frame.size.width;
-        }
-        
-        [self.scrollViewBar setContentOffset:CGPointMake(offsetX, 0.0f) animated:YES];
+        [self autoScrollMenuViewBarWithButton:button];
     }
+}
+
+- (void) autoScrollMenuViewBarWithButton:(UIButton*)button {
+    
+    CGFloat offsetX = button.frame.origin.x;// + ((self.scrollViewBar.frame.size.width/2) - (button.frame.size.width/2));
+    
+    if (offsetX < 0.0f) {
+        offsetX = 0.0f;
+    }
+    else if (offsetX + self.scrollViewBar.frame.size.width > self.scrollViewBar.contentSize.width) {
+        offsetX = self.scrollViewBar.contentSize.width - self.scrollViewBar.frame.size.width;
+    }
+    
+    [self.scrollViewBar setContentOffset:CGPointMake(offsetX, 0.0f) animated:YES];
 }
 
 /*
@@ -636,13 +642,14 @@
 
 
 - (void) loadViewControllerWithContentView:(UIView*)contentView index:(NSInteger)index {
-    
+    [self.view endEditing:YES];
     self.selectedIndex = index;
     
     BaseViewController *vc = [self.viewControllers objectAtIndex:self.selectedIndex];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_podcast_pause1" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_podcast_pause2" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_podcast_pause3" object:nil];
     
 //    if (![vc respondsToSelector:@selector(audioPlayerPauser)] || ![vc respondsToSelector:@selector(youtubePlayerPauser)]) {
 //        PodcastViewController *vc1 = [self.viewControllers objectAtIndex:1];

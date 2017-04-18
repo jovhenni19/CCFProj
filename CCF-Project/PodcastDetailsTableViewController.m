@@ -91,7 +91,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     NSInteger section = 2;
-    if ([self.urlForAudio length]) {
+    if ([self.urlForAudio length] || [self.audioFilePath length]) {
         section++;
     }
     if ([self.youtubeID length]) {
@@ -127,7 +127,7 @@
         }
             break;
         case 2:
-            height = ([self.urlForAudio length] && [indexPath section]==2)?80.0f:240.0f;
+            height = (([self.urlForAudio length] || [self.audioFilePath length]) && [indexPath section]==2)?80.0f:240.0f;
             break;
         case 3:
             height = 300.0f;
@@ -179,9 +179,18 @@
         case 2:{
             if ([self.urlForAudio length]) {
                 PodDetailAudioTableViewCell *custom = (PodDetailAudioTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"audioCell" forIndexPath:indexPath];
+                
                 custom.urlForAudio = self.urlForAudio;
                 custom.delegate = self;
                 self.audioPlayer = custom.audioStreamerPlayer;
+                cell = custom;
+            }
+            else if ([self.audioFilePath length]) {
+                PodDetailAudioDownloadedTableViewCell *custom = (PodDetailAudioDownloadedTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"audioFileCell" forIndexPath:indexPath];
+                NSLog(@">path:%@",self.audioFilePath);
+                custom.audioFilePath = self.audioFilePath;
+                custom.delegate = self;
+                self.audioFilePlayer = custom.audioPlayer;
                 cell = custom;
             }
             else {
@@ -242,10 +251,10 @@
 //        [view addSubview:imageView];
         
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 56.0f, 24.0f)];
-        imageView.image = [UIImage imageNamed:([self.urlForAudio length] && section==2)?@"listen":@"watch"];
+        imageView.image = [UIImage imageNamed:(([self.urlForAudio length] || [self.audioFilePath length]) && section==2)?@"listen":@"watch"];
         
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 150.0f, 24.0f)];
-        label.text = ([self.urlForAudio length] && section==2)?@"LISTEN":@"WATCH";
+        label.text = (([self.urlForAudio length] || [self.audioFilePath length]) && section==2)?@"LISTEN":@"WATCH";
         label.font = [UIFont fontWithName:@"OpenSans" size:13.0f];
         label.textColor = [UIColor whiteColor];
         
@@ -534,6 +543,10 @@
     [self.delegate activeYoutubePlayer:self.youtubePlayer];
 }
 
+- (void)audioFileIsPlaying {
+    [self.delegate activeAudioFilePlayer:self.audioFilePlayer];
+}
+
 
 //- (void)podcastPaused:(NSNotification*)notification {
 //    
@@ -559,12 +572,15 @@
     
     activity.center = button.center;
     
-    NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:urlRequest progress:^(NSProgress * _Nonnull downloadProgress) {
-        
+    dispatch_async(dispatch_get_main_queue(), ^{
         [button setEnabled:NO];
         [button setTitle:@"DOWNLOADING" forState:UIControlStateNormal];
         [button addSubview:activity];
         [activity startAnimating];
+    });
+    
+    NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:urlRequest progress:^(NSProgress * _Nonnull downloadProgress) {
+        
         
     } destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
         

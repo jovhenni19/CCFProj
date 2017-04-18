@@ -38,6 +38,7 @@
 @property (assign, nonatomic) CGFloat keyboardHeight;
 
 @property (strong, nonatomic) UITapGestureRecognizer *yourTap;
+@property (weak, nonatomic) IBOutlet UIView *viewHeaderForSearch;
 
 @end
 
@@ -362,7 +363,7 @@
         else {
             cell.textLabel.text = @"No Result Found";
             cell.textLabel.textColor = [UIColor grayColor];
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//            cell.selectionStyle = UITableViewCellSelectionStyleNone;
         }
         
         
@@ -415,42 +416,59 @@
     
     
     if ([tableView isEqual:self.tableSearchResult] && self.searchResultList.count) {
-        NSString *selected = [self.searchResultList objectAtIndex:[indexPath row]];
-        NSInteger section = 0;
-        NSInteger row = 0;
+        NSString *selected = ((SatellitesObject*)[self.searchResultList objectAtIndex:[indexPath row]]).name;
+        NSInteger section = -1;
+        NSInteger row = -1;
+        BOOL found = NO;
         if (self.isAllLocationSelected) {
             
             for (NSString *key in self.alphabetSections) {
+                row = -1;
+                found = NO;
+                section += 1;
                 if ([key isEqualToString:[selected substringWithRange:NSMakeRange(0, 1)]]) {
                     for (SatellitesObject *item in [self.allLocations objectForKey:key]) {
+                        row += 1;
                         if ([item.name isEqualToString:selected]) {
-                            [self scrollToLocation:[NSIndexPath indexPathForRow:row inSection:section]];
+//                            NSLog(@"found:YES");
+                            found = YES;
+//                            [self scrollToLocation:[NSIndexPath indexPathForRow:row inSection:section]];
                             break;
                         }
-                        row += 1;
                     }
                 }
-                section += 1;
+                if (found) {
+                    break;
+                }
             }
             
         }
         else {
             
             for (NSString *key in self.nearbySections) {
-                if ([key isEqualToString:[selected substringWithRange:NSMakeRange(0, 1)]]) {
-                    for (SatellitesObject *item in [self.nearbyLocations objectForKey:key]) {
-                        if ([item.name isEqualToString:selected]) {
-                            [self scrollToLocation:[NSIndexPath indexPathForRow:row inSection:section]];
+                row = -1;
+                found = NO;
+                section += 1;
+//                NSLog(@"%@ - [%@]:%@",selected,key,[self.nearbyLocations objectForKey:key]);
+//                if ([key isEqualToString:[selected substringWithRange:NSMakeRange(0, 1)]]) {
+                for (SatellitesObject *item in [self.nearbyLocations objectForKey:key]) {
+                    row += 1;
+                    if ([item.name isEqualToString:selected]) {
+                        found = YES;
+//                            [self scrollToLocation:[NSIndexPath indexPathForRow:row inSection:section]];
                             break;
                         }
-                        row += 1;
                     }
+//                }
+                
+                if (found) {
+                    break;
                 }
-                section += 1;
             }
             
         }
         
+        [self.searchTextfield resignFirstResponder];
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
     else {
@@ -501,6 +519,9 @@
 }
 
 - (NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView {
+    if ([tableView isEqual:self.tableSearchResult]) {
+        return nil;
+    }
     if (self.isAllLocationSelected) {
 //        NSMutableArray *sections = [NSMutableArray array];
 //        for (NSString *key in self.alphabetSections) {
@@ -746,11 +767,16 @@
     [self.containerViewSearchResult addSubview:self.tableSearchResult];
     
     [self.tableSearchResult removeGestureRecognizer:self.yourTap];
+    self.tableSearchResult.layer.zPosition = 999.0f;
+    
+    self.tableSearchResult.scrollEnabled = YES;
+    self.tableView.scrollEnabled = NO;
     
     [UIView animateWithDuration:0.2 animations:^{
         CGRect frame = self.containerViewSearchResult.frame;
         frame.size.height = height;
         self.containerViewSearchResult.frame = frame;
+        
     } completion:^(BOOL finished) {
         [self searchString:textField.text];
     }];
@@ -766,6 +792,10 @@
         CGRect frame = self.containerViewSearchResult.frame;
         frame.size.height = self.heightSearchResult;
         self.containerViewSearchResult.frame = frame;
+        
+    } completion:^(BOOL finished) {
+        
+        self.tableView.scrollEnabled = YES;
     }];
 }
 

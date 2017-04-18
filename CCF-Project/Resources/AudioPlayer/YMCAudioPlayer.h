@@ -15,6 +15,7 @@
 
 // Public methods
 - (void)initPlayerFromURL:(NSString*)urlString;
+- (void)initPlayerFromDocuments:(NSString*) audioFilePath;
 - (void)initPlayer:(NSString*) audioFile fileExtension:(NSString*)fileExtension;
 - (void)playAudio;
 - (void)pauseAudio;

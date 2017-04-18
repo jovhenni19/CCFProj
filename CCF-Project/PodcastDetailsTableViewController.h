@@ -9,16 +9,19 @@
 #import <UIKit/UIKit.h>
 #import "BaseViewController.h"
 #import "PodDetailAudioTableViewCell.h"
+#import "PodDetailAudioDownloadedTableViewCell.h"
 #import "PodDetailVideoTableViewCell.h"
+#import "YMCAudioPlayer.h"
 
 @protocol PodcastsDetailDelegate <NSObject>
 
+- (void) activeAudioFilePlayer:(YMCAudioPlayer*)player;
 - (void) activeAudioPlayer:(AVPlayer*)player;
 - (void) activeYoutubePlayer:(YTPlayerView*)youtubePlayer;
 
 @end
 
-@interface PodcastDetailsTableViewController : BaseViewController <UITableViewDataSource, UITableViewDelegate, AudioCellDelegate, YoutubePlayerCellDelegate>
+@interface PodcastDetailsTableViewController : BaseViewController <UITableViewDataSource, UITableViewDelegate, AudioCellDelegate, AudioDownloadedCellDelegate, YoutubePlayerCellDelegate>
 
 @property (strong, nonatomic) NSString *imageURL;
 @property (strong, nonatomic) NSData *imageData;
@@ -31,6 +34,7 @@
 @property (strong, nonatomic) NSString *audioFilePath;
 
 @property (strong, nonatomic) AVPlayer *audioPlayer;
+@property (strong, nonatomic) YMCAudioPlayer *audioFilePlayer;
 
 @property (strong, nonatomic) YTPlayerView *youtubePlayer;
 

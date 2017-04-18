@@ -318,11 +318,23 @@
     tv.font = [UIFont fontWithName:@"OpenSans" size:14.0f];
     CGSize contentSize = [tv contentSize];
     
-    if (contentSize.height < 100.0f) {
-        return 100.0f + (contentSize.height) + 10.0f;
+    CGFloat height = contentSize.height;
+    if (height > 100.0f) {
+        height += 100.0f + 10.0f;
     }
     
-    return 140.0f + 10.0f;
+    tv = [[UITextView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, tableView.frame.size.width - 50.0f, 20.0f)];
+    tv.text = newsItem.title;
+    tv.font = [UIFont fontWithName:@"OpenSans" size:17.0f];
+    contentSize = [tv contentSize];
+    
+    CGFloat titleHeight = contentSize.height;
+    if (titleHeight > 22.0f) {
+        height += titleHeight + 10.0f;
+    }
+
+    
+    return 50.0f + height;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -337,8 +349,17 @@
     if (![newsItem.is_read boolValue]) {
         cell.labelNewsTitle.font = [UIFont fontWithName:@"OpenSans-Bold" size:17.0f];
     }
-    [cell.labelNewsTitle sizeToFit];
+    
+    UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, tableView.frame.size.width - 50.0f, 20.0f)];
+    tv.text = newsItem.title;
+    tv.font = cell.labelNewsTitle.font;
+    CGSize contentSize = [tv contentSize];
+    
+    [cell.labelNewsTitle sizeThatFits:contentSize];
+//    cell.labelNewsTitle.layer.borderWidth = 1.0f;
+//    NSLog(@"%@ - time[%@]%@>",newsItem.title,newsItem.created_date,[self getTimepassedTextFrom:newsItem.created_date]);
     cell.labelTimeCreated.text = [self getTimepassedTextFrom:newsItem.created_date];
+//    cell.labelTimeCreated.backgroundColor = [UIColor greenColor];
     cell.textNewsDetails.text = newsItem.description_excerpt;
     [cell.textNewsDetails scrollsToTop];
     
@@ -502,16 +523,17 @@
     
     //wrong time!
     
-    NSCalendar *c = [NSCalendar currentCalendar];
+    NSCalendar *c = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSString *today = [dF stringFromDate:[NSDate date]];
     NSDate *d1 = [dF dateFromString:today];
     NSDateComponents *components = [c components:NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:postDate toDate:d1 options:0];
+    [components setCalendar:c];
     
     NSInteger days = components.day;
     NSInteger hours = components.hour;
     NSInteger minutes = components.minute;
     NSInteger seconds = components.second;
-//    NSLog(@"(%@)date:%@ [%li:%li:%li:%li]",date,postDate,(long)days,(long)hours,(long)minutes,(long)seconds);
+    NSLog(@"(%@)date:%@ [%li:%li:%li:%li]",date,postDate,(long)days,(long)hours,(long)minutes,(long)seconds);
     
     NSString *text = @"";
     if (days > 6) {
@@ -552,6 +574,9 @@
             else {
                 text = [NSString stringWithFormat:@"%li seconds ago",(long)seconds];
             }
+        }
+        else {
+            text = @"Today";
         }
     }
     

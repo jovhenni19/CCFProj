@@ -182,7 +182,7 @@
         if ([isNIL(item[@"audiofile"]) length]) {
             
             NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
-            podcastsItem.audioFilePath = [[documentsDirectoryURL URLByAppendingPathComponent:[item[@"audiofile"]stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]]] absoluteString];
+            podcastsItem.audioFilePath = item[@"audiofile"];// [[documentsDirectoryURL URLByAppendingPathComponent:[item[@"audiofile"]stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]]] absoluteString];
         }
         
         
@@ -331,7 +331,7 @@
     }
     
     
-    return 100.0f + buttonHeight;
+    return 110.0f + buttonHeight;
 }
 
 
@@ -673,6 +673,10 @@
 
 - (void)activeYoutubePlayer:(YTPlayerView *)youtubePlayer {
     self.youtubePlayerPauser = youtubePlayer;
+}
+
+- (void) activeAudioFilePlayer:(YMCAudioPlayer *)player {
+    self.audioFilePlayerPauser = player;
 }
 
 @end

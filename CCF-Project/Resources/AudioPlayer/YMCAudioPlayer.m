@@ -41,6 +41,23 @@
     }
 }
 
+- (void)initPlayerFromDocuments:(NSString*) audioFilePath
+{
+    NSString *filePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
+                                                               NSUserDomainMask, YES) objectAtIndex:0]
+                          stringByAppendingPathComponent:[audioFilePath lastPathComponent]];
+    
+    NSLog(@"filePath:%@\n\naudio:%@",filePath,[audioFilePath lastPathComponent]);
+    
+    
+    NSURL *audioFileLocationURL = [NSURL fileURLWithPath:filePath];
+    NSError *error;
+    self.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:audioFileLocationURL error:&error];
+    if (error) {
+        NSLog(@"## error:%@",[error description]);
+    }
+}
+
 /*
  * Simply fire the play Event
  */

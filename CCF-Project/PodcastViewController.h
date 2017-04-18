@@ -13,6 +13,7 @@
 @interface PodcastViewController : BaseViewController <UITableViewDelegate, UITableViewDataSource, PodcastsDetailDelegate>
 
 @property (strong, nonatomic) AVPlayer *audioPlayerPauser;
+@property (strong, nonatomic) YMCAudioPlayer *audioFilePlayerPauser;
 
 @property (strong, nonatomic) YTPlayerView *youtubePlayerPauser;
 

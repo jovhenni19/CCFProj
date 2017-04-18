@@ -119,6 +119,7 @@
 		33D721701E3F4AA40071FC2D /* LiveStreamingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33D7216F1E3F4AA40071FC2D /* LiveStreamingViewController.m */; };
 		33D721761E3F5FC30071FC2D /* Assets.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 33D721721E3F5FC30071FC2D /* Assets.bundle */; };
 		33D721771E3F5FC30071FC2D /* YTPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 33D721751E3F5FC30071FC2D /* YTPlayerView.m */; };
+		33D996431EA62BE1004DD8BA /* PodDetailAudioDownloadedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 33D996421EA62BE1004DD8BA /* PodDetailAudioDownloadedTableViewCell.m */; };
 		33EA91C01E800B640087E19C /* NewsObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 33EA91BF1E800B640087E19C /* NewsObject.m */; };
 		33EB52301E9523F90010F8ED /* NSMutableArray+STKAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 33EB521E1E9523F90010F8ED /* NSMutableArray+STKAudioPlayer.m */; };
 		33EB52311E9523F90010F8ED /* STKAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 33EB52201E9523F90010F8ED /* STKAudioPlayer.m */; };
@@ -348,6 +349,8 @@
 		33D721731E3F5FC30071FC2D /* YouTubeiOSPlayerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YouTubeiOSPlayerHelper.h; sourceTree = "<group>"; };
 		33D721741E3F5FC30071FC2D /* YTPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YTPlayerView.h; sourceTree = "<group>"; };
 		33D721751E3F5FC30071FC2D /* YTPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YTPlayerView.m; sourceTree = "<group>"; };
+		33D996411EA62BE1004DD8BA /* PodDetailAudioDownloadedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PodDetailAudioDownloadedTableViewCell.h; sourceTree = "<group>"; };
+		33D996421EA62BE1004DD8BA /* PodDetailAudioDownloadedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PodDetailAudioDownloadedTableViewCell.m; sourceTree = "<group>"; };
 		33EA91BE1E800B640087E19C /* NewsObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsObject.h; sourceTree = "<group>"; };
 		33EA91BF1E800B640087E19C /* NewsObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsObject.m; sourceTree = "<group>"; };
 		33EB521D1E9523F90010F8ED /* NSMutableArray+STKAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+STKAudioPlayer.h"; sourceTree = "<group>"; };
@@ -584,6 +587,8 @@
 				33C260201E457C9800C251C0 /* PodDetailDescriptionTableViewCell.m */,
 				33C260221E457CAC00C251C0 /* PodDetailAudioTableViewCell.h */,
 				33C260231E457CAC00C251C0 /* PodDetailAudioTableViewCell.m */,
+				33D996411EA62BE1004DD8BA /* PodDetailAudioDownloadedTableViewCell.h */,
+				33D996421EA62BE1004DD8BA /* PodDetailAudioDownloadedTableViewCell.m */,
 				33C260251E457CBF00C251C0 /* PodDetailVideoTableViewCell.h */,
 				33C260261E457CBF00C251C0 /* PodDetailVideoTableViewCell.m */,
 				33AC57321E38AA5800F71699 /* EventsTableViewController.h */,
@@ -1181,6 +1186,7 @@
 				334DC3B71E7AA6D2002E4EA8 /* NewsItem+CoreDataProperties.m in Sources */,
 				336F6DDE1E83BB53008FB120 /* UIButton+WebCache.m in Sources */,
 				336F6DE41E83BB53008FB120 /* UIView+WebCacheOperation.m in Sources */,
+				33D996431EA62BE1004DD8BA /* PodDetailAudioDownloadedTableViewCell.m in Sources */,
 				33ACB7671E795F1F005ACBBB /* UIImageView+AFNetworking.m in Sources */,
 				333724E11E361229001DBE50 /* NewsTableViewController.m in Sources */,
 				334DC3BA1E7AA6D2002E4EA8 /* PodcastsItem+CoreDataClass.m in Sources */,
