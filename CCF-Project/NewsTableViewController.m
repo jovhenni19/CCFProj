@@ -390,12 +390,13 @@
     cell.contentView.backgroundColor = [UIColor whiteColor];
     
     
-    cell.contentView.layer.borderColor = [UIColor clearColor].CGColor;
-    cell.contentView.layer.borderWidth = 0.0f;
+    cell.contentView.backgroundColor = [UIColor whiteColor];
+//    cell.contentView.layer.borderColor = [UIColor clearColor].CGColor;
+//    cell.contentView.layer.borderWidth = 0.0f;
     if (![newsItem.is_read boolValue]) {
-        
-        cell.contentView.layer.borderColor = TEAL_COLOR.CGColor;
-        cell.contentView.layer.borderWidth = 5.0f;
+        cell.contentView.backgroundColor = [UIColor colorWithRed:17.0f/255.0f green:179.0f/255.0f blue:196/255.0f alpha:0.65f];
+//        cell.contentView.layer.borderColor = TEAL_COLOR.CGColor;
+//        cell.contentView.layer.borderWidth = 5.0f;
     }
     
     
@@ -533,7 +534,7 @@
     NSInteger hours = components.hour;
     NSInteger minutes = components.minute;
     NSInteger seconds = components.second;
-    NSLog(@"(%@)date:%@ [%li:%li:%li:%li]",date,postDate,(long)days,(long)hours,(long)minutes,(long)seconds);
+//    NSLog(@"(%@)date:%@ [%li:%li:%li:%li]",date,postDate,(long)days,(long)hours,(long)minutes,(long)seconds);
     
     NSString *text = @"";
     if (days > 6) {

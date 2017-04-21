@@ -45,6 +45,8 @@
 - (void) showProgressView;
 - (void) addValueToProgressView;
 - (void) removeProgressView;
+- (void) subscribeEvent:(NSString*)eventName;
+- (void) unSubscribeEvent:(NSString*)eventName;
 
 @end
 

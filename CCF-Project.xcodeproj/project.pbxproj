@@ -278,7 +278,7 @@
 		33A76CD51E76C45300A6757F /* AMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMapViewController.m; sourceTree = "<group>"; };
 		33A76CD71E76C70200A6757F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		33A8DF731E3C0C9C003EB844 /* SattelitesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SattelitesTableViewController.h; sourceTree = "<group>"; };
-		33A8DF741E3C0C9C003EB844 /* SattelitesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SattelitesTableViewController.m; sourceTree = "<group>"; };
+		33A8DF741E3C0C9C003EB844 /* SattelitesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SattelitesTableViewController.m; sourceTree = "<group>"; wrapsLines = 0; };
 		33A9DB811E7249F300C8D4A4 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		33A9DB821E7249F300C8D4A4 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
 		33A9DB851E72591E00C8D4A4 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };

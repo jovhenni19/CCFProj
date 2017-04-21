@@ -235,6 +235,7 @@
     NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
     if ([sender isOn]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:valueKey];
+        [((ScrollableMenubarViewController*)self.parentViewController) subscribeEvent:item[@"name"]];
     }
     else {
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:valueKey];

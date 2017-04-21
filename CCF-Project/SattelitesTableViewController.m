@@ -754,7 +754,15 @@
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
     
-    CGFloat height = self.tableView.frame.size.height -  self.keyboardHeight - 50.0f;
+//    self.viewSearchBox.layer.borderWidth = 1.0f;
+//    self.viewHeaderForSearch.layer.borderColor = [UIColor redColor].CGColor;
+//    self.viewHeaderForSearch.layer.borderWidth = 2.0f;
+//    self.containerViewSearchResult.layer.borderColor = [UIColor greenColor].CGColor;
+//    self.containerViewSearchResult.layer.borderWidth = 2.0f;
+//    
+//    self.containerViewSearchResult.clipsToBounds = YES;
+    
+    CGFloat height = self.view.frame.size.height -  self.keyboardHeight - 30.0f;
     
     if (!self.tableSearchResult) {
         self.tableSearchResult = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
@@ -773,11 +781,19 @@
     self.tableView.scrollEnabled = NO;
     
     [UIView animateWithDuration:0.2 animations:^{
+        
         CGRect frame = self.containerViewSearchResult.frame;
         frame.size.height = height;
         self.containerViewSearchResult.frame = frame;
+        self.containerViewSearchResult.translatesAutoresizingMaskIntoConstraints = YES;
+        self.viewSearchBox.translatesAutoresizingMaskIntoConstraints = YES;
+        
         
     } completion:^(BOOL finished) {
+        CGRect frame1 = self.viewHeaderForSearch.frame;
+        frame1.size.height = height + 20.0;
+        self.viewHeaderForSearch.frame = frame1;
+
         [self searchString:textField.text];
     }];
     
@@ -789,9 +805,17 @@
     [self.tableSearchResult removeFromSuperview];
     self.tableSearchResult = nil;
     [UIView animateWithDuration:0.2 animations:^{
+        CGRect frame1 = self.viewHeaderForSearch.frame;
+        frame1.size.height = 95.0f;
+        self.viewHeaderForSearch.frame = frame1;
+        
         CGRect frame = self.containerViewSearchResult.frame;
         frame.size.height = self.heightSearchResult;
         self.containerViewSearchResult.frame = frame;
+        self.containerViewSearchResult.translatesAutoresizingMaskIntoConstraints = NO;
+        self.viewSearchBox.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        
         
     } completion:^(BOOL finished) {
         

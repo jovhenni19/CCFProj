@@ -244,6 +244,8 @@
         [self performSelector:@selector(reloadPodcast) withObject:self afterDelay:2];
     }
     
+    
+    
 }
 
 - (void) reloadNews {
@@ -790,48 +792,7 @@
 - (void)pusher:(PTPusher *)pusher connectionDidConnect:(PTPusherConnection *)connection {
     
     NSLog(@"pusher connected:%@",[connection isConnected]?@"YES":@"NO");
-    PTPusherChannel *channel = [self.pusherClient subscribeToChannelNamed:@"news"];
-    [channel bindToEventNamed:@"B1G Singles" handleWithBlock:^(PTPusherEvent *channelEvent) {
-        // channelEvent.data is a NSDictionary of the JSON object received
-        
-        /*
-         data:{
-            date = "April 14, 2017";
-            datestamp =     {
-                date = "2017-04-14 21:08:03.000000";
-                timezone = "Asia/Manila";
-                "timezone_type" = 3;
-            };
-            id = 45;
-            module = news;
-            title = "test push 11";
-         }
-         */
-        
-//        NSLog(@"##[B1G Singles]data:%@",channelEvent.data);
-        
-//        UILocalNotification *notification = [[UILocalNotification alloc] init];
-//        notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:1];
-//        notification.alertBody = [NSString stringWithFormat:@"NEWS: %@",channelEvent.data[@"title"]];
-//        notification.timeZone = [NSTimeZone defaultTimeZone];
-//        notification.soundName = UILocalNotificationDefaultSoundName;
-//        notification.applicationIconBadgeNumber = [channelEvent.data[@"id"] integerValue];
-//        
-//        [[UIApplication sharedApplication] scheduleLocalNotification:notification];
-
-        if (!self.newsFromPusher) {
-            self.newsFromPusher = [NSMutableArray array];
-        }
-        
-        NSDictionary *dictionary = @{@"id":channelEvent.data[@"id"],@"date_posted":channelEvent.data[@"date"],@"title":channelEvent.data[@"title"],@"read":@NO};
-        
-        [self.newsFromPusher addObject:dictionary];
-        
-        if (self.selectedIndex == 0) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_news_from_pusher" object:self.newsFromPusher];
-        }
-        
-    }];
+    
 }
 
 - (BOOL)pusher:(PTPusher *)pusher connectionWillConnect:(PTPusherConnection *)connection {
@@ -876,5 +837,97 @@
     self.labelNotificationBadge.text = [NSString stringWithFormat:@"%li",(long)self.newsFromPusher.count];
 }
 
+
+- (void) subscribeEvent:(NSString*)eventName{
+    PTPusherChannel *channel = [self.pusherClient subscribeToChannelNamed:@"news"];
+    [channel bindToEventNamed:eventName handleWithBlock:^(PTPusherEvent *channelEvent) {
+        // channelEvent.data is a NSDictionary of the JSON object received
+        
+        /*
+         data:{
+         date = "April 14, 2017";
+         datestamp =     {
+         date = "2017-04-14 21:08:03.000000";
+         timezone = "Asia/Manila";
+         "timezone_type" = 3;
+         };
+         id = 45;
+         module = news;
+         title = "test push 11";
+         }
+         */
+        
+        NSLog(@"##[%@]data:%@",eventName,channelEvent.data);
+        
+        //        UILocalNotification *notification = [[UILocalNotification alloc] init];
+        //        notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:1];
+        //        notification.alertBody = [NSString stringWithFormat:@"NEWS: %@",channelEvent.data[@"title"]];
+        //        notification.timeZone = [NSTimeZone defaultTimeZone];
+        //        notification.soundName = UILocalNotificationDefaultSoundName;
+        //        notification.applicationIconBadgeNumber = [channelEvent.data[@"id"] integerValue];
+        //
+        //        [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+        
+        if (!self.newsFromPusher) {
+            self.newsFromPusher = [NSMutableArray array];
+        }
+        
+        NSDictionary *dictionary = @{@"id":channelEvent.data[@"id"],@"date_posted":channelEvent.data[@"date"],@"title":channelEvent.data[@"title"],@"read":@NO};
+        
+        [self.newsFromPusher addObject:dictionary];
+        
+        if (self.selectedIndex == 0) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_news_from_pusher" object:self.newsFromPusher];
+        }
+        
+    }];
+}
+
+
+- (void) unSubscribeEvent:(NSString*)eventName{
+    PTPusherChannel *channel = [self.pusherClient subscribeToChannelNamed:@"news"];
+    
+    [channel bindToEventNamed:eventName handleWithBlock:^(PTPusherEvent *channelEvent) {
+        // channelEvent.data is a NSDictionary of the JSON object received
+        
+        /*
+         data:{
+         date = "April 14, 2017";
+         datestamp =     {
+         date = "2017-04-14 21:08:03.000000";
+         timezone = "Asia/Manila";
+         "timezone_type" = 3;
+         };
+         id = 45;
+         module = news;
+         title = "test push 11";
+         }
+         */
+        
+        NSLog(@"##[%@]data:%@",eventName,channelEvent.data);
+        
+        //        UILocalNotification *notification = [[UILocalNotification alloc] init];
+        //        notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:1];
+        //        notification.alertBody = [NSString stringWithFormat:@"NEWS: %@",channelEvent.data[@"title"]];
+        //        notification.timeZone = [NSTimeZone defaultTimeZone];
+        //        notification.soundName = UILocalNotificationDefaultSoundName;
+        //        notification.applicationIconBadgeNumber = [channelEvent.data[@"id"] integerValue];
+        //
+        //        [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+        
+        if (!self.newsFromPusher) {
+            self.newsFromPusher = [NSMutableArray array];
+        }
+        
+        NSDictionary *dictionary = @{@"id":channelEvent.data[@"id"],@"date_posted":channelEvent.data[@"date"],@"title":channelEvent.data[@"title"],@"read":@NO};
+        
+        [self.newsFromPusher addObject:dictionary];
+        
+        if (self.selectedIndex == 0) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_news_from_pusher" object:self.newsFromPusher];
+        }
+        
+    }];
+}
 
 @end
