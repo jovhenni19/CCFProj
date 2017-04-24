@@ -17,6 +17,38 @@
             endingLineNumber = "473"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[SattelitesTableViewController tableView:didSelectRowAtIndexPath:]"
+                  moduleName = "CCF-Project"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/joshuajosepecson/Projects/CCF/CCFProj/CCF-Project/SattelitesTableViewController.m"
+                  timestampString = "514737090.679041"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "473"
+                  endingLineNumber = "473"
+                  offsetFromSymbolStart = "2896">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[SattelitesTableViewController tableView:didSelectRowAtIndexPath:]"
+                  moduleName = "CCF-Project"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/joshuajosepecson/Projects/CCF/CCFProj/CCF-Project/SattelitesTableViewController.m"
+                  timestampString = "514737090.680635"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "473"
+                  endingLineNumber = "473"
+                  offsetFromSymbolStart = "2908">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -48,22 +80,6 @@
             startingLineNumber = "419"
             endingLineNumber = "419"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CCF-Project/NewsTableViewController.m"
-            timestampString = "514394203.25397"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "54"
-            endingLineNumber = "54"
-            landmarkName = "-newsFromPusher:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -35,6 +35,8 @@
 
 @property (assign, nonatomic) BOOL networkActivityIsShown;
 
+@property (strong, nonatomic) NSMutableArray *eventBindingArray;
+
 @end
 
 @implementation ScrollableMenubarViewController
@@ -195,6 +197,12 @@
 //    [self.imageLogoTop addGestureRecognizer:holdGesture];
     [self.pusherClient connect];
     
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callGroupsData:) name:kOBS_GROUPS_NOTIFICATION object:nil];
+    
+    [self callGETAPI:kGROUPS_LINK withParameters:nil completionNotification:kOBS_GROUPS_NOTIFICATION];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -209,6 +217,7 @@
 //        
 //    }
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_news_from_pusher" object:self.newsFromPusher];
     
 }
 
@@ -248,6 +257,143 @@
     
 }
 
+- (void)callGroupsData:(NSNotification*)notification {
+    //    NSLog(@"## result:%@",notification.object);
+    
+    
+    //    NETWORK_INDICATOR(NO)
+    
+    if(!self.groupList){
+        self.groupList = [NSMutableArray array];
+    }
+    
+    
+    NSDictionary *result = [NSDictionary dictionaryWithDictionary:notification.object];
+    
+    NSArray *data = result[@"data"];
+    
+    BOOL allIsOn = YES;
+    
+    for (NSDictionary *item in data) {
+        [self.groupList addObject:item];
+        
+        
+        
+        NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
+        
+        BOOL switchValue = [[NSUserDefaults standardUserDefaults] boolForKey:valueKey];
+        
+        if (switchValue == YES) {
+            allIsOn = NO;
+        }
+    }
+    
+    if (allIsOn) {
+        for (NSDictionary *item in self.groupList) {
+            [self subscribeEvent:item[@"interest"]];
+        }
+    }
+    else {
+        for (NSDictionary *item in self.groupList) {
+            
+            NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
+            
+            BOOL switchValue = [[NSUserDefaults standardUserDefaults] boolForKey:valueKey];
+            
+            if (switchValue == YES) {
+                [self subscribeEvent:item[@"interest"]];
+            }
+            else {
+                [self unSubscribeEvent:item[@"interest"]];
+            }
+        }
+    }
+        
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kOBS_GROUPS_NOTIFICATION object:nil];
+}
+
+
+- (void)callGETAPI:(NSString*)method withParameters:(NSDictionary*)parameters completionNotification:(NSString*)notificationName{
+    
+    NSURL *baseURL = [NSURL URLWithString:kAPI_LINK];
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:baseURL];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    
+    //    NSLog(@"base:%@ method:%@",baseURL,method);
+    [self callGetSessionManager:manager :method :parameters :notificationName];
+}
+
+- (void)callGetSessionManager:(AFHTTPSessionManager*)manager :(NSString*)method :(NSDictionary*)parameters :(NSString*)notificationName {
+    
+    
+    NETWORK_INDICATOR(YES)
+    
+    
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@YES];
+    
+    
+    [manager GET:method parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+        //        NSLog(@"#GET# progress:%f",[downloadProgress fractionCompleted]);
+        
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NETWORK_INDICATOR(NO)
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
+        if ([responseObject isKindOfClass:[NSError class]] || ([responseObject isKindOfClass:[NSDictionary class]] && [[responseObject allKeys] containsObject:@"error"])) {
+            if ([responseObject isKindOfClass:[NSError class]]) {
+                
+                NSError *error = (NSError*)responseObject;
+                
+                
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Error %li",(long)error.code] message:error.description preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                    [alert dismissViewControllerAnimated:YES completion:^{
+                    }];
+                }];
+                [alert addAction:actionOK];
+                
+                [self presentViewController:alert animated:YES completion:^{
+                    
+                }];
+            }
+            else {
+                
+                ;
+            }
+            
+        }
+        else if ([responseObject isKindOfClass:[NSArray class]] || [responseObject isKindOfClass:[NSDictionary class]]) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:responseObject];
+        }
+        else {
+            
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+        NETWORK_INDICATOR(NO)
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Error %li",(long)[error code]] message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            [alert dismissViewControllerAnimated:YES completion:nil];
+        }];
+        [alert addAction:actionOK];
+        
+        [self presentViewController:alert animated:YES completion:^{
+            
+        }];
+    }];
+    
+    
+}
+
 - (void) reloadNews {
     
 //    UILocalNotification *notification = [[UILocalNotification alloc] init];
@@ -261,6 +407,13 @@
     
     
     [self.horizontalTableview reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
+    
+    UIButton *buttonMenuNews = self.menuButtonList[0];
+    
+    self.indicatorView.frame = CGRectMake(buttonMenuNews.frame.origin.x + 10.0f, 32.0f, buttonMenuNews.frame.size.width - 20.0f, 2.0f);
+    
+    
+    [self autoScrollMenuViewBarWithButton:buttonMenuNews];
 }
 
 - (void) reloadPodcast {
@@ -840,7 +993,7 @@
 
 - (void) subscribeEvent:(NSString*)eventName{
     PTPusherChannel *channel = [self.pusherClient subscribeToChannelNamed:@"news"];
-    [channel bindToEventNamed:eventName handleWithBlock:^(PTPusherEvent *channelEvent) {
+    PTPusherEventBinding *eventBind = [channel bindToEventNamed:eventName handleWithBlock:^(PTPusherEvent *channelEvent) {
         // channelEvent.data is a NSDictionary of the JSON object received
         
         /*
@@ -880,54 +1033,38 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_news_from_pusher" object:self.newsFromPusher];
         }
         
+        [self updateNotificationCounter];
     }];
+    
+    if (!self.eventBindingArray) {
+        self.eventBindingArray = [NSMutableArray array];
+    }
+    
+    BOOL alreadyAdded = NO;
+    for (PTPusherEventBinding *event in self.eventBindingArray) {
+        if ([event.eventName isEqualToString:eventName]) {
+            alreadyAdded = YES;
+            break;
+        }
+    }
+    
+    if (!alreadyAdded) {
+        [self.eventBindingArray addObject:eventBind];
+    }
+    
 }
 
 
 - (void) unSubscribeEvent:(NSString*)eventName{
     PTPusherChannel *channel = [self.pusherClient subscribeToChannelNamed:@"news"];
     
-    [channel bindToEventNamed:eventName handleWithBlock:^(PTPusherEvent *channelEvent) {
-        // channelEvent.data is a NSDictionary of the JSON object received
-        
-        /*
-         data:{
-         date = "April 14, 2017";
-         datestamp =     {
-         date = "2017-04-14 21:08:03.000000";
-         timezone = "Asia/Manila";
-         "timezone_type" = 3;
-         };
-         id = 45;
-         module = news;
-         title = "test push 11";
-         }
-         */
-        
-        NSLog(@"##[%@]data:%@",eventName,channelEvent.data);
-        
-        //        UILocalNotification *notification = [[UILocalNotification alloc] init];
-        //        notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:1];
-        //        notification.alertBody = [NSString stringWithFormat:@"NEWS: %@",channelEvent.data[@"title"]];
-        //        notification.timeZone = [NSTimeZone defaultTimeZone];
-        //        notification.soundName = UILocalNotificationDefaultSoundName;
-        //        notification.applicationIconBadgeNumber = [channelEvent.data[@"id"] integerValue];
-        //
-        //        [[UIApplication sharedApplication] scheduleLocalNotification:notification];
-        
-        if (!self.newsFromPusher) {
-            self.newsFromPusher = [NSMutableArray array];
+    for (PTPusherEventBinding *event in self.eventBindingArray) {
+        if ([event.eventName isEqualToString:eventName]) {
+            [channel removeBinding:event];
+            break;
         }
-        
-        NSDictionary *dictionary = @{@"id":channelEvent.data[@"id"],@"date_posted":channelEvent.data[@"date"],@"title":channelEvent.data[@"title"],@"read":@NO};
-        
-        [self.newsFromPusher addObject:dictionary];
-        
-        if (self.selectedIndex == 0) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_news_from_pusher" object:self.newsFromPusher];
-        }
-        
-    }];
+    }
+    
 }
 
 @end

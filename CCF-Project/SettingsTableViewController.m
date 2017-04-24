@@ -10,8 +10,8 @@
 
 @interface SettingsTableViewController ()
 @property (weak, nonatomic) IBOutlet UITableView *mainTableView;
-@property (strong, nonatomic) NSMutableArray *groupList;
 @property (assign, nonatomic) BOOL allIsOn;
+@property (strong, nonatomic) NSMutableArray *groupList;
 @end
 
 @implementation SettingsTableViewController
@@ -34,9 +34,13 @@
     self.allIsOn = YES;
     
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callGroupsData:) name:kOBS_GROUPS_NOTIFICATION object:nil];
+    self.groupList = [NSMutableArray arrayWithArray:((ScrollableMenubarViewController*)self.parentViewController).groupList];
     
-    [self callGETAPI:kGROUPS_LINK withParameters:nil completionNotification:kOBS_GROUPS_NOTIFICATION];
+    if (self.groupList.count == 0) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callGroupsData:) name:kOBS_GROUPS_NOTIFICATION object:nil];
+        
+        [self callGETAPI:kGROUPS_LINK withParameters:nil completionNotification:kOBS_GROUPS_NOTIFICATION];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -72,6 +76,27 @@
         
         if (switchValue == YES) {
             self.allIsOn = NO;
+        }
+    }
+    
+    if (self.allIsOn) {
+        for (NSDictionary *item in self.groupList) {
+            [((ScrollableMenubarViewController*)self.parentViewController) subscribeEvent:item[@"interest"]];
+        }
+    }
+    else {
+        for (NSDictionary *item in self.groupList) {
+            
+            NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
+            
+            BOOL switchValue = [[NSUserDefaults standardUserDefaults] boolForKey:valueKey];
+            
+            if (switchValue == YES) {
+                [((ScrollableMenubarViewController*)self.parentViewController) subscribeEvent:item[@"interest"]];
+            }
+            else {
+                [((ScrollableMenubarViewController*)self.parentViewController) unSubscribeEvent:item[@"interest"]];
+            }
         }
     }
     
@@ -235,10 +260,11 @@
     NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
     if ([sender isOn]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:valueKey];
-        [((ScrollableMenubarViewController*)self.parentViewController) subscribeEvent:item[@"name"]];
+        [((ScrollableMenubarViewController*)self.parentViewController) subscribeEvent:item[@"interest"]];
     }
     else {
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:valueKey];
+        [((ScrollableMenubarViewController*)self.parentViewController) unSubscribeEvent:item[@"interest"]];
     }
     
     if ([self isAllGroupSame]) {

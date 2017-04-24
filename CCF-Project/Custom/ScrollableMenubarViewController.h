@@ -14,6 +14,7 @@
 #import <AVFoundation/AVPlayerItem.h>
 #import <AVFoundation/AVAsset.h>
 #import "Pusher.h"
+#import "PTPusherEventDispatcher.h"
 
 @protocol ScrollableMenubarViewControllerDelegate <NSObject>
 @optional
@@ -42,6 +43,8 @@
 @property (strong, nonatomic) PTPusher *pusherClient;
 
 @property (strong, nonatomic) NSMutableArray *newsFromPusher;
+@property (strong, nonatomic) NSMutableArray *groupList;
+
 - (void) showProgressView;
 - (void) addValueToProgressView;
 - (void) removeProgressView;

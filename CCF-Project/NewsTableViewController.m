@@ -104,10 +104,11 @@
 //
 //        NETWORK_INDICATOR(YES)
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callGroupsData:) name:kOBS_GROUPS_NOTIFICATION object:nil];
-        
-        [self callGETAPI:kGROUPS_LINK withParameters:nil completionNotification:kOBS_GROUPS_NOTIFICATION];
-        
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callGroupsData:) name:kOBS_GROUPS_NOTIFICATION object:nil];
+//        
+//        [self callGETAPI:kGROUPS_LINK withParameters:nil completionNotification:kOBS_GROUPS_NOTIFICATION];
+
+        [self getGroupsList];
         
     }
     
@@ -115,7 +116,8 @@
 //    [self showLoadingAnimation:self.view];
 }
 
-- (void)callGroupsData:(NSNotification*)notification {
+//- (void)callGroupsData:(NSNotification*)notification {
+- (void)getGroupsList {
     //    NSLog(@"## result:%@",notification.object);
     
 //    NSLog(@"_%s_",__FUNCTION__);
@@ -127,9 +129,7 @@
     }
     
     
-    NSDictionary *result = [NSDictionary dictionaryWithDictionary:notification.object];
-    
-    NSArray *data = result[@"data"];
+    NSArray *data = [NSMutableArray arrayWithArray:((ScrollableMenubarViewController*)self.parentViewController).groupList];;
     
     for (NSDictionary *item in data) {
         
@@ -154,7 +154,7 @@
     
 //    NETWORK_INDICATOR(YES)
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kOBS_GROUPS_NOTIFICATION object:nil];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:kOBS_GROUPS_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appendNewsList:) name:kOBS_NEWS_NOTIFICATION object:nil];
     
     [self callGETAPI:kNEWS_LINK withParameters:nil completionNotification:kOBS_NEWS_NOTIFICATION];
@@ -394,7 +394,7 @@
 //    cell.contentView.layer.borderColor = [UIColor clearColor].CGColor;
 //    cell.contentView.layer.borderWidth = 0.0f;
     if (![newsItem.is_read boolValue]) {
-        cell.contentView.backgroundColor = [UIColor colorWithRed:17.0f/255.0f green:179.0f/255.0f blue:196/255.0f alpha:0.65f];
+        cell.contentView.backgroundColor = [UIColor colorWithRed:17.0f/255.0f green:179.0f/255.0f blue:196/255.0f alpha:0.15f];
 //        cell.contentView.layer.borderColor = TEAL_COLOR.CGColor;
 //        cell.contentView.layer.borderWidth = 5.0f;
     }
