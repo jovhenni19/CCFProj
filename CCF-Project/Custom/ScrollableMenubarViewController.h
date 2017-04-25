@@ -50,7 +50,9 @@
 - (void) removeProgressView;
 - (void) subscribeEvent:(NSString*)eventName;
 - (void) unSubscribeEvent:(NSString*)eventName;
-
+- (NSArray*)getNewsFromPusher;
+- (void)updateNewsFromPusher:(NSArray*)array;
+- (NSArray*)getGroupList;
 @end
 
 

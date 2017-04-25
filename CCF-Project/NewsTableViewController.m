@@ -18,7 +18,7 @@
 @property (strong, nonatomic) NSMutableArray *news_list;
 @property (assign, nonatomic) NSInteger shownPerPage;
 
-@property (strong, nonatomic) NSArray *news_pusher;
+@property (strong, nonatomic) NSMutableArray *news_pusher;
 
 //@property (strong, nonatomic) NSIndexPath *indexPath_expanded;
 
@@ -52,7 +52,7 @@
 
 - (void) newsFromPusher:(NSNotification*)notification {
     self.news_pusher = nil;
-    self.news_pusher = [NSArray arrayWithArray:notification.object];
+    self.news_pusher = [NSMutableArray arrayWithArray:notification.object];
     
     [self reloadTables];
 }
@@ -60,11 +60,11 @@
 - (void)reloadTables {
     [super reloadTables];
     
-    
-//    NSLog(@"fromMenu:%@\n\nfromHere:%@",((ScrollableMenubarViewController*)self.parentViewController).newsFromPusher,self.news_pusher);
-    
 //    NSLog(@"_%s_",__FUNCTION__);
-        
+    
+    
+    self.news_pusher = [NSMutableArray arrayWithArray:[((ScrollableMenubarViewController*)self.parentViewController) getNewsFromPusher]];
+    
     if(self.news_list){
         [self.news_list removeAllObjects];
         [self.groupList removeAllObjects];
@@ -129,7 +129,7 @@
     }
     
     
-    NSArray *data = [NSMutableArray arrayWithArray:((ScrollableMenubarViewController*)self.parentViewController).groupList];;
+    NSArray *data = [NSMutableArray arrayWithArray:[((ScrollableMenubarViewController*)self.parentViewController) getGroupList]];;
     
     for (NSDictionary *item in data) {
         
@@ -161,8 +161,9 @@
 }
 
 
+
 - (void)appendNewsList:(NSNotification*)notification {
-//    NSLog(@"##%s## result:%@",__FUNCTION__,notification.object);
+    NSLog(@"##%s## result:%@",__FUNCTION__,notification.object);
     
 //    [self removeLoadingAnimation];
     
@@ -247,6 +248,8 @@
             
             //check highlight
             
+            NSLog(@"##### pusher:%@",self.news_pusher);
+            
             for (NSDictionary *dic in self.news_pusher) {
                 if (![dic[@"read"] boolValue] /*&& [self is1DayAgo:dic[@"date"]]*/) {
                     if ([newsItem.id_num integerValue] == [dic[@"id"] integerValue]) {
@@ -257,7 +260,15 @@
             }
             if ([item[@"groups"] isKindOfClass:[NSArray class]]) {
                 if ([item[@"groups"] count]) {
-                    newsItem.group_name = isNIL(item[@"groups"][0][@"name"]);
+                    NSString *text = @"";
+                    for (NSInteger i = 0; i < [item[@"groups"] count]; i++) {
+                        text = [NSString stringWithFormat:@"%@%@",text,isNIL(item[@"groups"][i][@"name"])];
+                        
+                        if (i+1 < [item[@"groups"] count]) {
+                            text = [NSString stringWithFormat:@"%@, ",text];
+                        }
+                    }
+                    newsItem.group_name = text;
                 }
                 else {
                     newsItem.group_name = @"all";
@@ -447,11 +458,12 @@
         }
     }
     
-    [((ScrollableMenubarViewController*)self.parentViewController).newsFromPusher removeObjectAtIndex:index];
+    if(self.news_pusher.count){
+        [self.news_pusher removeObjectAtIndex:index];
+        
+        [((ScrollableMenubarViewController*)self.parentViewController) setNewsFromPusher:self.news_pusher];
+    }
     
-    
-    self.news_pusher = nil;
-    self.news_pusher = [NSArray arrayWithArray:((ScrollableMenubarViewController*)self.parentViewController).newsFromPusher];
     
     
     detailsVC.view.frame = self.view.bounds;

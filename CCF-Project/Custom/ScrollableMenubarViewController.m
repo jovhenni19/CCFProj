@@ -217,8 +217,17 @@
 //        
 //    }
     
+    
+    if (self.newsFromPusher == nil || self.newsFromPusher.count < 1) {
+        NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"saved_news_pusher"];
+        NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        self.newsFromPusher = [NSMutableArray arrayWithArray:array];
+    }
+    
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_news_from_pusher" object:self.newsFromPusher];
     
+    [self updateNotificationCounter];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -255,6 +264,14 @@
     
     
     
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.newsFromPusher];
+    [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"saved_news_pusher"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)callGroupsData:(NSNotification*)notification {
@@ -407,13 +424,6 @@
     
     
     [self.horizontalTableview reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
-    
-    UIButton *buttonMenuNews = self.menuButtonList[0];
-    
-    self.indicatorView.frame = CGRectMake(buttonMenuNews.frame.origin.x + 10.0f, 32.0f, buttonMenuNews.frame.size.width - 20.0f, 2.0f);
-    
-    
-    [self autoScrollMenuViewBarWithButton:buttonMenuNews];
 }
 
 - (void) reloadPodcast {
@@ -567,6 +577,15 @@
 - (IBAction)showNotifications:(id)sender {
     [self.horizontalTableview scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionLeft animated:YES];
 //    [self.horizontalTableview scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    
+    
+    
+    UIButton *buttonMenuNews = self.menuButtonList[0];
+    
+    self.indicatorView.frame = CGRectMake(buttonMenuNews.frame.origin.x + 10.0f, 32.0f, buttonMenuNews.frame.size.width - 20.0f, 2.0f);
+    
+    
+    [self autoScrollMenuViewBarWithButton:buttonMenuNews];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -1066,5 +1085,19 @@
     }
     
 }
+
+- (NSArray*)getNewsFromPusher {
+    return [NSArray arrayWithArray:self.newsFromPusher];
+}
+
+- (void)updateNewsFromPusher:(NSArray*)array {
+    self.newsFromPusher = nil;
+    self.newsFromPusher = [NSMutableArray arrayWithArray:array];
+}
+
+- (NSArray*)getGroupList {
+    return [NSArray arrayWithArray:self.groupList];
+}
+
 
 @end
