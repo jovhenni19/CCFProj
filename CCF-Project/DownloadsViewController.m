@@ -70,7 +70,7 @@
         
         NSString* foofile = [documentsPath stringByAppendingPathComponent:podcastsItem.audioURL];
         BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:foofile];
-        if (fileExists) {
+        if ([podcastsItem.audioURL length] && fileExists) {
             [self.podcastList addObject:podcastsItem];
         }
         

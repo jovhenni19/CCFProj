@@ -54,6 +54,11 @@
     self.news_pusher = nil;
     self.news_pusher = [NSMutableArray arrayWithArray:notification.object];
     
+    
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.news_pusher];
+    [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"saved_news_pusher"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
     [self reloadTables];
 }
 
@@ -163,7 +168,7 @@
 
 
 - (void)appendNewsList:(NSNotification*)notification {
-    NSLog(@"##%s## result:%@",__FUNCTION__,notification.object);
+//    NSLog(@"##%s## result:%@",__FUNCTION__,notification.object);
     
 //    [self removeLoadingAnimation];
     
@@ -248,7 +253,7 @@
             
             //check highlight
             
-            NSLog(@"##### pusher:%@",self.news_pusher);
+//            NSLog(@"##### pusher:%@",self.news_pusher);
             
             for (NSDictionary *dic in self.news_pusher) {
                 if (![dic[@"read"] boolValue] /*&& [self is1DayAgo:dic[@"date"]]*/) {
@@ -461,7 +466,7 @@
     if(self.news_pusher.count){
         [self.news_pusher removeObjectAtIndex:index];
         
-        [((ScrollableMenubarViewController*)self.parentViewController) setNewsFromPusher:self.news_pusher];
+        [((ScrollableMenubarViewController*)self.parentViewController) updateNewsFromPusher:self.news_pusher];
     }
     
     

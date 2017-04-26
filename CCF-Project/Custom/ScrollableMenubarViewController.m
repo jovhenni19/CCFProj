@@ -225,7 +225,6 @@
     }
     
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_news_from_pusher" object:self.newsFromPusher];
     
     [self updateNotificationCounter];
 }
@@ -263,16 +262,10 @@
     }
     
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_news_from_pusher" object:self.newsFromPusher];
     
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.newsFromPusher];
-    [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"saved_news_pusher"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
 
 - (void)callGroupsData:(NSNotification*)notification {
     //    NSLog(@"## result:%@",notification.object);
@@ -1093,6 +1086,10 @@
 - (void)updateNewsFromPusher:(NSArray*)array {
     self.newsFromPusher = nil;
     self.newsFromPusher = [NSMutableArray arrayWithArray:array];
+    
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.newsFromPusher];
+    [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"saved_news_pusher"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (NSArray*)getGroupList {
