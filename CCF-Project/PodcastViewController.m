@@ -481,13 +481,13 @@
     
     CGFloat buttonWidth = (cell.contentView.bounds.size.width - 150.0f)/2; //divide per control
     
-    CustomButton *buttonSpeaker = [[CustomButton alloc] initWithText:[item.category_name uppercaseString] image:[UIImage imageNamed:@"group-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 30.0f) locked:YES];
+    CustomButton *buttonSpeaker = [[CustomButton alloc] initWithText:[item.category_name uppercaseString] image:[UIImage imageNamed:@"group-icon-small"] frame:CGRectMake(0.0f, 0.0f, buttonWidth, 30.0f) locked:NO];
     buttonSpeaker.labelText.textColor = [UIColor grayColor];
     buttonSpeaker.userInteractionEnabled = NO;
     [cell.viewForControls addSubview:buttonSpeaker];
     
     
-    CustomButton *buttonVenue = [[CustomButton alloc] initWithText:[@"ccf center" uppercaseString] image:[UIImage imageNamed:@"pin-icon-small"] frame:CGRectMake(buttonWidth, 0.0f, buttonWidth, 30.0f) locked:YES];
+    CustomButton *buttonVenue = [[CustomButton alloc] initWithText:[@"ccf center" uppercaseString] image:[UIImage imageNamed:@"pin-icon-small"] frame:CGRectMake(buttonWidth, 0.0f, buttonWidth, 30.0f) locked:NO];
     buttonVenue.labelText.textColor = TEAL_COLOR;
     buttonVenue.userInteractionEnabled = YES;
     buttonVenue.button.latitude = [NSNumber numberWithDouble:14.589221];
@@ -500,6 +500,10 @@
 //    tap.numberOfTapsRequired = 1;
 //    [buttonVenue.button addGestureRecognizer:tap];
     
+//    buttonVenue.layer.borderWidth = 1.0f;
+//    buttonVenue.layer.borderColor = [UIColor redColor].CGColor;
+//    buttonSpeaker.layer.borderColor = [UIColor yellowColor].CGColor;
+//    buttonSpeaker.layer.borderWidth = 1.0f;
 
     buttonSpeaker.translatesAutoresizingMaskIntoConstraints = NO;
     buttonVenue.translatesAutoresizingMaskIntoConstraints = NO;
@@ -515,6 +519,18 @@
     [cell.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonSpeaker attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:marginLayout attribute:NSLayoutAttributeLeadingMargin multiplier:1.0 constant:-15.0f]];
     
     [cell.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonVenue attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:buttonSpeaker attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0f]];
+    
+    [cell.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonVenue attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:marginLayout attribute:NSLayoutAttributeTrailingMargin multiplier:1.0 constant:1.0f]];
+    
+    
+//    CGSize maximumLabelSize = CGSizeMake(viewFrame.size.width - 22.0f, CGFLOAT_MAX);
+//    CGRect textRect = [[text uppercaseString] boundingRectWithSize:maximumLabelSize
+//                                                           options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+//                                                        attributes:@{NSFontAttributeName: [UIFont fontWithName:@"OpenSans" size:11.0f]}
+//                                                           context:nil];
+//    
+//    CGSize contentSize = textRect.size;
+//    [buttonSpeaker addConstraint:[NSLayoutConstraint constraintWithItem:buttonSpeaker attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationLessThanOrEqual toItem:nil attribute:NSLayoutAttributeWidth multiplier:1.0f constant:self.computedWidth]];
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];

@@ -221,6 +221,9 @@
             sattelite.name = item[@"name"];
             sattelite.latitude = item[@"latitude"];
             sattelite.longitude = item[@"longitude"];
+        sattelite.email = isNIL(item[@"email"]);
+        sattelite.contacts = isNIL(item[@"phone"]);
+        sattelite.website = isNIL(item[@"website"]);
         
         if ([item[@"address_full"] rangeOfString:@"-,   " options:NSLiteralSearch range:NSMakeRange(0, 5)].location != NSNotFound) {
             sattelite.address_full = [item[@"address_full"] substringFromIndex:5];
@@ -334,14 +337,32 @@
     }
 }
 
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    
-//    CGFloat height = 235.0f;
-//    if (![tableView isEqual:self.tableSearchResult]) {
-//        
-//    }
-//    return height;
-//}
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    CGFloat height = 235.0f;
+    
+    
+    SatellitesObject *location = nil;
+    NSInteger section = [indexPath section];
+    NSInteger row = [indexPath row];
+    if (self.isAllLocationSelected) {
+        location = [[self.allLocations objectForKey:self.alphabetSections[section]] objectAtIndex:row];
+    }
+    else {
+        location = [[self.nearbyLocations objectForKey:self.nearbySections[section]] objectAtIndex:row];
+    }
+    
+    
+    CGSize maximumLabelSize = CGSizeMake(tableView.frame.size.width - 60.0f, CGFLOAT_MAX);
+    CGRect textRect = [[location.address_full uppercaseString] boundingRectWithSize:maximumLabelSize
+                                                                            options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+                                                                         attributes:@{NSFontAttributeName: [UIFont fontWithName:@"OpenSans" size:14.0f]}
+                                                                            context:nil];
+    
+    CGSize contentSize = textRect.size;
+    
+    return height + (contentSize.height - 36);
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -386,23 +407,25 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         cell.labelLocationName.text = location.name;
+        [cell.labelLocationName sizeToFit];
         
         [cell.labelAddress setTitle:location.address_full forState:UIControlStateNormal];
         cell.labelAddress.latitude = [NSNumber numberWithDouble:[location.latitude  doubleValue]];
         cell.labelAddress.longitude = [NSNumber numberWithDouble:[location.longitude doubleValue]];
         cell.labelAddress.locationName = location.name;
         cell.labelAddress.locationSnippet = location.address_full;
+        [cell.labelAddress.titleLabel sizeToFit];
         
         
         [cell.labelAddress addTarget:self action:@selector(viewMapButton1:) forControlEvents:UIControlEventTouchUpInside];
         
-        [cell.labelEmail setTitle:@"---"/*[location objectForKey:@"kEmail"]*/ forState:UIControlStateNormal];
+        [cell.labelEmail setTitle:[location.email stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forState:UIControlStateNormal];
         [cell.labelEmail addTarget:self action:@selector(emailButton:) forControlEvents:UIControlEventTouchUpInside];
         
-        [cell.labelContacts setTitle:@"---"/*[location objectForKey:@"kContact"]*/ forState:UIControlStateNormal];
+        [cell.labelContacts setTitle:[location.contacts stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forState:UIControlStateNormal];
         [cell.labelContacts addTarget:self action:@selector(contactButton:) forControlEvents:UIControlEventTouchUpInside];
         
-        [cell.labelWebsite setTitle:@"---"/*[location objectForKey:@"kWebsite"]*/ forState:UIControlStateNormal];
+        [cell.labelWebsite setTitle:[location.website stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forState:UIControlStateNormal];
         [cell.labelWebsite addTarget:self action:@selector(webURLButton:) forControlEvents:UIControlEventTouchUpInside];
         
         cell.selectionStyle = UITableViewCellSelectionStyleNone;

@@ -17,6 +17,8 @@
 @property (assign, nonatomic) NSInteger shownPerPage;
 @property (weak, nonatomic) IBOutlet UIButton *buttonFacebook;
 
+@property (strong, nonatomic) NSString *streamDate;
+
 @end
 
 @implementation LiveStreamingViewController
@@ -68,10 +70,23 @@
     
     NSDictionary *result = (NSDictionary*)notification.object;
     
-    NSString *latest_videoID = result[@"latest"][@"id"][@"videoId"];
+    NSString *vidID = @"";
+    if (result[@"live"] && ![result[@"live"] isKindOfClass:[NSNull class]]) {
+        vidID = result[@"live"][@"id"][@"videoId"];
+    }
+    else {
+        vidID = result[@"latest"][@"id"][@"videoId"];
+    }
     
+    [self.youtubePlayerView loadWithVideoId:vidID];
     
-    [self.youtubePlayerView loadWithVideoId:latest_videoID];
+    self.labelTimer.text = @"STAY TUNED FOR OUR NEXT LIVE STREAM";//[result[@"settings"][@"default_text"] uppercaseString];
+    
+    self.streamDate = @"";
+    if (result[@"settings"][@"date"] && ![result[@"settings"][@"date"] isKindOfClass:[NSNull class]] && result[@"settings"][@"time"] && ![result[@"settings"][@"time"] isKindOfClass:[NSNull class]]) {
+        self.streamDate = [NSString stringWithFormat:@"%@ %@",result[@"settings"][@"date"],result[@"settings"][@"time"]];
+    }
+    
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kOBS_LIVESTREAM_NOTIFICATION object:nil];
 }
@@ -80,13 +95,16 @@
     
     NSDateFormatter *dF = [[NSDateFormatter alloc] init];
     [dF setDateFormat:@"yyyy-dd-MM  HH:mm:ss"];
-    NSDate *streamDate = [dF dateFromString:@"2017-06-02  19:34:00"];
+    NSDate *streamDate1 = [dF dateFromString:self.streamDate];
     
     //wrong time!
     
+    if (streamDate1 == nil || [streamDate1 isKindOfClass:[NSNull class]]) {
+        return;
+    }
     NSCalendar *c = [NSCalendar currentCalendar];
     NSDate *d1 = [NSDate date];
-    NSDateComponents *components = [c components:NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute fromDate:d1 toDate:streamDate options:0];
+    NSDateComponents *components = [c components:NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute fromDate:d1 toDate:streamDate1 options:0];
     
     NSInteger days = components.day;
     NSInteger hours = components.hour;
@@ -103,9 +121,9 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         self.labelTimer.text = [NSString stringWithFormat:@"%@",text];
-        if (self.labelTimer.text.length == 0) {
-            self.labelTimer.text = @"STAY TUNED FOR OUR NEXT LIVE STREAM";
-        }
+//        if (self.labelTimer.text.length == 0) {
+//            self.labelTimer.text = @"STAY TUNED FOR OUR NEXT LIVE STREAM";
+//        }
         
     });
     

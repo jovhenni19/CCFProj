@@ -198,6 +198,9 @@
     [self.pusherClient connect];
     
     
+    [[NSUserDefaults standardUserDefaults] setFloat:self.containerViewForTable.frame.size.width forKey:@"horizontal_width"];
+    [[NSUserDefaults standardUserDefaults] setFloat:self.containerViewForTable.frame.size.height forKey:@"horizontal_height"];
+    
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callGroupsData:) name:kOBS_GROUPS_NOTIFICATION object:nil];
     
@@ -217,16 +220,8 @@
 //        
 //    }
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_news_from_pusher" object:self.newsFromPusher];
     
-    if (self.newsFromPusher == nil || self.newsFromPusher.count < 1) {
-        NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"saved_news_pusher"];
-        NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-        self.newsFromPusher = [NSMutableArray arrayWithArray:array];
-    }
-    
-    
-    
-    [self updateNotificationCounter];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -252,20 +247,31 @@
     if(self.fromViewLoad){
         self.fromViewLoad = NO;
         
-        [[NSUserDefaults standardUserDefaults] setFloat:self.containerViewForTable.frame.size.width forKey:@"horizontal_width"];
-        [[NSUserDefaults standardUserDefaults] setFloat:self.containerViewForTable.frame.size.height forKey:@"horizontal_height"];
         
-        [self.horizontalTableview reloadData];
+//        [self.horizontalTableview reloadData];
+//        [self performSelector:@selector(scrollToNews) withObject:self afterDelay:1];
         
-        [self performSelector:@selector(reloadNews) withObject:self afterDelay:1];
-        [self performSelector:@selector(reloadPodcast) withObject:self afterDelay:2];
+//        [[NSUserDefaults standardUserDefaults] setFloat:self.containerViewForTable.frame.size.width forKey:@"horizontal_width"];
+//        [[NSUserDefaults standardUserDefaults] setFloat:self.containerViewForTable.frame.size.height forKey:@"horizontal_height"];
+//        
+//        [self.horizontalTableview reloadData];
+//
+        //        [self performSelector:@selector(reloadNews) withObject:self afterDelay:0.1];
+//        [self.horizontalTableview reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:1 inSection:0]]];
+        
+//        [self.horizontalTableview scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:2 inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
+//        
+//        [self performSelector:@selector(scrollToNews) withObject:self afterDelay:1];
     }
     
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_news_from_pusher" object:self.newsFromPusher];
     
 }
 
+- (void) scrollToNews {
+    
+    [self.horizontalTableview reloadData];
+}
 
 - (void)callGroupsData:(NSNotification*)notification {
     //    NSLog(@"## result:%@",notification.object);
@@ -323,6 +329,10 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kOBS_GROUPS_NOTIFICATION object:nil];
+    
+//    
+//    self.horizontalTableview.dataSource = self;
+//    self.horizontalTableview.delegate = self;
 }
 
 
@@ -417,6 +427,13 @@
     
     
     [self.horizontalTableview reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
+    
+    UIButton *buttonMenuNews = self.menuButtonList[0];
+    
+    self.indicatorView.frame = CGRectMake(buttonMenuNews.frame.origin.x + 10.0f, 32.0f, buttonMenuNews.frame.size.width - 20.0f, 2.0f);
+    
+    
+    [self autoScrollMenuViewBarWithButton:buttonMenuNews];
 }
 
 - (void) reloadPodcast {
@@ -425,8 +442,8 @@
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-//    [self.horizontalTableview layoutSubviews];
-//    [self.horizontalTableview reloadData];
+    [self.horizontalTableview layoutSubviews];
+    [self.horizontalTableview reloadData];
 }
 
 
@@ -436,29 +453,9 @@
     }
     
     
-    return NO;
+    return YES;
 }
 
-- (void) rearrangeLayout {
-    
-//    self.containerViewForTable.layer.borderColor = [UIColor redColor].CGColor;
-//    self.containerViewForTable.layer.borderWidth = 1.0f;
-//    self.horizontalTableview.layer.borderWidth = 1.0f;
-//    self.horizontalTableview.layer.borderColor = [UIColor blueColor].CGColor;
-    
-    CGRect frame = self.horizontalTableview.frame;
-    frame.origin.x = 0.0f;
-    frame.origin.y = 0.0f;
-    frame.size.width = [[NSUserDefaults standardUserDefaults] floatForKey:@"horizontal_width"];//self.containerViewForTable.frame.size.height;
-    frame.size.height = [[NSUserDefaults standardUserDefaults] floatForKey:@"horizontal_height"];//self.containerViewForTable.frame.size.width;
-    self.horizontalTableview.frame = frame;
-    
-//    self.horizontalTableview.backgroundColor = [UIColor greenColor];
-    
-//    NSLog(@"##_%s_:%@",__FUNCTION__,NSStringFromCGRect(self.horizontalTableview.frame));
-    
-    [self.horizontalTableview reloadData];
-}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -480,84 +477,6 @@
     [self autoScrollMenuViewBarWithButton:sender];
 }
 
-//- (void) setCurrentViewController:(NSInteger)index {
-//    self.settingView = YES;
-//    self.selectedIndex = index;
-//    self.selectedViewController = [self.viewControllers objectAtIndex:self.selectedIndex];
-//    
-//    UIButton *button = [self.menuButtonList objectAtIndex:self.selectedIndex];
-//
-//    [UIView animateWithDuration:0.5f animations:^{
-//        self.indicatorView.frame = CGRectMake(button.frame.origin.x + 10.0f, 32.0f, button.frame.size.width - 20.0f, 2.0f);
-//        
-//    } completion:^(BOOL finished) {
-//        
-//        [self.scrollView scrollRectToVisible:self.indicatorView.bounds animated:YES];
-//        
-//        while ([[self.containerView subviews] count] > 0) {
-//            [[[self.containerView subviews] lastObject] removeFromSuperview];
-//        }
-//
-//        
-//        self.selectedViewController.view.frame = self.containerView.bounds;
-//        [self.containerView addSubview:self.selectedViewController.view];
-//        [self addChildViewController:self.selectedViewController];
-//        [self.selectedViewController didMoveToParentViewController:self];
-//        
-//        [self.pagingScrollview addSubview:self.containerView];
-//        
-//        CGSize viewSize = self.containerView.bounds.size;
-//        
-//        UIView *prevView = nil;
-//        
-//        UIView *nextView = nil;
-//        
-//        [self.pagingScrollview setContentSize:viewSize];
-//        
-//        if (self.selectedIndex > 0) {
-//            prevView = [[UIView alloc] initWithFrame:CGRectMake(viewSize.width*-1, 0.0f, viewSize.width, viewSize.height)];
-//            prevView.backgroundColor = [UIColor greenColor];
-//            
-//            [self.pagingScrollview addSubview:prevView];
-//            
-//            
-//            UIViewController *prevVC = [self.viewControllers objectAtIndex:self.selectedIndex-1];
-//            prevVC.view.frame = prevView.bounds;
-//            [prevView addSubview:prevVC.view];
-//            
-//            [self.pagingScrollview setContentSize:CGSizeMake(self.pagingScrollview.contentSize.width + viewSize.width, 0.0f)];
-//            
-////            CGRect frame = prevView.frame;
-////            frame.origin = CGPointMake(0.0f, 0.0f);
-////            prevView.frame = frame;
-////            
-////            frame = self.containerView.frame;
-////            frame.origin = CGPointMake(viewSize.width, 0.0f);
-////            self.containerView.frame = frame;
-////            
-////            [self.pagingScrollview setContentOffset:CGPointMake(viewSize.width, 0.0f)];
-//            
-//        }
-//        
-//        
-//        if (self.selectedIndex < self.viewControllers.count-1) {
-//            nextView = [[UIView alloc] initWithFrame:CGRectMake(self.containerView.frame.origin.x + self.containerView.frame.size.width, 0.0f, viewSize.width, viewSize.height)];
-//            nextView.backgroundColor = [UIColor yellowColor];
-//            
-//            [self.pagingScrollview addSubview:nextView];
-//            
-//            UIViewController *nextVC = [self.viewControllers objectAtIndex:self.selectedIndex+1];
-//            nextVC.view.frame = nextView.bounds;
-//            [nextView addSubview:nextVC.view];
-//            
-//            [self.pagingScrollview setContentSize:CGSizeMake(self.pagingScrollview.contentSize.width + viewSize.width, 0.0f)];
-//        }
-//        
-//        self.settingView = NO;
-//    }];
-//    
-//    
-//}
 
 - (BOOL)prefersStatusBarHidden {
     return NO;
@@ -570,15 +489,6 @@
 - (IBAction)showNotifications:(id)sender {
     [self.horizontalTableview scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionLeft animated:YES];
 //    [self.horizontalTableview scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    
-    
-    
-    UIButton *buttonMenuNews = self.menuButtonList[0];
-    
-    self.indicatorView.frame = CGRectMake(buttonMenuNews.frame.origin.x + 10.0f, 32.0f, buttonMenuNews.frame.size.width - 20.0f, 2.0f);
-    
-    
-    [self autoScrollMenuViewBarWithButton:buttonMenuNews];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -594,65 +504,11 @@
     }
     else if ([scrollView isEqual:self.pagingScrollview] && !self.settingView) {
         
-//        if (scrollView.contentOffset.x < ((scrollView.frame.size.width/3)-10)*-1) {
-//            if (self.selectedIndex > 0) {
-//                [self setCurrentViewController:self.selectedIndex-1];
-//            }
-//        }
-//        else if (scrollView.contentOffset.x > ((scrollView.frame.size.width/3)-10)) {
-//            if (self.selectedIndex < self.viewControllers.count-1) {
-//                [self setCurrentViewController:self.selectedIndex+1];
-//            }
-//        }
         
     }
     
     else if([scrollView isEqual:self.horizontalTableview]){
         
-//        CGFloat xOffset = ((self.horizontalTableview.contentOffset.x - self.preOffsetX) * 0.25);
-//        self.indicatorView.frame = CGRectMake(self.indicatorView.frame.origin.x + xOffset, self.indicatorView.frame.origin.y, self.indicatorView.frame.size.width, self.indicatorView.frame.size.height);
-//        self.preOffsetX = self.horizontalTableview.contentOffset.x;
-        
-//        if (self.indicatorView.frame.origin.x < self.scrollViewBar.contentOffset.x + 10.0f) {
-//            self.scrollViewBar.contentOffset = CGPointMake(self.scrollViewBar.contentOffset.x - (xOffset*2) , self.scrollViewBar.contentOffset.y);
-//        }
-//        else if ((self.indicatorView.frame.origin.x + self.indicatorView.frame.size.width) > (self.scrollViewBar.contentOffset.x + self.scrollViewBar.frame.size.width)) {
-//            self.scrollViewBar.contentOffset = CGPointMake(self.scrollViewBar.contentOffset.x + (xOffset*2), self.scrollViewBar.contentOffset.y);
-//        }
-        
-        
-//        CGFloat pageWidth = self.containerViewForTable.bounds.size.width;
-//        NSInteger index = (long)floor((self.horizontalTableview.contentOffset.y - pageWidth / 2) / pageWidth) + 1;
-//        self.selectedIndex = index;
-//        UIButton *button = [self.menuButtonList objectAtIndex:self.selectedIndex];
-//        self.indicatorView.frame = CGRectMake(button.frame.origin.x + 10.0f, 32.0f, button.frame.size.width - 20.0f, 2.0f);
-//
-//        CGFloat result = 0.0f;
-//        CGFloat buttonWidth = button.bounds.size.width + 5.0f;
-////        CGFloat contentWidth = self.menuBarView.bounds.size.width;
-//        
-//        CGFloat xPoint = buttonWidth * (self.selectedIndex + 1);
-//        
-////        CGFloat diff = (contentWidth/2.0f) - (buttonWidth/2.0f);
-////        
-////        
-////        if (offsetX - diff > 0) {
-////            if (offsetX + self.scrollViewBar.bounds.size.width + diff) {
-////                result = self.scrollViewBar.contentSize.width - self.scrollViewBar.bounds.size.width;
-////            }
-////            else {
-////                result = offsetX - diff;
-////            }
-////        }
-//        
-//        if (xPoint > self.menuBarView.bounds.size.width) {
-//            result = xPoint - self.menuBarView.bounds.size.width;
-//        }
-//        else if (xPoint < self.scrollViewBar.contentOffset.x) {
-//            result = xPoint;
-//        }
-//            
-//        [self.scrollViewBar setContentOffset:CGPointMake(result, 0.0f) animated:YES];
     }
 }
 
@@ -696,69 +552,6 @@
 }
 */
 
-#pragma mark Table Methods
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.viewControllers.count;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    return 414.0f;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cellForViewController"];
-    
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cellForViewController"];
-    }
-    
-    cell.transform=CGAffineTransformMakeRotation(M_PI_2);
-    cell.clipsToBounds = YES;
-    cell.contentView.tag = 1990 + ([indexPath row]);
-    cell.contentView.layer.borderWidth = 1.0f;
-    
-    
-//    BaseViewController *vc = [self.viewControllers objectAtIndex:[indexPath row]];
-//    [vc reloadTables];
-    
-    return cell;
-    
-}
-
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self.view endEditing:YES];
-//    if (self.selectedIndex == 3) {
-//       SattelitesTableViewController *vc = [self.viewControllers objectAtIndex:self.selectedIndex];
-//        [vc.searchTextfield resignFirstResponder];
-//    }
-    
-    
-//    if (self.selectedIndex == 1) {
-//        PodcastDetailsTableViewController *vc = [self.viewControllers objectAtIndex:1];
-//        if ([vc respondsToSelector:@selector(audioPlayer)]) {
-//            [vc.audioPlayer pauseAudio];
-//        }
-//    }
-    
-    
-//    CGRect frame = self.containerViewForTable.frame;
-//    frame.origin.x = 0.0f;
-//    frame.origin.y = 0.0f;
-//    frame.size.width = [[NSUserDefaults standardUserDefaults] floatForKey:@"horizontal_width"];//self.containerViewForTable.frame.size.height;
-//    frame.size.height = [[NSUserDefaults standardUserDefaults] floatForKey:@"horizontal_height"];//self.containerViewForTable.frame.size.width;
-//    self.containerViewForTable.frame = frame;
-    
-    [self loadViewControllerWithContentView:cell.contentView index:[indexPath row]];
-    
-    
-}
-
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
 }
@@ -773,22 +566,27 @@
     
 //    cell.transform=CGAffineTransformMakeRotation(M_PI_2);
     
+//    NSLog(@"## %s - %li",__FUNCTION__,(long)[indexPath row]);
+    [self.view endEditing:YES];
+    [self loadViewControllerWithContentView:cell index:[indexPath row]];
     
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-    [self loadViewControllerWithContentView:cell.contentView index:[indexPath row]];
+//    NSLog(@"## %s - %li",__FUNCTION__,(long)[indexPath row]);
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    
+//    NSLog(@"## %s - %li",__FUNCTION__,(long)[indexPath row]);
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    CGSize mElementSize = self.containerViewForTable.frame.size;
+    CGSize windowSize = [[UIApplication sharedApplication] keyWindow].frame.size;
+    CGSize mElementSize = CGSizeMake(windowSize.width, windowSize.height - 110.0f);//self.horizontalTableview.frame.size;
+//    NSLog(@"### - %@",NSStringFromCGSize(mElementSize));
     return mElementSize;
 }
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
@@ -812,7 +610,7 @@
     [self.view endEditing:YES];
     self.selectedIndex = index;
     
-    BaseViewController *vc = [self.viewControllers objectAtIndex:self.selectedIndex];
+    BaseViewController *vc = [self.viewControllers objectAtIndex:index];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_podcast_pause1" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_podcast_pause2" object:nil];
@@ -834,41 +632,57 @@
 //        
 //    }
     
-    while ([[contentView subviews] count] > 0) {
-        [[[contentView subviews] lastObject] removeFromSuperview];
-    }
+//    while ([[contentView subviews] count] > 0) {
+//        [[[contentView subviews] lastObject] removeFromSuperview];
+//    }
+//
+//    [contentView layoutIfNeeded];
+    
+//    CGFloat width = [self collectionView:self.horizontalTableview layout:self.horizontalTableview.collectionViewLayout sizeForItemAtIndexPath:[NSIndexPath indexPathForItem:index inSection:0]].width;
+//    CGFloat height = [self collectionView:self.horizontalTableview layout:self.horizontalTableview.collectionViewLayout sizeForItemAtIndexPath:[NSIndexPath indexPathForItem:index inSection:0]].height;
 
-    [contentView layoutIfNeeded];
     
-    CGFloat width = self.containerViewForTable.frame.size.width;// [[NSUserDefaults standardUserDefaults] floatForKey:@"horizontal_width"];
-    CGFloat height = self.containerViewForTable.frame.size.height;//[[NSUserDefaults standardUserDefaults] floatForKey:@"horizontal_height"];
+    CGSize windowSize = [[UIApplication sharedApplication] keyWindow].frame.size;
+    CGSize mElementSize = CGSizeMake(windowSize.width, windowSize.height - 110.0f);
     
-    
-    vc.view.frame = CGRectMake(0.0f, 0.0f, width, height);
+    vc.view.frame = CGRectMake(0.0f, 0.0f, mElementSize.width, mElementSize.height);
     
     
-//    NSLog(@"### %f / %f - (%@)",width,height,NSStringFromCGSize(vc.view.frame.size));
+//    NSLog(@"[%li] ### %f / %f - (%@)",(long)index,mElementSize.width,mElementSize.height,NSStringFromCGSize(vc.view.frame.size));
+    
+//    UILayoutGuide *guide = contentView.layoutMarginsGuide;
+//    
+//    [contentView addConstraint:[NSLayoutConstraint constraintWithItem:vc.view attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:guide attribute:NSLayoutAttributeTopMargin multiplier:1.0f constant:0.0f]];
+//    
+//    [contentView addConstraint:[NSLayoutConstraint constraintWithItem:vc.view attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:guide attribute:NSLayoutAttributeBottomMargin multiplier:1.0f constant:0.0f]];
+//    
+//    [contentView addConstraint:[NSLayoutConstraint constraintWithItem:vc.view attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:guide attribute:NSLayoutAttributeLeadingMargin multiplier:1.0f constant:0.0f]];
+//    
+//    [contentView addConstraint:[NSLayoutConstraint constraintWithItem:vc.view attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:guide attribute:NSLayoutAttributeTrailingMargin multiplier:1.0f constant:0.0f]];
+//    
+//    vc.view.translatesAutoresizingMaskIntoConstraints = NO;
     
     [contentView addSubview:vc.view];
     [self addChildViewController:vc];
     [vc didMoveToParentViewController:self];
     
-    [contentView setNeedsLayout];
+//    [contentView setNeedsLayout];
+//    
+//    if (self.selectedIndex == 6 /*settings index*/) {
+//        
+//    }
+//    else {
+//        
+//        vc.loadingProgressView = self.progressView;
+//        
+//        if (self.fromViewLoad) {
+//        
+//            //[vc reloadTables];
+//        }
+//    }
+//    
+//    [contentView layoutSubviews];
     
-    if (self.selectedIndex == 6 /*settings index*/) {
-        
-    }
-    else {
-        
-        vc.loadingProgressView = self.progressView;
-        
-        if (self.fromViewLoad) {
-        
-            //[vc reloadTables];
-        }
-    }
-    
-    [contentView layoutSubviews];
     
 }
 
@@ -1078,23 +892,5 @@
     }
     
 }
-
-- (NSArray*)getNewsFromPusher {
-    return [NSArray arrayWithArray:self.newsFromPusher];
-}
-
-- (void)updateNewsFromPusher:(NSArray*)array {
-    self.newsFromPusher = nil;
-    self.newsFromPusher = [NSMutableArray arrayWithArray:array];
-    
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.newsFromPusher];
-    [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"saved_news_pusher"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-- (NSArray*)getGroupList {
-    return [NSArray arrayWithArray:self.groupList];
-}
-
 
 @end

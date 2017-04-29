@@ -15,7 +15,7 @@ NSString * const kPODCAST_LINK = @"/api/podcasts/";
 NSString * const kOBS_PODCAST_NOTIFICATION = @"kOBS_PODCAST_NOTIFICATION";
 NSString * const kEVENTS_LINK = @"/api/events/";
 NSString * const kOBS_EVENTS_NOTIFICATION = @"kOBS_EVENTS_NOTIFICATION";
-NSString * const kSATTELITES_LINK = @"/api/satellites/";
+NSString * const kSATTELITES_LINK = @"/api/satellites/all";
 NSString * const kLIVESTREAM_LINK = @"/api/live/";
 NSString * const kGROUPS_LINK = @"/api/groups/";
 NSString * const kOBS_SATTELITES_NOTIFICATION = @"kOBS_SATTELITES_NOTIFICATION";
@@ -519,7 +519,8 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 - (void) showWebViewWithURL:(NSString*)urlString {
     
     if ([urlString rangeOfString:@"http://"].location == NSNotFound) {
-        return;
+//        return;
+        urlString = [NSString stringWithFormat:@"http://%@",urlString];
     }
     
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
@@ -540,7 +541,7 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
         self.backgroundView.backgroundColor = [UIColor colorWithWhite:0.3f alpha:0.5f];
     }
     
-    self.webview = [[UIWebView alloc] initWithFrame:CGRectMake(15.0f, 35.0f, self.backgroundView.frame.size.width - 30.0f, self.backgroundView.frame.size.height - 50.0f)];
+    self.webview = [[UIWebView alloc] initWithFrame:CGRectMake(10.0f, 30.0f, self.backgroundView.frame.size.width - 20.0f, self.backgroundView.frame.size.height - 40.0f)];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     self.webview.backgroundColor = [UIColor clearColor];
     self.webview.scrollView.bounces = NO;
@@ -551,14 +552,14 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     self.webview.layer.borderWidth = 2.0f;
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [button setImage:[UIImage imageNamed:@"close-button"] forState:UIControlStateNormal];
+    [button setImage:[UIImage imageNamed:@"close_button"] forState:UIControlStateNormal];
     [button addTarget:self action:@selector(closeWebView) forControlEvents:UIControlEventTouchUpInside];
-    [button setFrame:CGRectMake(-15.0f, -15.0f, 28.0f, 28.0f)];
-    button.layer.zPosition = 1.0f;
-    button.layer.borderWidth = 2.0f;
-    button.layer.borderColor = [UIColor whiteColor].CGColor;
+    [button setFrame:CGRectMake(2.0f, 20.0f, 22.0f, 22.0f)];
+    button.layer.zPosition = 9.0f;
+//    button.layer.borderWidth = 2.0f;
+//    button.layer.borderColor = [UIColor whiteColor].CGColor;
     
-    [self.webview addSubview:button];
+    [self.backgroundView addSubview:button];
     
     UITapGestureRecognizer *tapClose = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeWebView)];
     [self.backgroundView addGestureRecognizer:tapClose];
@@ -566,6 +567,7 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     [self.backgroundView addSubview:self.webview];
     
     self.webview.transform = CGAffineTransformMakeScale(0.1f, 0.1f);
+    button.transform = CGAffineTransformMakeScale(0.1f, 0.1f);
     
     [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.webview.transform = CGAffineTransformMakeScale(1.5f, 1.5f);
@@ -573,6 +575,7 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
         [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
             self.webview.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
         } completion:^(BOOL finished) {
+            button.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
             [self.webview loadRequest:request];
         }];
     }];
@@ -583,9 +586,13 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
 - (void) closeWebView {
     
     [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
+        self.backgroundView.transform = CGAffineTransformMakeScale(5.0f, 5.0f);
         self.webview.transform = CGAffineTransformMakeScale(0.1f, 0.1f);
     } completion:^(BOOL finished) {
+        [self.webview removeFromSuperview];
         [self.backgroundView removeFromSuperview];
+        self.webview = nil;
+        self.backgroundView = nil;
     }];
     
 }

@@ -16,6 +16,9 @@
     NSString *latitude;
     NSString *longitude;
     NSString *name;
+    NSString *email;
+    NSString *contacts;
+    NSString *website;
 }
 
 @property (nullable, nonatomic, copy) NSString *address_full;
@@ -25,5 +28,7 @@
 @property (nullable, nonatomic, copy) NSString *latitude;
 @property (nullable, nonatomic, copy) NSString *longitude;
 @property (nullable, nonatomic, copy) NSString *name;
-
+@property (nullable, nonatomic, copy) NSString *email;
+@property (nullable, nonatomic, copy) NSString *contacts;
+@property (nullable, nonatomic, copy) NSString *website;
 @end

@@ -17,6 +17,9 @@
 @synthesize latitude;
 @synthesize longitude;
 @synthesize name;
+@synthesize email;
+@synthesize contacts;
+@synthesize website;
 
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super init]) {
@@ -27,6 +30,9 @@
         self.latitude = [decoder decodeObjectForKey:@"satellites_latitude"];
         self.longitude = [decoder decodeObjectForKey:@"satellites_longitude"];
         self.name = [decoder decodeObjectForKey:@"satellites_name"];
+        self.email = [decoder decodeObjectForKey:@"satellites_email"];
+        self.contacts = [decoder decodeObjectForKey:@"satellites_contacts"];
+        self.website = [decoder decodeObjectForKey:@"satellites_website"];
     }
     return self;
 }
@@ -39,5 +45,9 @@
     [encoder encodeObject:latitude forKey:@"satellites_latitude"];
     [encoder encodeObject:longitude forKey:@"satellites_longitude"];
     [encoder encodeObject:name forKey:@"satellites_name"];
+    [encoder encodeObject:email forKey:@"satellites_email"];
+    [encoder encodeObject:contacts forKey:@"satellites_contacts"];
+    [encoder encodeObject:website forKey:@"satellites_website"];
+    
 }
 @end

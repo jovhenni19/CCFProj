@@ -95,6 +95,8 @@
         [lblText sizeToFit];
     }
     
+//    NSLog(@"[%@] - %@",NSStringFromCGSize(lblText.frame.size),lblText.text);
+    
     newFrame = CGRectMake(viewFrame.origin.x, viewFrame.origin.y, lblText.frame.size.width + 22.0f + 10.0f, height+10.0f);
     //NSLog(@"newFrame:%@",NSStringFromCGRect(newFrame));
 //    if (locked) {
@@ -116,6 +118,7 @@
         self.labelText.numberOfLines = 0;
         self.labelText.lineBreakMode = NSLineBreakByWordWrapping;
 //        self.labelText.layer.borderWidth = 1.0f;
+        [self.labelText sizeToFit];
         
         self.computedWidth = self.labelText.frame.size.width;
 //        self.computedHeight = self.labelText.frame.size.height;

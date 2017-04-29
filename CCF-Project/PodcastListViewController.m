@@ -187,6 +187,7 @@
     
     [cell.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonVenue attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:buttonSpeaker attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0f]];
     
+    [cell.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonVenue attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:marginLayout attribute:NSLayoutAttributeTrailingMargin multiplier:1.0 constant:1.0f]];
 }
     
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
