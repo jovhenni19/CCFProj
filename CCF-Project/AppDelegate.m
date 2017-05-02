@@ -46,15 +46,17 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     
-    char * tokenChars = (char*)[deviceToken bytes];
-    NSMutableString * tokenString = [NSMutableString new];
-    
-    for (NSInteger i = 0; i < deviceToken.length; i++) {
-        [tokenString appendFormat:@"%02.2hhx", tokenChars[i]];
-    }
-    
-//    NSLog(@"## token:%@",tokenString);
-    self.deviceToken = tokenString;
+//    char * tokenChars = (char*)[deviceToken bytes];
+//    NSMutableString * tokenString = [NSMutableString new];
+//    
+//    for (NSInteger i = 0; i < deviceToken.length; i++) {
+//        [tokenString appendFormat:@"%02.2hhx", tokenChars[i]];
+//    }
+//    
+    NSLog(@"##%s token:%@",__FUNCTION__,deviceToken);
+//    self.deviceToken = tokenString;
+    self.deviceTokenParameter = [deviceToken copy];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_native_pusher_device_token" object:self.deviceTokenParameter];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
@@ -62,6 +64,9 @@
             NSLog(@"received notification:%@",userInfo);
 //    [self saveNotificationData:userInfo[@"aps"][@"alert"]];
     [UIApplication sharedApplication].applicationIconBadgeNumber += [[[userInfo objectForKey:@"aps"] objectForKey: @"badge"] intValue];
+    
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_native_pusher_data" object:self.deviceTokenParameter];
+    
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {

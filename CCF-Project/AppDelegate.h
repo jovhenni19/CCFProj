@@ -19,7 +19,7 @@
 
 @property (readonly, strong) NSPersistentContainer *persistentContainer;
 
-@property (strong, nonatomic) NSString *deviceToken;
+@property (strong, nonatomic) NSData *deviceTokenParameter;
 @property (strong, nonatomic) NSDictionary *notificationUserInfo;
 
 

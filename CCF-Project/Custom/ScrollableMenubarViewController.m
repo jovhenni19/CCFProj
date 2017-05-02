@@ -220,8 +220,19 @@
 //        
 //    }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_news_from_pusher" object:self.newsFromPusher];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_news_from_pusher" object:self.newsFromPusher];
+
     
+    
+    if (self.newsFromPusher == nil || self.newsFromPusher.count < 1) {
+        NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"saved_news_pusher"];
+        NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        self.newsFromPusher = [NSMutableArray arrayWithArray:array];
+    }
+    
+    
+    
+    [self updateNotificationCounter];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -489,6 +500,13 @@
 - (IBAction)showNotifications:(id)sender {
     [self.horizontalTableview scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionLeft animated:YES];
 //    [self.horizontalTableview scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    
+    UIButton *buttonMenuNews = self.menuButtonList[0];
+    
+    self.indicatorView.frame = CGRectMake(buttonMenuNews.frame.origin.x + 10.0f, 32.0f, buttonMenuNews.frame.size.width - 20.0f, 2.0f);
+    
+    
+    [self autoScrollMenuViewBarWithButton:buttonMenuNews];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -611,6 +629,7 @@
     self.selectedIndex = index;
     
     BaseViewController *vc = [self.viewControllers objectAtIndex:index];
+    vc.menuBarViewController = self;
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_podcast_pause1" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_podcast_pause2" object:nil];
@@ -765,12 +784,22 @@
         _pusherClient.reconnectDelay = 5;
     }
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(registerNativePusherDeviceToken:) name:@"obs_native_pusher_device_token" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newsFromNativePusher:) name:@"obs_native_pusher_data" object:nil];
+    
     return _pusherClient;
+}
+
+- (void) registerNativePusherDeviceToken:(NSNotification*)notification {
+    NSData *deviceToken = notification.object;
+    NSLog(@"##%s token:%@",__FUNCTION__,deviceToken);
+    [self.pusherClient.nativePusher registerWithDeviceToken:deviceToken];
 }
 
 - (void)pusher:(PTPusher *)pusher connectionDidConnect:(PTPusherConnection *)connection {
     
-    NSLog(@"pusher connected:%@",[connection isConnected]?@"YES":@"NO");
+//    NSLog(@"pusher connected:%@",[connection isConnected]?@"YES":@"NO");
     
 }
 
@@ -780,13 +809,13 @@
 
 - (void)pusher:(PTPusher *)pusher connection:(PTPusherConnection *)connection failedWithError:(NSError *)error {
     
-    NSLog(@"pusher failed error:%@",[error description]);
+//    NSLog(@"pusher failed error:%@",[error description]);
 }
 
 
 - (void)pusher:(PTPusher *)pusher didReceiveErrorEvent:(PTPusherErrorEvent *)errorEvent {
     
-    NSLog(@"pusher failed error:%@",[errorEvent name]);
+//    NSLog(@"pusher failed error:%@",[errorEvent name]);
 }
 
 
@@ -795,30 +824,54 @@
 }
 
 - (void)pusher:(PTPusher *)pusher connection:(PTPusherConnection *)connection didDisconnectWithError:(NSError *)error willAttemptReconnect:(BOOL)willAttemptReconnect {
-    NSLog(@"pusher error:%@",[error description]);
+//    NSLog(@"pusher error:%@",[error description]);
 }
 
 - (void)pusher:(PTPusher *)pusher didSubscribeToChannel:(PTPusherChannel *)channel {
-    NSLog(@"pusher channel:%@",[channel name]);
+//    NSLog(@"pusher channel:%@",[channel name]);
 }
 
 - (void)pusherConnection:(PTPusherConnection *)connection didFailWithError:(NSError *)error wasConnected:(BOOL)wasConnected {
-    NSLog(@"pusher error:%@",[error description]);
+//    NSLog(@"pusher error:%@",[error description]);
     
 }
 
 - (void)pusher:(PTPusher *)pusher didFailToSubscribeToChannel:(PTPusherChannel *)channel withError:(NSError *)error {
     
-    NSLog(@"pusher error:%@",[error description]);
+//    NSLog(@"pusher error:%@",[error description]);
 }
 
 - (void) updateNotificationCounter {
+//    NSLog(@"pusher:%li\n\n%@",(long)self.newsFromPusher.count,self.newsFromPusher);
     self.labelNotificationBadge.text = [NSString stringWithFormat:@"%li",(long)self.newsFromPusher.count];
 }
 
+- (void) newsFromNativePusher:(NSNotification*)notification {
+    NSDictionary *dictionary = notification.object;
+    [self addNewsEntryFromPusher:dictionary];
+}
+
+- (void) addNewsEntryFromPusher:(NSDictionary*)data {
+    if (!self.newsFromPusher) {
+        self.newsFromPusher = [NSMutableArray array];
+    }
+    
+    NSDictionary *dictionary = @{@"id":data[@"id"],@"date_posted":data[@"date"],@"title":data[@"title"],@"read":@NO};
+    
+    if(![self containsIDFromDictionary:data[@"id"]]) {
+        [self.newsFromPusher addObject:dictionary];
+    }
+    
+    if (self.selectedIndex == 0) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_news_from_pusher" object:self.newsFromPusher];
+    }
+    
+    [self updateNotificationCounter];
+}
 
 - (void) subscribeEvent:(NSString*)eventName{
     PTPusherChannel *channel = [self.pusherClient subscribeToChannelNamed:@"news"];
+    [[self.pusherClient nativePusher] subscribe:eventName];
     PTPusherEventBinding *eventBind = [channel bindToEventNamed:eventName handleWithBlock:^(PTPusherEvent *channelEvent) {
         // channelEvent.data is a NSDictionary of the JSON object received
         
@@ -836,7 +889,7 @@
          }
          */
         
-        NSLog(@"##[%@]data:%@",eventName,channelEvent.data);
+//        NSLog(@"##[%@]data:%@",eventName,channelEvent.data);
         
         //        UILocalNotification *notification = [[UILocalNotification alloc] init];
         //        notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:1];
@@ -847,19 +900,11 @@
         //
         //        [[UIApplication sharedApplication] scheduleLocalNotification:notification];
         
-        if (!self.newsFromPusher) {
-            self.newsFromPusher = [NSMutableArray array];
-        }
         
-        NSDictionary *dictionary = @{@"id":channelEvent.data[@"id"],@"date_posted":channelEvent.data[@"date"],@"title":channelEvent.data[@"title"],@"read":@NO};
         
-        [self.newsFromPusher addObject:dictionary];
         
-        if (self.selectedIndex == 0) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_news_from_pusher" object:self.newsFromPusher];
-        }
+        [self addNewsEntryFromPusher:channelEvent.data];
         
-        [self updateNotificationCounter];
     }];
     
     if (!self.eventBindingArray) {
@@ -883,7 +928,7 @@
 
 - (void) unSubscribeEvent:(NSString*)eventName{
     PTPusherChannel *channel = [self.pusherClient subscribeToChannelNamed:@"news"];
-    
+    [[self.pusherClient nativePusher] unsubscribe:eventName];
     for (PTPusherEventBinding *event in self.eventBindingArray) {
         if ([event.eventName isEqualToString:eventName]) {
             [channel removeBinding:event];
@@ -891,6 +936,38 @@
         }
     }
     
+}
+
+- (BOOL) containsIDFromDictionary:(NSString*)idNumber {
+    BOOL found = NO;
+    for (NSDictionary *dictionary in self.newsFromPusher) {
+        if([dictionary[@"id"] integerValue] == [idNumber integerValue]){
+            found = YES;
+            break;
+        }
+    }
+    
+    return found;
+}
+
+- (NSArray*)getNewsFromPusher1 {
+//    NSLog(@"_%s_: %@",__FUNCTION__,self.newsFromPusher);
+    return [NSArray arrayWithArray:self.newsFromPusher];
+}
+
+- (void)updateNewsFromPusher:(NSArray*)array {
+    self.newsFromPusher = nil;
+    self.newsFromPusher = [NSMutableArray arrayWithArray:array];
+    
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.newsFromPusher];
+    [[NSUserDefaults standardUserDefaults] setObject:data forKey:@"saved_news_pusher"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [self updateNotificationCounter];
+}
+
+- (NSArray*)getGroupList {
+    return [NSArray arrayWithArray:self.groupList];
 }
 
 @end

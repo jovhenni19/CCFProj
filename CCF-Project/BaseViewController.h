@@ -72,6 +72,7 @@ extern NSString * const kOBS_LIVESTREAM_NOTIFICATION;
 extern NSString * const kOBS_GROUPS_NOTIFICATION;
 extern NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION;
 
+@class ScrollableMenubarViewController;
 @interface BaseViewController : UIViewController <UIWebViewDelegate, FBSDKSharingDelegate, SFSafariViewControllerDelegate>
 @property (strong, nonatomic) IBOutlet UIButton *mapButton;
 @property (strong, nonatomic) EKEventStore *eventStore;
@@ -80,6 +81,8 @@ extern NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION;
 
 @property (strong, nonatomic) __block UIProgressView *loadingProgressView;
 @property (strong, nonatomic) UITextField *textField1;
+
+@property (strong, nonatomic) ScrollableMenubarViewController *menuBarViewController;
 
 - (void) showWebViewWithURL:(NSString*)urlString;
 - (void) openURL:(NSString*)urlstring;

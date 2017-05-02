@@ -34,7 +34,7 @@
     self.allIsOn = YES;
     
     
-    self.groupList = [NSMutableArray arrayWithArray:((ScrollableMenubarViewController*)self.parentViewController).groupList];
+    self.groupList = [NSMutableArray arrayWithArray:[self.menuBarViewController getGroupList]];
     
     if (self.groupList.count == 0) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callGroupsData:) name:kOBS_GROUPS_NOTIFICATION object:nil];
@@ -81,7 +81,7 @@
     
     if (self.allIsOn) {
         for (NSDictionary *item in self.groupList) {
-            [((ScrollableMenubarViewController*)self.parentViewController) subscribeEvent:item[@"interest"]];
+            [self.menuBarViewController subscribeEvent:item[@"interest"]];
         }
     }
     else {
@@ -92,10 +92,10 @@
             BOOL switchValue = [[NSUserDefaults standardUserDefaults] boolForKey:valueKey];
             
             if (switchValue == YES) {
-                [((ScrollableMenubarViewController*)self.parentViewController) subscribeEvent:item[@"interest"]];
+                [self.menuBarViewController subscribeEvent:item[@"interest"]];
             }
             else {
-                [((ScrollableMenubarViewController*)self.parentViewController) unSubscribeEvent:item[@"interest"]];
+                [self.menuBarViewController unSubscribeEvent:item[@"interest"]];
             }
         }
     }
@@ -260,11 +260,11 @@
     NSString *valueKey = [NSString stringWithFormat:@"groups_%@_key",item[@"id"]];
     if ([sender isOn]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:valueKey];
-        [((ScrollableMenubarViewController*)self.parentViewController) subscribeEvent:item[@"interest"]];
+        [self.menuBarViewController subscribeEvent:item[@"interest"]];
     }
     else {
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:valueKey];
-        [((ScrollableMenubarViewController*)self.parentViewController) unSubscribeEvent:item[@"interest"]];
+        [self.menuBarViewController unSubscribeEvent:item[@"interest"]];
     }
     
     if ([self isAllGroupSame]) {
