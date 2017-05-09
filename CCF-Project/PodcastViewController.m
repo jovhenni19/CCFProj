@@ -154,6 +154,62 @@
         self.categorizedPodcast = [NSMutableDictionary dictionary];
     }
     
+    
+    if (notification.object == nil) {
+        //error
+        
+        NSManagedObjectContext *context = ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext;
+        
+        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"OfflineData"];
+        
+        NSError *error = nil;
+        
+        NSManagedObject *offlineData = [[context executeFetchRequest:request error:&error] lastObject];
+        
+        NSArray *newslist = [NSKeyedUnarchiver unarchiveObjectWithData:[offlineData valueForKey:@"podcasts_list"]];
+        
+        [self.podcastList removeAllObjects];
+        
+        [self.categories removeAllObjects];
+        
+        self.podcastList = nil;
+        self.categories = nil;
+        self.categorizedPodcast = nil;
+        if(!self.podcastList){
+            self.podcastList = [NSMutableArray array];
+        }
+        
+        if(!self.categories){
+            self.categories = [NSMutableArray array];
+        }
+        
+        if(!self.categorizedPodcast){
+            self.categorizedPodcast = [NSMutableDictionary dictionary];
+        }
+        self.podcastList = [NSMutableArray arrayWithArray:newslist];
+        
+        for (PodcastsObject *podcastsItem in self.podcastList) {
+            NSString *key = podcastsItem.category_name;
+            if (![[self.categorizedPodcast allKeys] containsObject:key]) {
+                NSMutableArray *array = [NSMutableArray array];
+                [self.categorizedPodcast setObject:[array mutableCopy] forKey:key];
+                
+                NSDictionary *category = @{@"kTitle":[key uppercaseString],@"kImage":podcastsItem.image_url,@"kImageData":isNIL(podcastsItem.image_data)};
+                [self.categories addObject:category];
+            }
+            
+            NSMutableArray *subArray = [self.categorizedPodcast objectForKey:key];
+            [subArray addObject:podcastsItem];
+            
+            [self.categorizedPodcast setObject:subArray forKey:key];
+        }
+        
+        
+        [self.mainTableView reloadData];
+        
+        return;
+    }
+    
     NSDictionary *result = [NSDictionary dictionaryWithDictionary:notification.object];
     
     self.shownPerPage = [result[@"meta"][@"pagination"][@"per_page"] integerValue];

@@ -59,6 +59,16 @@
     
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    CGFloat playerHeight = (self.youtubePlayerView.frame.origin.y + self.youtubePlayerView.frame.size.height);
+    CGFloat diff = self.viewMain.frame.size.height - 110.0f;
+    if (playerHeight > diff) {
+        [self.mainScrollView setContentSize:CGSizeMake(0.0f, self.mainScrollView.contentSize.height + (playerHeight - diff))];
+    }
+}
+
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     

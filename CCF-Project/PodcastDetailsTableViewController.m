@@ -66,6 +66,7 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_podcast_pause3" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_podcast_pause2" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_podcast_pause1" object:nil];
     

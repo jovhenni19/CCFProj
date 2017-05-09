@@ -13,7 +13,7 @@ NSString * const kNEWS_LINK = @"/api/news/";
 NSString * const kOBS_NEWS_NOTIFICATION = @"kOBS_NEWS_NOTIFICATION";
 NSString * const kPODCAST_LINK = @"/api/podcasts/";
 NSString * const kOBS_PODCAST_NOTIFICATION = @"kOBS_PODCAST_NOTIFICATION";
-NSString * const kEVENTS_LINK = @"/api/events/";
+NSString * const kEVENTS_LINK = @"/api/events/upcoming/";
 NSString * const kOBS_EVENTS_NOTIFICATION = @"kOBS_EVENTS_NOTIFICATION";
 NSString * const kSATTELITES_LINK = @"/api/satellites/all";
 NSString * const kLIVESTREAM_LINK = @"/api/live/";
@@ -678,7 +678,7 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
     manager.responseSerializer = [AFJSONResponseSerializer serializer];
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
     
-//    NSLog(@"base:%@ method:%@",baseURL,method);
+    NSLog(@"base:%@ method:%@",baseURL,method);
     [self callGetSessionManager:manager :method :parameters :notificationName];
 }
 
@@ -814,15 +814,18 @@ NSString * const kOBS_LOCATIONFINISHED_NOTIFICATION = @"kOBS_LOCATIONFINISHED_NO
         self.loadingProgressView.hidden = YES;
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"obs_progress" object:@NO];
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Error %li",(long)[error code]] message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-            [alert dismissViewControllerAnimated:YES completion:nil];
-        }];
-        [alert addAction:actionOK];
         
-        [self presentViewController:alert animated:YES completion:^{
-            
-        }];
+        [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:nil];
+        
+//        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Error %li",(long)[error code]] message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+//        UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//            [alert dismissViewControllerAnimated:YES completion:nil];
+//        }];
+//        [alert addAction:actionOK];
+//        
+//        [self presentViewController:alert animated:YES completion:^{
+//            
+//        }];
     }];
     
     

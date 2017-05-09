@@ -94,7 +94,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSLog(@"count:%i",self.podcastList.count);
+//    NSLog(@"count:%i",self.podcastList.count);
     return self.podcastList.count;
 }
 
@@ -234,6 +234,10 @@
     [cell.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonSpeaker attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:marginLayout attribute:NSLayoutAttributeLeadingMargin multiplier:1.0 constant:-15.0f]];
     
     [cell.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonVenue attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:buttonSpeaker attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0f]];
+    
+    [cell.viewForControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonVenue attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:marginLayout attribute:NSLayoutAttributeTrailingMargin multiplier:1.0 constant:1.0f]];
+    
+    
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];

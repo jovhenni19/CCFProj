@@ -20,6 +20,8 @@
 
 @property (strong, nonatomic) NSMutableArray *news_pusher;
 
+@property (strong, nonatomic) UIButton *buttonLoad;
+
 //@property (strong, nonatomic) NSIndexPath *indexPath_expanded;
 
 @end
@@ -40,6 +42,24 @@
     self.shownPerPage = 0;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newsFromPusher:) name:@"obs_news_from_pusher" object:nil];
+    
+    UIView *viewBar = [[UIView alloc] initWithFrame:CGRectMake(-5.0f, 0.0f, self.tableView.frame.size.width + 100.0f, 0.5f)];
+    viewBar.backgroundColor = [UIColor lightGrayColor];
+    viewBar.alpha = 0.5f;
+    viewBar.userInteractionEnabled = NO;
+    
+    self.buttonLoad = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.buttonLoad setFrame:CGRectMake(0.0f, 0.0f, self.tableView.frame.size.width, 44.0f)];
+    [self.buttonLoad setTitle:@"Load more News" forState:UIControlStateNormal];
+    self.buttonLoad.backgroundColor = [UIColor clearColor];
+    self.buttonLoad.titleLabel.font = [UIFont fontWithName:@"OpenSans" size:14.0f];
+    [self.buttonLoad setTitleColor:TEAL_COLOR forState:UIControlStateNormal];
+    [self.buttonLoad setTitleShadowColor:[UIColor grayColor] forState:UIControlStateNormal];
+    [self.buttonLoad addTarget:self action:@selector(loadMoreNews) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.buttonLoad addSubview:viewBar];
+    
+    self.tableView.tableFooterView = self.buttonLoad;
     
     [self reloadTables];
 
@@ -180,6 +200,30 @@
         self.news_list = [NSMutableArray array];
     }
     
+    if (notification.object == nil) {
+        //error
+        
+        NSManagedObjectContext *context = ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext;
+        
+        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"OfflineData"];
+        
+        NSError *error = nil;
+        
+        NSManagedObject *offlineData = [[context executeFetchRequest:request error:&error] lastObject];
+        
+        NSArray *newslist = [NSKeyedUnarchiver unarchiveObjectWithData:[offlineData valueForKey:@"news_list"]];
+        
+        [self.news_list removeAllObjects];
+        
+        self.news_list = nil;
+        
+        self.news_list = [NSMutableArray arrayWithArray:newslist];
+        
+        [self.tableView reloadData];
+        
+        return;
+    }
+    
     NSDictionary *result = [NSDictionary dictionaryWithDictionary:notification.object];
     
     self.shownPerPage = [result[@"meta"][@"pagination"][@"per_page"] integerValue];
@@ -193,7 +237,7 @@
         
         
 //        NSManagedObjectContext *context = MANAGE_CONTEXT;
-//        
+//
 //        NewsItem *newsItem = (NewsItem*)[NewsItem addItemWithContext:context];
 //        
 //        newsItem.id_num = isNIL(item[@"id"]);
@@ -485,6 +529,45 @@
 //    }
     
     [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+}
+
+
+//- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+//    UIButton *buttonLoad = [UIButton buttonWithType:UIButtonTypeCustom];
+//    [buttonLoad setFrame:CGRectMake(0.0f, 0.0f, tableView.frame.size.width, 44.0f)];
+//    [buttonLoad setTitle:@"Load more News" forState:UIControlStateNormal];
+//    buttonLoad.backgroundColor = [UIColor clearColor];
+//    buttonLoad.titleLabel.font = [UIFont fontWithName:@"OpenSans" size:14.0f];
+//    buttonLoad.titleLabel.textColor = TEAL_COLOR;
+//    [buttonLoad addTarget:self action:@selector(loadMoreNews) forControlEvents:UIControlEventTouchUpInside];
+//    return buttonLoad;
+//}
+//
+//- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+//    return 44.0f;
+//}
+
+- (void) loadMoreNews {
+    self.buttonLoad.enabled = NO;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getMoreNews:) name:[NSString stringWithFormat:@"%@_more",kOBS_NEWS_NOTIFICATION] object:nil];
+    
+    NSInteger page = (self.news_list.count / self.shownPerPage) + 2;
+    
+    [self callGETAPI:[NSString stringWithFormat:@"%@%li",kNEWS_LINK,(long)page] withParameters:nil completionNotification:[NSString stringWithFormat:@"%@_more",kOBS_NEWS_NOTIFICATION]];
+}
+
+- (void) getMoreNews:(NSNotification*)notification {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[NSString stringWithFormat:@"%@_more",kOBS_NEWS_NOTIFICATION] object:nil];
+    self.buttonLoad.enabled = YES;
+    
+    if (notification.object == nil) {
+        self.buttonLoad.enabled = NO;
+        [self.buttonLoad setTitle:@"No more News to Load" forState:UIControlStateNormal];
+        return;
+    }
+    
+    [self appendNewsList:notification];
+    
 }
 
 /*

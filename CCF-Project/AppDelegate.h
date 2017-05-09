@@ -17,7 +17,8 @@
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 
-@property (readonly, strong) NSPersistentContainer *persistentContainer;
+//@property (readonly, strong) NSPersistentContainer *persistentContainer;
+@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 @property (strong, nonatomic) NSData *deviceTokenParameter;
 @property (strong, nonatomic) NSDictionary *notificationUserInfo;

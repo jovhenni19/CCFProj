@@ -110,6 +110,31 @@
         self.events_link = [NSMutableArray array];
     }
     
+    
+    if (notification.object == nil) {
+        //error
+                
+        NSManagedObjectContext *context = ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext;
+        
+        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"OfflineData"];
+        
+        NSError *error = nil;
+        
+        NSManagedObject *offlineData = [[context executeFetchRequest:request error:&error] lastObject];
+        
+        NSArray *newslist = [NSKeyedUnarchiver unarchiveObjectWithData:[offlineData valueForKey:@"events_list"]];
+        
+        [self.events_link removeAllObjects];
+        
+        self.events_link = nil;
+        
+        self.events_link = [NSMutableArray arrayWithArray:newslist];
+        
+        [self.tableView reloadData];
+        
+        return;
+    }
+    
     NSDictionary *result = [NSDictionary dictionaryWithDictionary:notification.object];
     
     self.shownPerPage = [result[@"meta"][@"pagination"][@"per_page"] integerValue];

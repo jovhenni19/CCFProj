@@ -205,6 +205,54 @@
         self.allLocations = [NSMutableDictionary dictionary];
     }
     
+    
+    if (notification.object == nil) {
+        //error
+        
+        NSManagedObjectContext *context = ((AppDelegate*)[UIApplication sharedApplication].delegate).managedObjectContext;
+        
+        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"OfflineData"];
+        
+        NSError *error = nil;
+        
+        NSManagedObject *offlineData = [[context executeFetchRequest:request error:&error] lastObject];
+        
+        NSArray *newslist = [NSKeyedUnarchiver unarchiveObjectWithData:[offlineData valueForKey:@"satellites_list"]];
+        
+        [self.sattelites_list removeAllObjects];
+        [self.allLocations removeAllObjects];
+        self.sattelites_list = nil;
+        self.allLocations = nil;
+        if(!self.sattelites_list){
+            self.sattelites_list = [NSMutableArray array];
+        }
+        if(!self.allLocations){
+            self.allLocations = [NSMutableDictionary dictionary];
+        }
+        self.sattelites_list = [NSMutableArray arrayWithArray:newslist];
+        
+        for (SatellitesObject *sattelite in self.sattelites_list) {
+            NSString *letter_key = [sattelite.name substringWithRange:NSMakeRange(0, 1)];
+            if (![[self.allLocations allKeys] containsObject:letter_key]) {
+                NSMutableArray *array = [NSMutableArray array];
+                [self.allLocations setObject:[array mutableCopy] forKey:letter_key];
+                
+            }
+            
+            NSMutableArray *subArray = [self.allLocations objectForKey:letter_key];
+            [subArray addObject:sattelite];
+            
+            
+            
+            [self.allLocations setObject:subArray forKey:letter_key];
+        }
+        
+        
+        [self.tableView reloadData];
+        
+        return;
+    }
+    
     NSDictionary *result = [NSDictionary dictionaryWithDictionary:notification.object];
     
     self.shownPerPage = [result[@"meta"][@"pagination"][@"per_page"] integerValue];
