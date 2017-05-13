@@ -156,9 +156,10 @@
             events.image_url = isNIL(item[@"image"]);
             events.description_detail = isNIL(item[@"description"]);
             events.date = isNIL(item[@"date_start"][@"date"]);
-            events.time = isNIL(item[@"date_start"][@"time"]);
+        events.time_start = isNIL(item[@"date_start"][@"time"]);
+        events.time_end = isNIL(item[@"date_end"][@"time"]);
         events.date_raw_start = isNIL(item[@"date_start"][@"dateRaw"][@"date"]);
-//        events.date_raw_end = isNIL(item[@"date_end"][@"dateRaw"][@"date"]);
+        events.date_raw_end = isNIL(item[@"date_end"][@"dateRaw"][@"date"]);
             events.registration_link = isNIL(item[@"registration_link"]);
             events.speakers = isNIL(item[@"speakers"]);
         NSString *contacts = isNIL(item[@"contact_info"]);
@@ -193,7 +194,7 @@
     
     
     
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date_raw_start" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date_raw_start" ascending:YES];
     NSArray *orderedArray = [eventsList sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
     
     
@@ -242,7 +243,7 @@
     
     CustomButton *buttonDate = [[CustomButton alloc] initWithText:[events.date uppercaseString] image:[UIImage imageNamed:@"calendar-icon-small"] frame:CGRectMake(buttonWidth, 0.0f, buttonWidth, 30.0f) locked:YES];
     
-    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[events.time uppercaseString] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 0.0f, buttonWidth, 30.0f) locked:YES];
+    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[NSString stringWithFormat:@"%@ - %@",[events.time_start uppercaseString],[events.time_end uppercaseString]] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 0.0f, buttonWidth, 30.0f) locked:YES];
     
     CGFloat height = 30.0f;
     for (CustomButton *button in @[buttonVenue,buttonDate,buttonTime]) {
@@ -310,7 +311,7 @@
     
     [cell.viewControls addSubview:buttonDate];
     
-    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[events.time uppercaseString] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 0.0f, buttonWidth, 30.0f) locked:NO];
+    CustomButton *buttonTime = [[CustomButton alloc] initWithText:[NSString stringWithFormat:@"%@ - %@",[events.time_start uppercaseString],[events.time_end uppercaseString]] image:[UIImage imageNamed:@"time-icon-small"] frame:CGRectMake(buttonWidth + buttonWidth, 0.0f, buttonWidth, 30.0f) locked:NO];
     buttonTime.labelText.textColor = TEAL_COLOR;
     [buttonTime.button addTarget:self action:@selector(saveDateCalendar:) forControlEvents:UIControlEventTouchUpInside];
     buttonTime.button.eventTitle = events.title;
@@ -378,7 +379,7 @@
     
     //layout
     
-    UILayoutGuide *marginLayout = cell.viewControls.layoutMarginsGuide;
+//    UILayoutGuide *marginLayout = cell.viewControls.layoutMarginsGuide;
     
     
     [cell.viewControls addConstraint:[NSLayoutConstraint constraintWithItem:buttonDate attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:cell.viewControls attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0f]];
@@ -415,7 +416,7 @@
     eventsDetailVC.locationName = events.venue;
     eventsDetailVC.dateText = events.date;
     eventsDetailVC.date_start = events.date_raw_start;
-    eventsDetailVC.timeText = events.time;
+    eventsDetailVC.timeText = [NSString stringWithFormat:@"%@ - %@",[events.time_start uppercaseString],[events.time_end uppercaseString]];
     eventsDetailVC.imageURL = events.image_url;
     eventsDetailVC.imageData = events.image_data;
     eventsDetailVC.detailDescription = events.description_detail;

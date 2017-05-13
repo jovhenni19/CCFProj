@@ -20,7 +20,8 @@
     NSData *image_data;
     NSString *registration_link;
     NSString *speakers;
-    NSString *time;
+    NSString *time_start;
+    NSString *time_end;
     NSString *title;
     NSString *venue;
 }
@@ -36,7 +37,8 @@
 @property (nullable, nonatomic, retain) NSData *image_data;
 @property (nullable, nonatomic, copy) NSString *registration_link;
 @property (nullable, nonatomic, copy) NSString *speakers;
-@property (nullable, nonatomic, copy) NSString *time;
+@property (nullable, nonatomic, copy) NSString *time_start;
+@property (nullable, nonatomic, copy) NSString *time_end;
 @property (nullable, nonatomic, copy) NSString *title;
 @property (nullable, nonatomic, copy) NSString *venue;
 

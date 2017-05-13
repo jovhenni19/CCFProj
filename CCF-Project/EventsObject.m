@@ -21,7 +21,8 @@
 @synthesize image_data;
 @synthesize registration_link;
 @synthesize speakers;
-@synthesize time;
+@synthesize time_start;
+@synthesize time_end;
 @synthesize title;
 @synthesize venue;
 
@@ -34,7 +35,8 @@
         self.image_data = [decoder decodeObjectForKey:@"events_image_data"];
         self.title = [decoder decodeObjectForKey:@"events_title"];
         self.venue = [decoder decodeObjectForKey:@"events_venue"];
-        self.time = [decoder decodeObjectForKey:@"events_time"];
+        self.time_start = [decoder decodeObjectForKey:@"events_time_start"];
+        self.time_end = [decoder decodeObjectForKey:@"events_time_end"];
         self.speakers = [decoder decodeObjectForKey:@"events_speakers"];
         self.registration_link = [decoder decodeObjectForKey:@"events_registration_link"];
         self.date_raw_start = [decoder decodeObjectForKey:@"events_date_raw_start"];
@@ -53,7 +55,8 @@
     [encoder encodeObject:image_data forKey:@"events_image_data"];
     [encoder encodeObject:title forKey:@"events_title"];
     [encoder encodeObject:venue forKey:@"events_venue"];
-    [encoder encodeObject:time forKey:@"events_time"];
+    [encoder encodeObject:time_start forKey:@"events_time_start"];
+    [encoder encodeObject:time_end forKey:@"events_time_end"];
     [encoder encodeObject:speakers forKey:@"events_speakers"];
     [encoder encodeObject:registration_link forKey:@"events_registration_link"];
     [encoder encodeObject:date_raw_start forKey:@"events_date_raw_start"];

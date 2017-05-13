@@ -793,7 +793,7 @@
 
 - (void) registerNativePusherDeviceToken:(NSNotification*)notification {
     NSData *deviceToken = notification.object;
-    NSLog(@"##%s token:%@",__FUNCTION__,deviceToken);
+//    NSLog(@"##%s token:%@",__FUNCTION__,deviceToken);
     [self.pusherClient.nativePusher registerWithDeviceToken:deviceToken];
 }
 
@@ -843,6 +843,11 @@
 
 - (void) updateNotificationCounter {
 //    NSLog(@"pusher:%li\n\n%@",(long)self.newsFromPusher.count,self.newsFromPusher);
+    if (self.newsFromPusher.count == 0) {
+        self.labelNotificationBadge.hidden = YES;
+        return;
+    }
+    self.labelNotificationBadge.hidden = NO;
     self.labelNotificationBadge.text = [NSString stringWithFormat:@"%li",(long)self.newsFromPusher.count];
 }
 
