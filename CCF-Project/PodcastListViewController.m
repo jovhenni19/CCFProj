@@ -202,7 +202,7 @@
     details.podcastTitle = [NSString stringWithFormat:@"%@",item.title];
     details.podcastDescription = item.description_detail;
     details.otherText = [item.category_name uppercaseString];
-    details.podcastSpeaker = @"Speaker 1";
+    details.podcastSpeaker = item.speaker;
     
     details.imageURL = item.image_url;
     details.youtubeID = [item.youtubeURL length]?[item.youtubeURL substringWithRange:NSMakeRange(32, 11)]:@"";

@@ -234,6 +234,7 @@
             podcastsItem.created_date = isNIL(item[@"created_at"]);
         podcastsItem.audioURL = isNIL(item[@"audiofile"]);
         podcastsItem.youtubeURL = isNIL(item[@"youtubeID"]);
+        podcastsItem.speaker = isNIL(item[@"speaker"]);
         
         if ([isNIL(item[@"audiofile"]) length]) {
             
@@ -607,7 +608,7 @@
     details.podcastTitle = [NSString stringWithFormat:@"%@",item.title];
     details.podcastDescription = item.description_detail;
     details.otherText = [item.category_name uppercaseString];
-    details.podcastSpeaker = @"Speaker 1";
+    details.podcastSpeaker = item.speaker;
     
     details.imageURL = item.image_url;
     details.youtubeID = [item.youtubeURL length]?[item.youtubeURL substringWithRange:NSMakeRange(32, 11)]:@"";

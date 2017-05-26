@@ -20,6 +20,7 @@
 @synthesize youtubeURL;
 @synthesize audioURL;
 @synthesize audioFilePath;
+@synthesize speaker;
 
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super init]) {
@@ -33,6 +34,7 @@
         self.youtubeURL = [decoder decodeObjectForKey:@"podcasts_youtube_url"];
         self.audioURL = [decoder decodeObjectForKey:@"podcasts_audio_url"];
         self.audioFilePath = [decoder decodeObjectForKey:@"podcasts_audio_filepath"];
+        self.speaker = [decoder decodeObjectForKey:@"podcasts_speaker"];
     }
     return self;
 }
@@ -48,6 +50,7 @@
     [encoder encodeObject:youtubeURL forKey:@"podcasts_youtube_url"];
     [encoder encodeObject:audioURL forKey:@"podcasts_audio_url"];
     [encoder encodeObject:audioFilePath forKey:@"podcasts_audio_filepath"];
+    [encoder encodeObject:speaker forKey:@"podcasts_speaker"];
 }
 
 @end
